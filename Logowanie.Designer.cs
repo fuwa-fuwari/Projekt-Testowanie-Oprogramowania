@@ -97,6 +97,7 @@
             this.Controls.Add(this.lbl_login);
             this.KeyPreview = true;
             this.Name = "Logowanie";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "System magazynowy";
             this.ResumeLayout(false);
             this.PerformLayout();

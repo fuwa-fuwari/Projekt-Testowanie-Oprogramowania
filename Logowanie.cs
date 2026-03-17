@@ -21,34 +21,42 @@ namespace ProjektMagazyn
         {
             if(tbx_login.Text == "admin" && tbx_password.Text == "admin")
             {
-                Zalogowany zalogowany = new Zalogowany();
-                zalogowany.FormClosed += new FormClosedEventHandler(otherForm_FormClosed);
+                Administrator administrator = new Administrator();
+                administrator.Location = this.Location;
+                administrator.FormClosed += new FormClosedEventHandler(otherForm_FormClosed);
+                clear_field(tbx_login);
+                clear_field(tbx_password);
+                tbx_login.Focus();
                 this.Hide();
-                zalogowany.Show();
-            }
-            else if(tbx_login.Text == "admin" && tbx_password.Text != "admin")
-            {
-                MessageBox.Show("Podano niepoprawne hasło");
-                tbx_password.Text = "";
-                tbx_password.Focus();
+                administrator.Show();
             }
             else if (tbx_login.Text != "admin" && tbx_password.Text == "admin")
             {
                 MessageBox.Show("Podano niepoprawny login");
-                tbx_login.Text = "";
+                clear_field(tbx_login);
                 tbx_login.Focus();
+            }
+            else if(tbx_login.Text == "admin" && tbx_password.Text != "admin")
+            {
+                MessageBox.Show("Podano niepoprawne hasło");
+                clear_field(tbx_password);
+                tbx_password.Focus();
             }
             else
             {
                 MessageBox.Show("Podano niepoprawny login lub hasło");
-                tbx_login.Text = "";
-                tbx_password.Text = "";
+                clear_field(tbx_login);
+                clear_field(tbx_password);
             }
             
         }
         void otherForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.Show();
+        }
+        void clear_field(TextBox textBox)
+        {
+            textBox.Text = null;
         }
     }
 }

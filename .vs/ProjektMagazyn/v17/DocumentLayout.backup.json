@@ -1,34 +1,34 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\",
+  "WorkspaceRootPath": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\c shawp\\projektmagazyn\\logowanie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:logowanie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\projektmagazyn\\administrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:administrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\c shawp\\projektmagazyn\\logowanie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\projektmagazyn\\administrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:administrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\projektmagazyn\\administrator.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:administrator.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\logowanie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:logowanie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\c shawp\\projektmagazyn\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\logowanie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:logowanie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\c shawp\\projektmagazyn\\logowanie.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\logowanie.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:logowanie.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\c shawp\\projektmagazyn\\zalogowany.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:zalogowany.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\c shawp\\projektmagazyn\\zalogowany.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:zalogowany.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|c:\\users\\csharp\\desktop\\c shawp\\projektmagazyn\\zalogowany.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:zalogowany.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FAB44AC-3464-4B5A-A45B-D4785ACE86FC}|ProjektMagazyn.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,30 +38,42 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Zalogowany.cs",
-              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Zalogowany.cs",
-              "RelativeDocumentMoniker": "Zalogowany.cs",
-              "ToolTip": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Zalogowany.cs",
-              "RelativeToolTip": "Zalogowany.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Administrator.cs",
+              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Administrator.cs",
+              "RelativeDocumentMoniker": "Administrator.cs",
+              "ToolTip": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Administrator.cs*",
+              "RelativeToolTip": "Administrator.cs*",
+              "ViewState": "AgIAABYAAAAAAAAAAAAzwCUAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-17T11:46:08.549Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Zalogowany.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Zalogowany.Designer.cs",
-              "RelativeDocumentMoniker": "Zalogowany.Designer.cs",
-              "ToolTip": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Zalogowany.Designer.cs",
-              "RelativeToolTip": "Zalogowany.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "Administrator.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Administrator.cs",
+              "RelativeDocumentMoniker": "Administrator.cs",
+              "ToolTip": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Administrator.cs [Design]*",
+              "RelativeToolTip": "Administrator.cs [Design]*",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-17T11:35:42.161Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Administrator.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Administrator.Designer.cs",
+              "RelativeDocumentMoniker": "Administrator.Designer.cs",
+              "ToolTip": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Administrator.Designer.cs",
+              "RelativeToolTip": "Administrator.Designer.cs",
+              "ViewState": "AgIAADcBAAAAAAAAAAAcwDgBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-17T11:35:45.313Z",
               "EditorCaption": ""
@@ -69,24 +81,12 @@
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Zalogowany.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Zalogowany.cs",
-              "RelativeDocumentMoniker": "Zalogowany.cs",
-              "ToolTip": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Zalogowany.cs [Design]",
-              "RelativeToolTip": "Zalogowany.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T11:35:42.161Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Logowanie.cs",
-              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Logowanie.cs",
+              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Logowanie.cs",
               "RelativeDocumentMoniker": "Logowanie.cs",
-              "ToolTip": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Logowanie.cs",
+              "ToolTip": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Logowanie.cs",
               "RelativeToolTip": "Logowanie.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-16T21:29:02.207Z",
               "EditorCaption": ""
@@ -94,23 +94,10 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Logowanie.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Logowanie.Designer.cs",
-              "RelativeDocumentMoniker": "Logowanie.Designer.cs",
-              "ToolTip": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Logowanie.Designer.cs",
-              "RelativeToolTip": "Logowanie.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T11:45:31.067Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Logowanie.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Logowanie.cs",
+              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Logowanie.cs",
               "RelativeDocumentMoniker": "Logowanie.cs",
-              "ToolTip": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Logowanie.cs [Design]",
+              "ToolTip": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Logowanie.cs [Design]",
               "RelativeToolTip": "Logowanie.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-16T21:11:39.538Z",
@@ -118,16 +105,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
+              "Title": "Logowanie.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Logowanie.Designer.cs",
+              "RelativeDocumentMoniker": "Logowanie.Designer.cs",
+              "ToolTip": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Logowanie.Designer.cs",
+              "RelativeToolTip": "Logowanie.Designer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-17T11:45:31.067Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\csharp\\Desktop\\C shawp\\ProjektMagazyn\\Program.cs",
+              "ToolTip": "C:\\Users\\csharp\\Desktop\\ProjektMagazyn\\Program.cs",
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T11:19:07.277Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-17T11:19:07.277Z"
             }
           ]
         }
