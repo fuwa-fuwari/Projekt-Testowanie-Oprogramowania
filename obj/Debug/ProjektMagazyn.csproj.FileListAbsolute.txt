@@ -1,0 +1,12 @@
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\bin\Debug\ProjektMagazyn.exe.config
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\bin\Debug\ProjektMagazyn.exe
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\bin\Debug\ProjektMagazyn.pdb
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.AssemblyReference.cache
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.Properties.Resources.resources
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.GenerateResource.cache
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.CoreCompileInputs.cache
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.exe
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.pdb
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.exe.config
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.Logowanie.resources
+C:\Users\csharp\Desktop\C shawp\ProjektMagazyn\obj\Debug\ProjektMagazyn.Zalogowany.resources
