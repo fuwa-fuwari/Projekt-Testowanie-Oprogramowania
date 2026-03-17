@@ -37,6 +37,13 @@
             this.wyszukajToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wylogujToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpbx_add_user = new System.Windows.Forms.GroupBox();
+            this.lbl_required = new System.Windows.Forms.Label();
+            this.btn_add_user = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbx_phone = new System.Windows.Forms.TextBox();
+            this.tbx_email = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lbl_birthdate = new System.Windows.Forms.Label();
             this.dtpckr_birthdate = new System.Windows.Forms.DateTimePicker();
             this.lbl_pesel = new System.Windows.Forms.Label();
             this.tbx_pesel = new System.Windows.Forms.TextBox();
@@ -55,13 +62,6 @@
             this.lbl_user_name = new System.Windows.Forms.Label();
             this.tbx_user_login = new System.Windows.Forms.TextBox();
             this.lbl_user_login = new System.Windows.Forms.Label();
-            this.lbl_birthdate = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.tbx_email = new System.Windows.Forms.TextBox();
-            this.tbx_phone = new System.Windows.Forms.TextBox();
-            this.btn_add_user = new System.Windows.Forms.Button();
-            this.lbl_required = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.grpbx_add_user.SuspendLayout();
             this.grpbx_address.SuspendLayout();
@@ -118,12 +118,14 @@
             this.edytujUżytkownikaToolStripMenuItem.Name = "edytujUżytkownikaToolStripMenuItem";
             this.edytujUżytkownikaToolStripMenuItem.Size = new System.Drawing.Size(121, 20);
             this.edytujUżytkownikaToolStripMenuItem.Text = "Edytuj użytkownika";
+            this.edytujUżytkownikaToolStripMenuItem.Click += new System.EventHandler(this.edytujUżytkownikaToolStripMenuItem_Click);
             // 
             // wyszukajToolStripMenuItem
             // 
             this.wyszukajToolStripMenuItem.Name = "wyszukajToolStripMenuItem";
             this.wyszukajToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.wyszukajToolStripMenuItem.Text = "Wyszukaj";
+            this.wyszukajToolStripMenuItem.Click += new System.EventHandler(this.wyszukajToolStripMenuItem_Click);
             // 
             // wylogujToolStripMenuItem
             // 
@@ -157,6 +159,66 @@
             this.grpbx_add_user.TabIndex = 4;
             this.grpbx_add_user.TabStop = false;
             this.grpbx_add_user.Text = "Dodaj użytkownika";
+            // 
+            // lbl_required
+            // 
+            this.lbl_required.AutoSize = true;
+            this.lbl_required.Location = new System.Drawing.Point(363, 288);
+            this.lbl_required.Name = "lbl_required";
+            this.lbl_required.Size = new System.Drawing.Size(85, 13);
+            this.lbl_required.TabIndex = 18;
+            this.lbl_required.Text = "*pola wymagane";
+            // 
+            // btn_add_user
+            // 
+            this.btn_add_user.Location = new System.Drawing.Point(363, 307);
+            this.btn_add_user.Name = "btn_add_user";
+            this.btn_add_user.Size = new System.Drawing.Size(213, 23);
+            this.btn_add_user.TabIndex = 17;
+            this.btn_add_user.Text = "Dodaj użytkownika";
+            this.btn_add_user.UseVisualStyleBackColor = true;
+            this.btn_add_user.Click += new System.EventHandler(this.btn_add_user_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(360, 102);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(83, 13);
+            this.label2.TabIndex = 16;
+            this.label2.Text = "Numer telefonu*";
+            // 
+            // tbx_phone
+            // 
+            this.tbx_phone.Location = new System.Drawing.Point(445, 99);
+            this.tbx_phone.Name = "tbx_phone";
+            this.tbx_phone.Size = new System.Drawing.Size(131, 20);
+            this.tbx_phone.TabIndex = 15;
+            // 
+            // tbx_email
+            // 
+            this.tbx_email.Location = new System.Drawing.Point(445, 66);
+            this.tbx_email.Name = "tbx_email";
+            this.tbx_email.Size = new System.Drawing.Size(131, 20);
+            this.tbx_email.TabIndex = 14;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(375, 69);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(68, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Adres e-mail*";
+            // 
+            // lbl_birthdate
+            // 
+            this.lbl_birthdate.AutoSize = true;
+            this.lbl_birthdate.Location = new System.Drawing.Point(36, 142);
+            this.lbl_birthdate.Name = "lbl_birthdate";
+            this.lbl_birthdate.Size = new System.Drawing.Size(83, 13);
+            this.lbl_birthdate.TabIndex = 10;
+            this.lbl_birthdate.Text = "Data urodzenia*\r\n";
             // 
             // dtpckr_birthdate
             // 
@@ -309,66 +371,6 @@
             this.lbl_user_login.Size = new System.Drawing.Size(162, 13);
             this.lbl_user_login.TabIndex = 0;
             this.lbl_user_login.Text = "Identyfikator użytkownika - login*";
-            // 
-            // lbl_birthdate
-            // 
-            this.lbl_birthdate.AutoSize = true;
-            this.lbl_birthdate.Location = new System.Drawing.Point(36, 142);
-            this.lbl_birthdate.Name = "lbl_birthdate";
-            this.lbl_birthdate.Size = new System.Drawing.Size(83, 13);
-            this.lbl_birthdate.TabIndex = 10;
-            this.lbl_birthdate.Text = "Data urodzenia*\r\n";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(360, 102);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(83, 13);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "Numer telefonu*";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(375, 69);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 13);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Adres e-mail*";
-            // 
-            // tbx_email
-            // 
-            this.tbx_email.Location = new System.Drawing.Point(445, 66);
-            this.tbx_email.Name = "tbx_email";
-            this.tbx_email.Size = new System.Drawing.Size(131, 20);
-            this.tbx_email.TabIndex = 14;
-            // 
-            // tbx_phone
-            // 
-            this.tbx_phone.Location = new System.Drawing.Point(445, 99);
-            this.tbx_phone.Name = "tbx_phone";
-            this.tbx_phone.Size = new System.Drawing.Size(131, 20);
-            this.tbx_phone.TabIndex = 15;
-            // 
-            // btn_add_user
-            // 
-            this.btn_add_user.Location = new System.Drawing.Point(363, 307);
-            this.btn_add_user.Name = "btn_add_user";
-            this.btn_add_user.Size = new System.Drawing.Size(213, 23);
-            this.btn_add_user.TabIndex = 17;
-            this.btn_add_user.Text = "Dodaj użytkownika";
-            this.btn_add_user.UseVisualStyleBackColor = true;
-            this.btn_add_user.Click += new System.EventHandler(this.btn_add_user_Click);
-            // 
-            // lbl_required
-            // 
-            this.lbl_required.AutoSize = true;
-            this.lbl_required.Location = new System.Drawing.Point(363, 288);
-            this.lbl_required.Name = "lbl_required";
-            this.lbl_required.Size = new System.Drawing.Size(85, 13);
-            this.lbl_required.TabIndex = 18;
-            this.lbl_required.Text = "*pola wymagane";
             // 
             // Administrator
             // 
