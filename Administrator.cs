@@ -20,16 +20,6 @@ namespace ProjektMagazyn
             InitializeComponent();
         }
 
-        private void wylogujToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void formularzToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btn_add_user_Click(object sender, EventArgs e)
         {
             var login = tbx_user_login.Text;
