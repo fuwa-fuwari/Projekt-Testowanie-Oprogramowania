@@ -22,3 +22,15 @@ C:\Users\csharp\Desktop\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.CoreCompi
 C:\Users\csharp\Desktop\ProjektMagazyn\obj\Debug\ProjektMagazyn.exe
 C:\Users\csharp\Desktop\ProjektMagazyn\obj\Debug\ProjektMagazyn.pdb
 C:\Users\csharp\Desktop\ProjektMagazyn\obj\Debug\ProjektMagazyn.Administrator.resources
+Z:\ProjektMagazyn\bin\Debug\ProjektMagazyn.exe.config
+Z:\ProjektMagazyn\bin\Debug\ProjektMagazyn.exe
+Z:\ProjektMagazyn\bin\Debug\ProjektMagazyn.pdb
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.AssemblyReference.cache
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.exe.config
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.Logowanie.resources
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.Properties.Resources.resources
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.Administrator.resources
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.GenerateResource.cache
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.CoreCompileInputs.cache
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.exe
+Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.pdb

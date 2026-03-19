@@ -1,4 +1,6 @@
-﻿namespace ProjektMagazyn
+﻿using System.Windows.Forms;
+
+namespace ProjektMagazyn
 {
     partial class Administrator
     {
@@ -29,37 +31,43 @@
         private void InitializeComponent()
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
+            this.tabPage_overview = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabPage_manage_users = new System.Windows.Forms.TabPage();
             this.dotNetBarTabControl_manage_users = new TabControls.DotNetBarTabControl();
             this.tabPage_add_user = new System.Windows.Forms.TabPage();
+            this.lbl_gender = new System.Windows.Forms.Label();
+            this.cmbx_gender = new System.Windows.Forms.ComboBox();
+            this.btn_cancel = new System.Windows.Forms.Button();
             this.lbl_required = new System.Windows.Forms.Label();
             this.btn_add_user = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.tbx_phone = new System.Windows.Forms.TextBox();
-            this.tbx_email = new System.Windows.Forms.TextBox();
+            this.msktbx_phone = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_email = new System.Windows.Forms.MaskedTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lbl_birthdate = new System.Windows.Forms.Label();
             this.dtpckr_birthdate = new System.Windows.Forms.DateTimePicker();
             this.lbl_pesel = new System.Windows.Forms.Label();
-            this.tbx_pesel = new System.Windows.Forms.TextBox();
+            this.msktbx_pesel = new System.Windows.Forms.MaskedTextBox();
             this.grpbx_address = new System.Windows.Forms.GroupBox();
             this.lbl_street_number = new System.Windows.Forms.Label();
-            this.tbx_locale_number = new System.Windows.Forms.TextBox();
-            this.tbx_street_number = new System.Windows.Forms.TextBox();
-            this.tbx_street = new System.Windows.Forms.TextBox();
-            this.tbx_city = new System.Windows.Forms.TextBox();
+            this.msktbx_locale_number = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_street_number = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_street = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_city = new System.Windows.Forms.MaskedTextBox();
             this.lbl_locale_number = new System.Windows.Forms.Label();
             this.lbl_street = new System.Windows.Forms.Label();
             this.lbl_city = new System.Windows.Forms.Label();
             this.lbl_user_surname = new System.Windows.Forms.Label();
-            this.tbx_user_surname = new System.Windows.Forms.TextBox();
-            this.tbx_user_name = new System.Windows.Forms.TextBox();
+            this.msktbx_user_surname = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_user_name = new System.Windows.Forms.MaskedTextBox();
             this.lbl_user_name = new System.Windows.Forms.Label();
-            this.tbx_user_login = new System.Windows.Forms.TextBox();
+            this.msktbx_user_login = new System.Windows.Forms.MaskedTextBox();
             this.lbl_user_login = new System.Windows.Forms.Label();
             this.tabPage_edit_user = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.btn_test = new System.Windows.Forms.Button();
             this.dotNetBarTabControl_main_view.SuspendLayout();
+            this.tabPage_overview.SuspendLayout();
             this.tabPage_manage_users.SuspendLayout();
             this.dotNetBarTabControl_manage_users.SuspendLayout();
             this.tabPage_add_user.SuspendLayout();
@@ -69,8 +77,8 @@
             // dotNetBarTabControl_main_view
             // 
             this.dotNetBarTabControl_main_view.Alignment = System.Windows.Forms.TabAlignment.Left;
+            this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_overview);
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_manage_users);
-            this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage4);
             this.dotNetBarTabControl_main_view.ItemSize = new System.Drawing.Size(44, 142);
             this.dotNetBarTabControl_main_view.Location = new System.Drawing.Point(12, 12);
             this.dotNetBarTabControl_main_view.Multiline = true;
@@ -79,6 +87,27 @@
             this.dotNetBarTabControl_main_view.Size = new System.Drawing.Size(887, 535);
             this.dotNetBarTabControl_main_view.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.dotNetBarTabControl_main_view.TabIndex = 2;
+            // 
+            // tabPage_overview
+            // 
+            this.tabPage_overview.Controls.Add(this.label1);
+            this.tabPage_overview.Location = new System.Drawing.Point(146, 4);
+            this.tabPage_overview.Name = "tabPage_overview";
+            this.tabPage_overview.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_overview.Size = new System.Drawing.Size(737, 527);
+            this.tabPage_overview.TabIndex = 1;
+            this.tabPage_overview.Text = "Przegląd";
+            this.tabPage_overview.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(78, 62);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(181, 46);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Co tutaj?";
             // 
             // tabPage_manage_users
             // 
@@ -107,22 +136,26 @@
             // 
             // tabPage_add_user
             // 
+            this.tabPage_add_user.Controls.Add(this.btn_test);
+            this.tabPage_add_user.Controls.Add(this.lbl_gender);
+            this.tabPage_add_user.Controls.Add(this.cmbx_gender);
+            this.tabPage_add_user.Controls.Add(this.btn_cancel);
             this.tabPage_add_user.Controls.Add(this.lbl_required);
             this.tabPage_add_user.Controls.Add(this.btn_add_user);
             this.tabPage_add_user.Controls.Add(this.label2);
-            this.tabPage_add_user.Controls.Add(this.tbx_phone);
-            this.tabPage_add_user.Controls.Add(this.tbx_email);
+            this.tabPage_add_user.Controls.Add(this.msktbx_phone);
+            this.tabPage_add_user.Controls.Add(this.msktbx_email);
             this.tabPage_add_user.Controls.Add(this.label3);
             this.tabPage_add_user.Controls.Add(this.lbl_birthdate);
             this.tabPage_add_user.Controls.Add(this.dtpckr_birthdate);
             this.tabPage_add_user.Controls.Add(this.lbl_pesel);
-            this.tabPage_add_user.Controls.Add(this.tbx_pesel);
+            this.tabPage_add_user.Controls.Add(this.msktbx_pesel);
             this.tabPage_add_user.Controls.Add(this.grpbx_address);
             this.tabPage_add_user.Controls.Add(this.lbl_user_surname);
-            this.tabPage_add_user.Controls.Add(this.tbx_user_surname);
-            this.tabPage_add_user.Controls.Add(this.tbx_user_name);
+            this.tabPage_add_user.Controls.Add(this.msktbx_user_surname);
+            this.tabPage_add_user.Controls.Add(this.msktbx_user_name);
             this.tabPage_add_user.Controls.Add(this.lbl_user_name);
-            this.tabPage_add_user.Controls.Add(this.tbx_user_login);
+            this.tabPage_add_user.Controls.Add(this.msktbx_user_login);
             this.tabPage_add_user.Controls.Add(this.lbl_user_login);
             this.tabPage_add_user.Location = new System.Drawing.Point(140, 4);
             this.tabPage_add_user.Name = "tabPage_add_user";
@@ -132,10 +165,42 @@
             this.tabPage_add_user.Text = "Dodaj użytkownika";
             this.tabPage_add_user.UseVisualStyleBackColor = true;
             // 
+            // lbl_gender
+            // 
+            this.lbl_gender.AutoSize = true;
+            this.lbl_gender.Location = new System.Drawing.Point(274, 127);
+            this.lbl_gender.Name = "lbl_gender";
+            this.lbl_gender.Size = new System.Drawing.Size(30, 13);
+            this.lbl_gender.TabIndex = 38;
+            this.lbl_gender.Text = "Płeć";
+            // 
+            // cmbx_gender
+            // 
+            this.cmbx_gender.FormattingEnabled = true;
+            this.cmbx_gender.Items.AddRange(new object[] {
+            "kobieta",
+            "mężczyzna"});
+            this.cmbx_gender.Location = new System.Drawing.Point(310, 124);
+            this.cmbx_gender.Name = "cmbx_gender";
+            this.cmbx_gender.Size = new System.Drawing.Size(131, 21);
+            this.cmbx_gender.TabIndex = 37;
+            // 
+            // btn_cancel
+            // 
+            this.btn_cancel.BackColor = System.Drawing.Color.White;
+            this.btn_cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_cancel.Location = new System.Drawing.Point(149, 494);
+            this.btn_cancel.Name = "btn_cancel";
+            this.btn_cancel.Size = new System.Drawing.Size(115, 23);
+            this.btn_cancel.TabIndex = 36;
+            this.btn_cancel.Text = "Anuluj";
+            this.btn_cancel.UseVisualStyleBackColor = false;
+            this.btn_cancel.Click += new System.EventHandler(this.btn_cancel_Click);
+            // 
             // lbl_required
             // 
             this.lbl_required.AutoSize = true;
-            this.lbl_required.Location = new System.Drawing.Point(193, 439);
+            this.lbl_required.Location = new System.Drawing.Point(193, 468);
             this.lbl_required.Name = "lbl_required";
             this.lbl_required.Size = new System.Drawing.Size(85, 13);
             this.lbl_required.TabIndex = 35;
@@ -143,41 +208,45 @@
             // 
             // btn_add_user
             // 
-            this.btn_add_user.Location = new System.Drawing.Point(193, 458);
+            this.btn_add_user.BackColor = System.Drawing.Color.White;
+            this.btn_add_user.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_add_user.Location = new System.Drawing.Point(326, 494);
             this.btn_add_user.Name = "btn_add_user";
-            this.btn_add_user.Size = new System.Drawing.Size(213, 23);
+            this.btn_add_user.Size = new System.Drawing.Size(115, 23);
             this.btn_add_user.TabIndex = 34;
-            this.btn_add_user.Text = "Dodaj użytkownika";
-            this.btn_add_user.UseVisualStyleBackColor = true;
+            this.btn_add_user.Text = "Zapisz";
+            this.btn_add_user.UseVisualStyleBackColor = false;
             this.btn_add_user.Click += new System.EventHandler(this.btn_add_user_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(225, 196);
+            this.label2.Location = new System.Drawing.Point(225, 225);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 13);
             this.label2.TabIndex = 33;
             this.label2.Text = "Numer telefonu*";
             // 
-            // tbx_phone
+            // msktbx_phone
             // 
-            this.tbx_phone.Location = new System.Drawing.Point(310, 193);
-            this.tbx_phone.Name = "tbx_phone";
-            this.tbx_phone.Size = new System.Drawing.Size(131, 20);
-            this.tbx_phone.TabIndex = 32;
+            this.msktbx_phone.Location = new System.Drawing.Point(310, 222);
+            this.msktbx_phone.Mask = "000000000";
+            this.msktbx_phone.Name = "msktbx_phone";
+            this.msktbx_phone.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_phone.TabIndex = 32;
+            this.msktbx_phone.ValidatingType = typeof(int);
             // 
-            // tbx_email
+            // msktbx_email
             // 
-            this.tbx_email.Location = new System.Drawing.Point(310, 160);
-            this.tbx_email.Name = "tbx_email";
-            this.tbx_email.Size = new System.Drawing.Size(131, 20);
-            this.tbx_email.TabIndex = 31;
+            this.msktbx_email.Location = new System.Drawing.Point(310, 190);
+            this.msktbx_email.Name = "msktbx_email";
+            this.msktbx_email.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_email.TabIndex = 31;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(240, 163);
+            this.label3.Location = new System.Drawing.Point(240, 193);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 13);
             this.label3.TabIndex = 30;
@@ -186,7 +255,7 @@
             // lbl_birthdate
             // 
             this.lbl_birthdate.AutoSize = true;
-            this.lbl_birthdate.Location = new System.Drawing.Point(156, 243);
+            this.lbl_birthdate.Location = new System.Drawing.Point(156, 272);
             this.lbl_birthdate.Name = "lbl_birthdate";
             this.lbl_birthdate.Size = new System.Drawing.Size(83, 13);
             this.lbl_birthdate.TabIndex = 29;
@@ -194,7 +263,7 @@
             // 
             // dtpckr_birthdate
             // 
-            this.dtpckr_birthdate.Location = new System.Drawing.Point(241, 240);
+            this.dtpckr_birthdate.Location = new System.Drawing.Point(241, 269);
             this.dtpckr_birthdate.Name = "dtpckr_birthdate";
             this.dtpckr_birthdate.Size = new System.Drawing.Size(200, 20);
             this.dtpckr_birthdate.TabIndex = 28;
@@ -202,30 +271,32 @@
             // lbl_pesel
             // 
             this.lbl_pesel.AutoSize = true;
-            this.lbl_pesel.Location = new System.Drawing.Point(263, 130);
+            this.lbl_pesel.Location = new System.Drawing.Point(263, 160);
             this.lbl_pesel.Name = "lbl_pesel";
             this.lbl_pesel.Size = new System.Drawing.Size(45, 13);
             this.lbl_pesel.TabIndex = 27;
             this.lbl_pesel.Text = "PESEL*";
             // 
-            // tbx_pesel
+            // msktbx_pesel
             // 
-            this.tbx_pesel.Location = new System.Drawing.Point(310, 127);
-            this.tbx_pesel.Name = "tbx_pesel";
-            this.tbx_pesel.Size = new System.Drawing.Size(131, 20);
-            this.tbx_pesel.TabIndex = 26;
+            this.msktbx_pesel.Location = new System.Drawing.Point(310, 157);
+            this.msktbx_pesel.Mask = "00000000000";
+            this.msktbx_pesel.Name = "msktbx_pesel";
+            this.msktbx_pesel.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_pesel.TabIndex = 26;
+            this.msktbx_pesel.ValidatingType = typeof(int);
             // 
             // grpbx_address
             // 
             this.grpbx_address.Controls.Add(this.lbl_street_number);
-            this.grpbx_address.Controls.Add(this.tbx_locale_number);
-            this.grpbx_address.Controls.Add(this.tbx_street_number);
-            this.grpbx_address.Controls.Add(this.tbx_street);
-            this.grpbx_address.Controls.Add(this.tbx_city);
+            this.grpbx_address.Controls.Add(this.msktbx_locale_number);
+            this.grpbx_address.Controls.Add(this.msktbx_street_number);
+            this.grpbx_address.Controls.Add(this.msktbx_street);
+            this.grpbx_address.Controls.Add(this.msktbx_city);
             this.grpbx_address.Controls.Add(this.lbl_locale_number);
             this.grpbx_address.Controls.Add(this.lbl_street);
             this.grpbx_address.Controls.Add(this.lbl_city);
-            this.grpbx_address.Location = new System.Drawing.Point(149, 280);
+            this.grpbx_address.Location = new System.Drawing.Point(149, 309);
             this.grpbx_address.Name = "grpbx_address";
             this.grpbx_address.Size = new System.Drawing.Size(292, 152);
             this.grpbx_address.TabIndex = 25;
@@ -241,33 +312,33 @@
             this.lbl_street_number.TabIndex = 7;
             this.lbl_street_number.Text = "Numer posesji*";
             // 
-            // tbx_locale_number
+            // msktbx_locale_number
             // 
-            this.tbx_locale_number.Location = new System.Drawing.Point(92, 118);
-            this.tbx_locale_number.Name = "tbx_locale_number";
-            this.tbx_locale_number.Size = new System.Drawing.Size(178, 20);
-            this.tbx_locale_number.TabIndex = 6;
+            this.msktbx_locale_number.Location = new System.Drawing.Point(92, 118);
+            this.msktbx_locale_number.Name = "msktbx_locale_number";
+            this.msktbx_locale_number.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_locale_number.TabIndex = 6;
             // 
-            // tbx_street_number
+            // msktbx_street_number
             // 
-            this.tbx_street_number.Location = new System.Drawing.Point(92, 85);
-            this.tbx_street_number.Name = "tbx_street_number";
-            this.tbx_street_number.Size = new System.Drawing.Size(178, 20);
-            this.tbx_street_number.TabIndex = 5;
+            this.msktbx_street_number.Location = new System.Drawing.Point(92, 85);
+            this.msktbx_street_number.Name = "msktbx_street_number";
+            this.msktbx_street_number.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_street_number.TabIndex = 5;
             // 
-            // tbx_street
+            // msktbx_street
             // 
-            this.tbx_street.Location = new System.Drawing.Point(92, 52);
-            this.tbx_street.Name = "tbx_street";
-            this.tbx_street.Size = new System.Drawing.Size(178, 20);
-            this.tbx_street.TabIndex = 4;
+            this.msktbx_street.Location = new System.Drawing.Point(92, 52);
+            this.msktbx_street.Name = "msktbx_street";
+            this.msktbx_street.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_street.TabIndex = 4;
             // 
-            // tbx_city
+            // msktbx_city
             // 
-            this.tbx_city.Location = new System.Drawing.Point(92, 19);
-            this.tbx_city.Name = "tbx_city";
-            this.tbx_city.Size = new System.Drawing.Size(178, 20);
-            this.tbx_city.TabIndex = 3;
+            this.msktbx_city.Location = new System.Drawing.Point(92, 19);
+            this.msktbx_city.Name = "msktbx_city";
+            this.msktbx_city.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_city.TabIndex = 3;
             // 
             // lbl_locale_number
             // 
@@ -305,19 +376,19 @@
             this.lbl_user_surname.TabIndex = 24;
             this.lbl_user_surname.Text = "Nazwisko*";
             // 
-            // tbx_user_surname
+            // msktbx_user_surname
             // 
-            this.tbx_user_surname.Location = new System.Drawing.Point(310, 91);
-            this.tbx_user_surname.Name = "tbx_user_surname";
-            this.tbx_user_surname.Size = new System.Drawing.Size(131, 20);
-            this.tbx_user_surname.TabIndex = 23;
+            this.msktbx_user_surname.Location = new System.Drawing.Point(310, 91);
+            this.msktbx_user_surname.Name = "msktbx_user_surname";
+            this.msktbx_user_surname.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_user_surname.TabIndex = 23;
             // 
-            // tbx_user_name
+            // msktbx_user_name
             // 
-            this.tbx_user_name.Location = new System.Drawing.Point(310, 58);
-            this.tbx_user_name.Name = "tbx_user_name";
-            this.tbx_user_name.Size = new System.Drawing.Size(131, 20);
-            this.tbx_user_name.TabIndex = 22;
+            this.msktbx_user_name.Location = new System.Drawing.Point(310, 58);
+            this.msktbx_user_name.Name = "msktbx_user_name";
+            this.msktbx_user_name.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_user_name.TabIndex = 22;
             // 
             // lbl_user_name
             // 
@@ -328,12 +399,13 @@
             this.lbl_user_name.TabIndex = 21;
             this.lbl_user_name.Text = "Imię*";
             // 
-            // tbx_user_login
+            // msktbx_user_login
             // 
-            this.tbx_user_login.Location = new System.Drawing.Point(310, 25);
-            this.tbx_user_login.Name = "tbx_user_login";
-            this.tbx_user_login.Size = new System.Drawing.Size(131, 20);
-            this.tbx_user_login.TabIndex = 20;
+            this.msktbx_user_login.BackColor = System.Drawing.Color.White;
+            this.msktbx_user_login.Location = new System.Drawing.Point(310, 25);
+            this.msktbx_user_login.Name = "msktbx_user_login";
+            this.msktbx_user_login.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_user_login.TabIndex = 20;
             // 
             // lbl_user_login
             // 
@@ -349,20 +421,20 @@
             this.tabPage_edit_user.Location = new System.Drawing.Point(140, 4);
             this.tabPage_edit_user.Name = "tabPage_edit_user";
             this.tabPage_edit_user.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_edit_user.Size = new System.Drawing.Size(578, 507);
+            this.tabPage_edit_user.Size = new System.Drawing.Size(597, 527);
             this.tabPage_edit_user.TabIndex = 1;
             this.tabPage_edit_user.Text = "Edytuj";
             this.tabPage_edit_user.UseVisualStyleBackColor = true;
             // 
-            // tabPage4
+            // btn_test
             // 
-            this.tabPage4.Location = new System.Drawing.Point(146, 4);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(737, 527);
-            this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "tabPage4";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.btn_test.Location = new System.Drawing.Point(70, 121);
+            this.btn_test.Name = "btn_test";
+            this.btn_test.Size = new System.Drawing.Size(93, 23);
+            this.btn_test.TabIndex = 39;
+            this.btn_test.Text = "dane testowe";
+            this.btn_test.UseVisualStyleBackColor = true;
+            this.btn_test.Click += new System.EventHandler(this.btn_test_Click);
             // 
             // Administrator
             // 
@@ -375,6 +447,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "System magazynowy";
             this.dotNetBarTabControl_main_view.ResumeLayout(false);
+            this.tabPage_overview.ResumeLayout(false);
+            this.tabPage_overview.PerformLayout();
             this.tabPage_manage_users.ResumeLayout(false);
             this.dotNetBarTabControl_manage_users.ResumeLayout(false);
             this.tabPage_add_user.ResumeLayout(false);
@@ -394,29 +468,34 @@
         private System.Windows.Forms.Label lbl_required;
         private System.Windows.Forms.Button btn_add_user;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox tbx_phone;
-        private System.Windows.Forms.TextBox tbx_email;
+        private System.Windows.Forms.MaskedTextBox msktbx_phone;
+        private System.Windows.Forms.MaskedTextBox msktbx_email;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lbl_birthdate;
         private System.Windows.Forms.DateTimePicker dtpckr_birthdate;
         private System.Windows.Forms.Label lbl_pesel;
-        private System.Windows.Forms.TextBox tbx_pesel;
+        private System.Windows.Forms.MaskedTextBox msktbx_pesel;
         private System.Windows.Forms.GroupBox grpbx_address;
         private System.Windows.Forms.Label lbl_street_number;
-        private System.Windows.Forms.TextBox tbx_locale_number;
-        private System.Windows.Forms.TextBox tbx_street_number;
-        private System.Windows.Forms.TextBox tbx_street;
-        private System.Windows.Forms.TextBox tbx_city;
+        private System.Windows.Forms.MaskedTextBox msktbx_locale_number;
+        private System.Windows.Forms.MaskedTextBox msktbx_street_number;
+        private System.Windows.Forms.MaskedTextBox msktbx_street;
+        private System.Windows.Forms.MaskedTextBox msktbx_city;
         private System.Windows.Forms.Label lbl_locale_number;
         private System.Windows.Forms.Label lbl_street;
         private System.Windows.Forms.Label lbl_city;
         private System.Windows.Forms.Label lbl_user_surname;
-        private System.Windows.Forms.TextBox tbx_user_surname;
-        private System.Windows.Forms.TextBox tbx_user_name;
+        private System.Windows.Forms.MaskedTextBox msktbx_user_surname;
+        private System.Windows.Forms.MaskedTextBox msktbx_user_name;
         private System.Windows.Forms.Label lbl_user_name;
-        private System.Windows.Forms.TextBox tbx_user_login;
+        private System.Windows.Forms.MaskedTextBox msktbx_user_login;
         private System.Windows.Forms.Label lbl_user_login;
         private System.Windows.Forms.TabPage tabPage_edit_user;
-        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tabPage_overview;
+        private System.Windows.Forms.Button btn_cancel;
+        private System.Windows.Forms.Label lbl_gender;
+        private System.Windows.Forms.ComboBox cmbx_gender;
+        private Label label1;
+        private Button btn_test;
     }
 }

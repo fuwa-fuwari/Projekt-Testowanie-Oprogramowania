@@ -63,6 +63,7 @@
     <Compile Include="Administrator.Designer.cs">
       <DependentUpon>Administrator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Validation.cs" />
     <EmbeddedResource Include="Logowanie.resx">
       <DependentUpon>Logowanie.cs</DependentUpon>
     </EmbeddedResource>
