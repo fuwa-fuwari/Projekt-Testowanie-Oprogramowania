@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace ProjektMagazyn
 {
@@ -124,7 +125,51 @@ namespace ProjektMagazyn
             }
             else
             {
-                MessageBox.Show("Dodano uzytkownika");
+
+                string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
+
+                try
+                {
+                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    {
+                        conn.Open();
+
+                        string query = @"
+                        INSERT INTO Uzytkownicy
+                        (Login, HasloHash, Imie, Nazwisko, Miejscowosc, KodPocztowy, Ulica, NumerPosesji, NumerLokalu, PESEL, DataUrodzenia, Plec, Email, Telefon)
+                        VALUES
+                        (@login, @haslo, @imie, @nazwisko, @miasto, @kod, @ulica, @nrPos, @nrLok, @pesel, @dataUr, @plec, @email, @telefon)";
+
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            // TODO: hashing
+                            string hasloHash = "test123";
+
+                            cmd.Parameters.AddWithValue("@login", login);
+                            cmd.Parameters.AddWithValue("@haslo", hasloHash);
+                            cmd.Parameters.AddWithValue("@imie", name);
+                            cmd.Parameters.AddWithValue("@nazwisko", surname);
+                            cmd.Parameters.AddWithValue("@miasto", city);
+                            cmd.Parameters.AddWithValue("@kod", "00-000"); 
+                            cmd.Parameters.AddWithValue("@ulica", street ?? (object)DBNull.Value);
+                            cmd.Parameters.AddWithValue("@nrPos", street_number);
+                            cmd.Parameters.AddWithValue("@nrLok", string.IsNullOrEmpty(locale_number) ? (object)DBNull.Value : locale_number);
+                            cmd.Parameters.AddWithValue("@pesel", pesel);
+                            cmd.Parameters.AddWithValue("@dataUr", birthdate);
+                            cmd.Parameters.AddWithValue("@plec", gender);
+                            cmd.Parameters.AddWithValue("@email", email);
+                            cmd.Parameters.AddWithValue("@telefon", phone);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    MessageBox.Show("Dodano użytkownika do bazy");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Błąd: " + ex.Message);
+                }
 
                 //remove storing to csv when database ready
                 //String file = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + Path.DirectorySeparatorChar + "users.csv";

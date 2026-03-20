@@ -34,3 +34,17 @@ Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.GenerateResource.cache
 Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.csproj.CoreCompileInputs.cache
 Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.exe
 Z:\ProjektMagazyn\obj\Debug\ProjektMagazyn.pdb
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\bin\Debug\ProjektMagazyn.exe.config
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\bin\Debug\ProjektMagazyn.exe
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\bin\Debug\ProjektMagazyn.pdb
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.csproj.AssemblyReference.cache
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.Logowanie.resources
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.Properties.Resources.resources
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.Administrator.resources
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.csproj.GenerateResource.cache
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.csproj.CoreCompileInputs.cache
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.exe
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektMagazyn.pdb
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\bin\Debug\System.Buffers.dll
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\bin\Debug\System.Buffers.xml
+C:\Users\mlucj\source\repos\Projekt-Testowanie-Oprogramowania\obj\Debug\ProjektM.4539CE11.Up2Date

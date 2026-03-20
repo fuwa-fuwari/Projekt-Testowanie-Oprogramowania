@@ -19,6 +19,10 @@ namespace ProjektMagazyn
         public bool valid_login(string login)
         {
             //must be unique in database
+            if (login == null || login == string.Empty) 
+            { 
+                return false;
+            }
             return true;
         }
         public bool valid_name(string name)
