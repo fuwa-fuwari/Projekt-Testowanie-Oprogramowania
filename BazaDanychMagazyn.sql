@@ -128,16 +128,16 @@ INSERT INTO Uprawnienia (Nazwa) VALUES
 ('Sprzedawca');
 
 INSERT INTO Uzytkownicy (Login, HasloHash, Imie, Nazwisko, Miejscowosc, KodPocztowy, Ulica, NumerPosesji, NumerLokalu, PESEL, DataUrodzenia, Plec, Email, Telefon) VALUES
-('admin1', 'hash123!', 'Jan', 'Kowalski', 'Warszawa', '00-001', 'Zlota', '11', '1', '80010112345', '1980-01-01', 'mężczyzna', 'admin1@firma.pl', '123456789'),
-('kier_mag1', 'hash123!', 'Anna', 'Nowak', 'Krakow', '30-001', 'Florianska', '22', NULL, '85020223456', '1985-02-02', 'kobieta', 'anna.n@firma.pl', '987654321'),
-('prac_mag1', 'hash123!', 'Piotr', 'Wisniewski', 'Poznan', '60-001', 'Polna', '33', '12', '90030334567', '1990-03-03', 'mężczyzna', 'piotr.w@firma.pl', '500600700'),
-('prac_mag2', 'hash123!', 'Katarzyna', 'Wojcik', 'Wroclaw', '50-001', 'Dluga', '44', '5a', '92040445678', '1992-04-04', 'kobieta', 'kasia.w@firma.pl', '600700800'),
-('kier_sprz1', 'hash123!', 'Tomasz', 'Kaminski', 'Gdansk', '80-001', 'Morska', '55', NULL, '88050556789', '1988-05-05', 'mężczyzna', 'tomek.k@firma.pl', '700800900'),
-('sprz1', 'hash123!', 'Magdalena', 'Lewandowska', 'Lublin', '20-001', 'Krotka', '66', '3', '95060667890', '1995-06-06', 'kobieta', 'magda.l@firma.pl', '800900111'),
-('sprz2', 'hash123!', 'Michal', 'Zielinski', 'Szczecin', '70-001', 'Waska', '77', NULL, '93070778901', '1993-07-07', 'mężczyzna', 'michal.z@firma.pl', '555666777'),
-('user8', 'hash123!', 'Agnieszka', 'Szymanska', 'Bydgoszcz', '85-001', 'Szeroka', '88', '14', '91080889012', '1991-08-08', 'kobieta', 'aga.s@firma.pl', '444555666'),
-('user9', 'hash123!', 'Krzysztof', 'Dabrowski', 'Katowice', '40-001', 'Stroma', '99', NULL, '89090990123', '1989-09-09', 'mężczyzna', 'krzys.d@firma.pl', '333444555'),
-('user10', 'hash123!', 'Monika', 'Kozlowska', 'Lodz', '90-001', 'Piotrkowska', '100', '2', '94101001234', '1994-10-10', 'kobieta', 'monika.k@firma.pl', '222333444');
+('admin1', 'hash123!', 'Jan', 'Kowalski', 'Warszawa', '00-001', 'Zlota', '11', '1', '80010112319', '1980-01-01', 'mężczyzna', 'admin1@firma.pl', '123456789'),
+('kier_mag1', 'hash123!', 'Anna', 'Nowak', 'Krakow', '30-001', 'Florianska', '22', NULL, '85020212329', '1985-02-02', 'kobieta', 'anna.n@firma.pl', '987654321'),
+('prac_mag1', 'hash123!', 'Piotr', 'Wisniewski', 'Poznan', '60-001', 'Polna', '33', '12', '90030312338', '1990-03-03', 'mężczyzna', 'piotr.w@firma.pl', '500600700'),
+('prac_mag2', 'hash123!', 'Katarzyna', 'Wojcik', 'Wroclaw', '50-001', 'Dluga', '44', '5a', '92040412347', '1992-04-04', 'kobieta', 'kasia.w@firma.pl', '600700800'),
+('kier_sprz1', 'hash123!', 'Tomasz', 'Kaminski', 'Gdansk', '80-001', 'Morska', '55', NULL, '88050512355', '1988-05-05', 'mężczyzna', 'tomek.k@firma.pl', '700800900'),
+('sprz1', 'hash123!', 'Magdalena', 'Lewandowska', 'Lublin', '20-001', 'Krotka', '66', '3', '95060612368', '1995-06-06', 'kobieta', 'magda.l@firma.pl', '800900111'),
+('sprz2', 'hash123!', 'Michal', 'Zielinski', 'Szczecin', '70-001', 'Waska', '77', NULL, '93070712379', '1993-07-07', 'mężczyzna', 'michal.z@firma.pl', '555666777'),
+('user8', 'hash123!', 'Agnieszka', 'Szymanska', 'Bydgoszcz', '85-001', 'Szeroka', '88', '14', '91080812380', '1991-08-08', 'kobieta', 'aga.s@firma.pl', '444555666'),
+('user9', 'hash123!', 'Krzysztof', 'Dabrowski', 'Katowice', '40-001', 'Stroma', '99', NULL, '89090912392', '1989-09-09', 'mężczyzna', 'krzys.d@firma.pl', '333444555'),
+('user10', 'hash123!', 'Monika', 'Kozlowska', 'Lodz', '90-001', 'Piotrkowska', '100', '2', '94101000025', '1994-10-10', 'kobieta', 'monika.k@firma.pl', '222333444');
 
 INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikID, UprawnienieID) VALUES
 (1, 1), 
