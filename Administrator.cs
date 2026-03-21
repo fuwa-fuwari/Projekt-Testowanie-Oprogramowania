@@ -19,6 +19,7 @@ namespace ProjektMagazyn
         public Administrator()
         {
             InitializeComponent();
+
         }
 
         private void btn_add_user_Click(object sender, EventArgs e)
@@ -225,6 +226,137 @@ namespace ProjektMagazyn
             msktbx_street.Text = "aaaaaaa";
             msktbx_street_number.Text = "22";
             msktbx_locale_number.Text = "22";
+        }
+
+        private void tabPage_overview_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_refresh_Click(object sender, EventArgs e)
+        {
+            string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT 
+                    UzytkownikID, 
+                    Login, 
+                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
+                    Email, 
+                    PESEL 
+                FROM Uzytkownicy 
+                WHERE CzyZapomniany = 0
+                ORDER BY Nazwisko";
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    if (dt.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Brak wyników.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        dvg_user_list.DataSource = null;
+                    }
+                    else
+                    {
+                        dvg_user_list.DataSource = dt;
+
+                        if (dvg_user_list.Columns["UzytkownikID"] != null)
+                        {
+                            dvg_user_list.Columns["UzytkownikID"].Visible = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd połączenia z bazą: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btn_forget_Click(object sender, EventArgs e)
+        {
+            if (dvg_user_list.CurrentRow == null)
+            {
+                MessageBox.Show("Wybierz użytkownika z listy.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int id = Convert.ToInt32(dvg_user_list.CurrentRow.Cells["UzytkownikID"].Value);
+            string imieINazwisko = dvg_user_list.CurrentRow.Cells["Imię i Nazwisko"].Value.ToString();
+
+            var potwierdzenie = MessageBox.Show(
+                $"Czy na pewno chcesz zanonimizować dane użytkownika {imieINazwisko}?\n\nOperacja jest NIEODWRACALNA.",
+                "Potwierdzenie anonimizacji",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (potwierdzenie != DialogResult.Yes)
+                return;
+
+            string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            string deleteUprawnieniaQuery = "DELETE FROM Uzytkownicy_Uprawnienia WHERE UzytkownikID = @id";
+                            using (SqlCommand cmdUprawnienia = new SqlCommand(deleteUprawnieniaQuery, conn, transaction))
+                            {
+                                cmdUprawnienia.Parameters.AddWithValue("@id", id);
+                                cmdUprawnienia.ExecuteNonQuery();
+                            }
+
+                            string anonimizacjaQuery = @"
+                        UPDATE Uzytkownicy SET
+                            Imie = 'Zanonimizowano',
+                            Nazwisko = 'Zanonimizowano',
+                            Login = 'usuniety_' + CAST(UzytkownikID AS VARCHAR),
+                            Email = 'usuniety_' + CAST(UzytkownikID AS VARCHAR) + '@zanonimizowano.pl',
+                            PESEL = '00000000000', 
+                            DataUrodzenia = '1900-01-01',
+                            Plec = 'zanonimizowano',
+                            Miejscowosc = '***',
+                            Ulica = '***',
+                            Telefon = '000000000',
+                            HasloHash = 'ZABLOKOWANE',
+                            CzyZapomniany = 1,
+                            DataZapomnienia = GETDATE()
+                        WHERE UzytkownikID = @id";
+
+                            using (SqlCommand cmdAnonimizacja = new SqlCommand(anonimizacjaQuery, conn, transaction))
+                            {
+                                cmdAnonimizacja.Parameters.AddWithValue("@id", id);
+                                cmdAnonimizacja.ExecuteNonQuery();
+                            }
+
+                            transaction.Commit();
+
+                            MessageBox.Show("Zapomniano użytkownika.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            btn_refresh_Click(sender, e);
+                        }
+                        catch (Exception exTransaction)
+                        {
+                            transaction.Rollback();
+                            throw exTransaction;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd podczas anonimizacji: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

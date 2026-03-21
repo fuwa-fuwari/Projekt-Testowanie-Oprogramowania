@@ -32,10 +32,13 @@ namespace ProjektMagazyn
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
             this.tabPage_overview = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
+            this.btn_forget = new System.Windows.Forms.Button();
+            this.btn_refresh = new System.Windows.Forms.Button();
+            this.dvg_user_list = new System.Windows.Forms.DataGridView();
             this.tabPage_manage_users = new System.Windows.Forms.TabPage();
             this.dotNetBarTabControl_manage_users = new TabControls.DotNetBarTabControl();
             this.tabPage_add_user = new System.Windows.Forms.TabPage();
+            this.btn_test = new System.Windows.Forms.Button();
             this.lbl_gender = new System.Windows.Forms.Label();
             this.cmbx_gender = new System.Windows.Forms.ComboBox();
             this.btn_cancel = new System.Windows.Forms.Button();
@@ -65,9 +68,9 @@ namespace ProjektMagazyn
             this.msktbx_user_login = new System.Windows.Forms.MaskedTextBox();
             this.lbl_user_login = new System.Windows.Forms.Label();
             this.tabPage_edit_user = new System.Windows.Forms.TabPage();
-            this.btn_test = new System.Windows.Forms.Button();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
             this.tabPage_manage_users.SuspendLayout();
             this.dotNetBarTabControl_manage_users.SuspendLayout();
             this.tabPage_add_user.SuspendLayout();
@@ -90,7 +93,9 @@ namespace ProjektMagazyn
             // 
             // tabPage_overview
             // 
-            this.tabPage_overview.Controls.Add(this.label1);
+            this.tabPage_overview.Controls.Add(this.btn_forget);
+            this.tabPage_overview.Controls.Add(this.btn_refresh);
+            this.tabPage_overview.Controls.Add(this.dvg_user_list);
             this.tabPage_overview.Location = new System.Drawing.Point(146, 4);
             this.tabPage_overview.Name = "tabPage_overview";
             this.tabPage_overview.Padding = new System.Windows.Forms.Padding(3);
@@ -98,16 +103,35 @@ namespace ProjektMagazyn
             this.tabPage_overview.TabIndex = 1;
             this.tabPage_overview.Text = "Przegląd";
             this.tabPage_overview.UseVisualStyleBackColor = true;
+            this.tabPage_overview.Click += new System.EventHandler(this.tabPage_overview_Click);
             // 
-            // label1
+            // btn_forget
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(78, 62);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(181, 46);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Co tutaj?";
+            this.btn_forget.Location = new System.Drawing.Point(3, 174);
+            this.btn_forget.Name = "btn_forget";
+            this.btn_forget.Size = new System.Drawing.Size(120, 36);
+            this.btn_forget.TabIndex = 3;
+            this.btn_forget.Text = "Zapomnij użytkownika";
+            this.btn_forget.UseVisualStyleBackColor = true;
+            this.btn_forget.Click += new System.EventHandler(this.btn_forget_Click);
+            // 
+            // btn_refresh
+            // 
+            this.btn_refresh.Location = new System.Drawing.Point(3, 129);
+            this.btn_refresh.Name = "btn_refresh";
+            this.btn_refresh.Size = new System.Drawing.Size(120, 39);
+            this.btn_refresh.TabIndex = 2;
+            this.btn_refresh.Text = "Odswież listę";
+            this.btn_refresh.UseVisualStyleBackColor = true;
+            this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
+            // 
+            // dvg_user_list
+            // 
+            this.dvg_user_list.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dvg_user_list.Location = new System.Drawing.Point(129, 21);
+            this.dvg_user_list.Name = "dvg_user_list";
+            this.dvg_user_list.Size = new System.Drawing.Size(602, 484);
+            this.dvg_user_list.TabIndex = 1;
             // 
             // tabPage_manage_users
             // 
@@ -164,6 +188,16 @@ namespace ProjektMagazyn
             this.tabPage_add_user.TabIndex = 0;
             this.tabPage_add_user.Text = "Dodaj użytkownika";
             this.tabPage_add_user.UseVisualStyleBackColor = true;
+            // 
+            // btn_test
+            // 
+            this.btn_test.Location = new System.Drawing.Point(70, 121);
+            this.btn_test.Name = "btn_test";
+            this.btn_test.Size = new System.Drawing.Size(93, 23);
+            this.btn_test.TabIndex = 39;
+            this.btn_test.Text = "dane testowe";
+            this.btn_test.UseVisualStyleBackColor = true;
+            this.btn_test.Click += new System.EventHandler(this.btn_test_Click);
             // 
             // lbl_gender
             // 
@@ -426,16 +460,6 @@ namespace ProjektMagazyn
             this.tabPage_edit_user.Text = "Edytuj";
             this.tabPage_edit_user.UseVisualStyleBackColor = true;
             // 
-            // btn_test
-            // 
-            this.btn_test.Location = new System.Drawing.Point(70, 121);
-            this.btn_test.Name = "btn_test";
-            this.btn_test.Size = new System.Drawing.Size(93, 23);
-            this.btn_test.TabIndex = 39;
-            this.btn_test.Text = "dane testowe";
-            this.btn_test.UseVisualStyleBackColor = true;
-            this.btn_test.Click += new System.EventHandler(this.btn_test_Click);
-            // 
             // Administrator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -448,7 +472,7 @@ namespace ProjektMagazyn
             this.Text = "System magazynowy";
             this.dotNetBarTabControl_main_view.ResumeLayout(false);
             this.tabPage_overview.ResumeLayout(false);
-            this.tabPage_overview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).EndInit();
             this.tabPage_manage_users.ResumeLayout(false);
             this.dotNetBarTabControl_manage_users.ResumeLayout(false);
             this.tabPage_add_user.ResumeLayout(false);
@@ -495,7 +519,9 @@ namespace ProjektMagazyn
         private System.Windows.Forms.Button btn_cancel;
         private System.Windows.Forms.Label lbl_gender;
         private System.Windows.Forms.ComboBox cmbx_gender;
-        private Label label1;
         private Button btn_test;
+        private Button btn_forget;
+        private Button btn_refresh;
+        private DataGridView dvg_user_list;
     }
 }
