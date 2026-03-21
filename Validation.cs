@@ -27,15 +27,18 @@ namespace ProjektMagazyn
         }
         public bool valid_name(string name)
         {
-            if (!Regex.IsMatch(name, @"^[A-Za-z]+$"))
+            // Dodane polskie znaki, spacje (dla drugiego imienia) i myślniki
+            if (!Regex.IsMatch(name, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\-]+$"))
             {
                 return false;
             }
             return true;
         }
+
         public bool valid_surname(string surname)
         {
-            if (!Regex.IsMatch(surname, @"^[A-Za-z]+$"))
+            // Dodane polskie znaki, spacje i myślniki (dla nazwisk dwuczłonowych)
+            if (!Regex.IsMatch(surname, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\-]+$"))
             {
                 return false;
             }
@@ -70,31 +73,43 @@ namespace ProjektMagazyn
         }
         public bool valid_city(string city)
         {
-            if (!Regex.IsMatch(city, @"^[A-Za-z]+$"))
+            // Miejscowości mogą mieć spacje i myślniki
+            if (!Regex.IsMatch(city, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\-]+$"))
             {
                 return false;
             }
             return true;
         }
+
         public bool valid_street(string street)
         {
-            if (!Regex.IsMatch(street, @"^[A-Za-z]+$"))
+            // Ulice mogą mieć cyfry (np. 11 Listopada)
+            if (!string.IsNullOrEmpty(street) && !Regex.IsMatch(street, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ0-9\s\-]+$"))
             {
                 return false;
             }
             return true;
         }
+
         public bool valid_street_number(string street_number)
         {
-            if (!Regex.IsMatch(street_number, @"^[0-9]+$"))
+            // Numer posesji może zawierać litery i znaki 
+            if (!Regex.IsMatch(street_number, @"^[0-9A-Za-z\s\-\/]+$"))
             {
                 return false;
             }
             return true;
         }
+
         public bool valid_locale_number(string locale_number)
         {
-            if (!Regex.IsMatch(locale_number, @"^[0-9]+$"))
+            // Numer lokalu jest często opcjonalny, więc przepuszczamy pusty ciąg, jeśli jest wypełniony, pozwalamy na litery (np. lokal 12B)
+            if (string.IsNullOrEmpty(locale_number))
+            {
+                return true;
+            }
+
+            if (!Regex.IsMatch(locale_number, @"^[0-9A-Za-z\s\-\/]+$"))
             {
                 return false;
             }
@@ -102,22 +117,40 @@ namespace ProjektMagazyn
         }
         public bool valid_gender(string gender, string pesel)
         {
+            if (string.IsNullOrEmpty(gender)) return false;
+
+            // Normalizacja: usuwamy białe znaki z początku/końca i zamieniamy na małe litery
+            gender = gender.Trim().ToLower();
+
             if (!(gender == "kobieta" || gender == "mężczyzna"))
                 return false;
-            
-            if(pesel != string.Empty)
-            {
-                int genderDigit = int.Parse(pesel[9].ToString());
-            bool isMale = genderDigit % 2 == 1;
 
-            if ((gender == "mężczyzna" && !isMale) || (gender == "kobieta" && isMale))
-                return false;
+            if (!string.IsNullOrEmpty(pesel))
+            {
+                // Usuwamy ewentualne spacje z MaskedTextBoxa
+                pesel = pesel.Replace(" ", "").Trim();
+
+                if (pesel.Length == 11 && pesel.All(char.IsDigit))
+                {
+                    int genderDigit = int.Parse(pesel[9].ToString());
+                    bool isMale = genderDigit % 2 == 1;
+
+                    if ((gender == "mężczyzna" && !isMale) || (gender == "kobieta" && isMale))
+                        return false;
+                }
             }
 
             return true;
         }
+
         public bool valid_pesel(string pesel, DateTime birthdate, string gender)
         {
+            if (string.IsNullOrEmpty(pesel) || string.IsNullOrEmpty(gender)) return false;
+
+            // Normalizacja danych
+            pesel = pesel.Replace(" ", "").Trim();
+            gender = gender.Trim().ToLower();
+
             // 1. Sprawdzenie długości i cyfr
             if (pesel.Length != 11 || !pesel.All(char.IsDigit))
                 return false;
@@ -127,33 +160,13 @@ namespace ProjektMagazyn
             int month = int.Parse(pesel.Substring(2, 2));
             int day = int.Parse(pesel.Substring(4, 2));
 
-            // Korekta miesiąca (PESEL koduje wiek)
             int century = 1900;
-
-            if (month >= 1 && month <= 12)
-                century = 1900;
-            else if (month >= 21 && month <= 32)
-            {
-                century = 2000;
-                month -= 20;
-            }
-            else if (month >= 41 && month <= 52)
-            {
-                century = 2100;
-                month -= 40;
-            }
-            else if (month >= 61 && month <= 72)
-            {
-                century = 2200;
-                month -= 60;
-            }
-            else if (month >= 81 && month <= 92)
-            {
-                century = 1800;
-                month -= 80;
-            }
-            else
-                return false;
+            if (month >= 1 && month <= 12) century = 1900;
+            else if (month >= 21 && month <= 32) { century = 2000; month -= 20; }
+            else if (month >= 41 && month <= 52) { century = 2100; month -= 40; }
+            else if (month >= 61 && month <= 72) { century = 2200; month -= 60; }
+            else if (month >= 81 && month <= 92) { century = 1800; month -= 80; }
+            else return false;
 
             int fullYear = century + year;
 
@@ -184,19 +197,34 @@ namespace ProjektMagazyn
             int controlDigit = (10 - (sum % 10)) % 10;
 
             if (controlDigit != int.Parse(pesel[10].ToString()))
-                return false;
+                return false; 
 
             return true;
         }
         public bool valid_email(string email)
         {
+            // Odrzuca puste wartości
+            if (string.IsNullOrWhiteSpace(email)) return false;
+
+            // Sprawdzenie maksymalnej długości 255 znaków
+            if (email.Length > 255) return false;
+
+            // Wzorzec: wymusza poprawną strukturę (coś przed @, dokładnie jeden znak @, coś po @, kropka i domena), 
+            // jednocześnie wykluczając spacje
             if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 return false;
 
+            if (email.Count(c => c == '@') != 1) return false;
+
             return true;
         }
+
         public bool valid_phone(string phone)
         {
+            if (string.IsNullOrWhiteSpace(phone)) return false;
+
+            phone = phone.Replace(" ", "").Trim();
+ 
             if (!Regex.IsMatch(phone, @"^[0-9]{9}$"))
             {
                 return false;
