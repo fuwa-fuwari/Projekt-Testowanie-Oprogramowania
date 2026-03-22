@@ -32,6 +32,8 @@ namespace ProjektMagazyn
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
             this.tabPage_overview = new System.Windows.Forms.TabPage();
+            this.tbx_search = new System.Windows.Forms.TextBox();
+            this.btn_search = new System.Windows.Forms.Button();
             this.btn_forget = new System.Windows.Forms.Button();
             this.btn_refresh = new System.Windows.Forms.Button();
             this.dvg_user_list = new System.Windows.Forms.DataGridView();
@@ -126,6 +128,8 @@ namespace ProjektMagazyn
             // 
             // tabPage_overview
             // 
+            this.tabPage_overview.Controls.Add(this.tbx_search);
+            this.tabPage_overview.Controls.Add(this.btn_search);
             this.tabPage_overview.Controls.Add(this.btn_forget);
             this.tabPage_overview.Controls.Add(this.btn_refresh);
             this.tabPage_overview.Controls.Add(this.dvg_user_list);
@@ -137,9 +141,27 @@ namespace ProjektMagazyn
             this.tabPage_overview.Text = "Przegląd";
             this.tabPage_overview.UseVisualStyleBackColor = true;
             // 
+            // tbx_search
+            // 
+            this.tbx_search.Location = new System.Drawing.Point(130, 72);
+            this.tbx_search.Name = "tbx_search";
+            this.tbx_search.Size = new System.Drawing.Size(589, 20);
+            this.tbx_search.TabIndex = 8;
+            this.tbx_search.Text = "(Podaj imię, nazwisko lub PESEL)";
+            // 
+            // btn_search
+            // 
+            this.btn_search.Location = new System.Drawing.Point(4, 62);
+            this.btn_search.Name = "btn_search";
+            this.btn_search.Size = new System.Drawing.Size(120, 39);
+            this.btn_search.TabIndex = 7;
+            this.btn_search.Text = "Wyszukaj";
+            this.btn_search.UseVisualStyleBackColor = true;
+            this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
+            // 
             // btn_forget
             // 
-            this.btn_forget.Location = new System.Drawing.Point(4, 174);
+            this.btn_forget.Location = new System.Drawing.Point(4, 170);
             this.btn_forget.Name = "btn_forget";
             this.btn_forget.Size = new System.Drawing.Size(120, 36);
             this.btn_forget.TabIndex = 6;
@@ -149,7 +171,7 @@ namespace ProjektMagazyn
             // 
             // btn_refresh
             // 
-            this.btn_refresh.Location = new System.Drawing.Point(4, 129);
+            this.btn_refresh.Location = new System.Drawing.Point(3, 116);
             this.btn_refresh.Name = "btn_refresh";
             this.btn_refresh.Size = new System.Drawing.Size(120, 39);
             this.btn_refresh.TabIndex = 5;
@@ -160,11 +182,10 @@ namespace ProjektMagazyn
             // dvg_user_list
             // 
             this.dvg_user_list.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dvg_user_list.Location = new System.Drawing.Point(130, 21);
+            this.dvg_user_list.Location = new System.Drawing.Point(130, 107);
             this.dvg_user_list.Name = "dvg_user_list";
-            this.dvg_user_list.Size = new System.Drawing.Size(602, 484);
+            this.dvg_user_list.Size = new System.Drawing.Size(589, 398);
             this.dvg_user_list.TabIndex = 4;
-            this.dvg_user_list.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dvg_user_list_CellContentClick);
             // 
             // tabPage_manage_users
             // 
@@ -820,6 +841,7 @@ namespace ProjektMagazyn
             this.Text = "System magazynowy";
             this.dotNetBarTabControl_main_view.ResumeLayout(false);
             this.tabPage_overview.ResumeLayout(false);
+            this.tabPage_overview.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).EndInit();
             this.tabPage_manage_users.ResumeLayout(false);
             this.dotNetBarTabControl_manage_users.ResumeLayout(false);
@@ -906,5 +928,7 @@ namespace ProjektMagazyn
         private Button btn_forget;
         private Button btn_refresh;
         private DataGridView dvg_user_list;
+        private TextBox tbx_search;
+        private Button btn_search;
     }
 }

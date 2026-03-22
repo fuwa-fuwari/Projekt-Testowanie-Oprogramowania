@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseConnection.cs" />
     <Compile Include="DotNetBarTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
