@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SqlClient;
+using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace ProjektMagazyn
 {
@@ -28,8 +33,13 @@ namespace ProjektMagazyn
             InitializeComponent();
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
-        }
+            tbx_search.GotFocus += tbx_search_GotFocus;
 
+        }
+        private void tbx_search_GotFocus(object sender, EventArgs e)
+        {
+            tbx_search.Clear();
+        }
         private void btn_add_user_Click(object sender, EventArgs e)
         {
             Validation validation = new Validation();
@@ -179,39 +189,6 @@ namespace ProjektMagazyn
                 {
                     MessageBox.Show("Błąd: " + ex.Message);
                 }
-
-                //remove storing to csv when database ready
-                //String file = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + Path.DirectorySeparatorChar + "users.csv";
-                //String separator = ",";
-                //StringBuilder output = new StringBuilder();
-                //String[] headings = { 
-                //                "login",
-                //                "name",
-                //                "surname",
-                //                "birthdate",
-                //                "city",
-                //                "street",
-                //                "street_number",
-                //                "locale_number",
-                //                "pesel",
-                //                "email",
-                //                "phone" };
-                //output.AppendLine(string.Join(separator, headings));
-                //String[] newLine = {
-                //            login,
-                //            name,
-                //            surname,
-                //            birthdate,
-                //            city,
-                //            street,
-                //            street_number,
-                //            locale_number,
-                //            pesel,
-                //            email,
-                //            phone };
-                //output.AppendLine(string.Join(separator, newLine));
-                //File.AppendAllText(file, output.ToString());
-                //MessageBox.Show("dodano użytkownika do pliku : " + file);
             }
         }
 
@@ -222,47 +199,8 @@ namespace ProjektMagazyn
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
-            string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-                    string query = @"
-                SELECT 
-                    UzytkownikID, 
-                    Login, 
-                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
-                    Email, 
-                    PESEL 
-                FROM Uzytkownicy 
-                WHERE CzyZapomniany = 0
-                ORDER BY Nazwisko";
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    adapter.Fill(dt);
-
-                    if (dt.Rows.Count == 0)
-                    {
-                        MessageBox.Show("Brak wyników.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        dvg_user_list.DataSource = null;
-                    }
-                    else
-                    {
-                        dvg_user_list.DataSource = dt;
-
-                        if (dvg_user_list.Columns["UzytkownikID"] != null)
-                        {
-                            dvg_user_list.Columns["UzytkownikID"].Visible = false;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Błąd połączenia z bazą: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            databaseConnection.display_table_users(dvg_user_list);
         }
 
         private void btn_forget_Click(object sender, EventArgs e)
@@ -346,9 +284,9 @@ namespace ProjektMagazyn
             }
         }
 
-        private void dvg_user_list_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btn_search_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void btn_test_Click(object sender, EventArgs e)
