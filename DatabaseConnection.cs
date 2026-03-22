@@ -12,23 +12,13 @@ namespace ProjektMagazyn
     public class DatabaseConnection
     {
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
-        public void display_table_users(DataGridView dvg_user_list)
+        public void display_table_users(DataGridView dvg_user_list, string query)
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = @"
-                SELECT 
-                    UzytkownikID, 
-                    Login, 
-                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
-                    Email, 
-                    PESEL 
-                FROM Uzytkownicy 
-                WHERE CzyZapomniany = 0
-                ORDER BY Nazwisko";
 
                     SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
@@ -54,6 +44,10 @@ namespace ProjektMagazyn
             {
                 MessageBox.Show("Błąd połączenia z bazą: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        public void display_matched_users(DataGridView dvg_user_list, string query, string match)
+        {
+            
         }
     }
 }
