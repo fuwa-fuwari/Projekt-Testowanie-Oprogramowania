@@ -101,6 +101,7 @@ namespace ProjektMagazyn
             this.label15 = new System.Windows.Forms.Label();
             this.msktbx_user_login_edit = new System.Windows.Forms.MaskedTextBox();
             this.label16 = new System.Windows.Forms.Label();
+            this.btn_show_forgotten = new System.Windows.Forms.Button();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -128,6 +129,7 @@ namespace ProjektMagazyn
             // 
             // tabPage_overview
             // 
+            this.tabPage_overview.Controls.Add(this.btn_show_forgotten);
             this.tabPage_overview.Controls.Add(this.tbx_search);
             this.tabPage_overview.Controls.Add(this.btn_search);
             this.tabPage_overview.Controls.Add(this.btn_forget);
@@ -829,6 +831,16 @@ namespace ProjektMagazyn
             this.label16.TabIndex = 40;
             this.label16.Text = "Identyfikator użytkownika - login*";
             // 
+            // btn_show_forgotten
+            // 
+            this.btn_show_forgotten.Location = new System.Drawing.Point(4, 221);
+            this.btn_show_forgotten.Name = "btn_show_forgotten";
+            this.btn_show_forgotten.Size = new System.Drawing.Size(120, 36);
+            this.btn_show_forgotten.TabIndex = 9;
+            this.btn_show_forgotten.Text = "Wyświetl zapomnianych";
+            this.btn_show_forgotten.UseVisualStyleBackColor = true;
+            this.btn_show_forgotten.Click += new System.EventHandler(this.btn_show_forgotten_Click);
+            // 
             // Administrator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -930,5 +942,6 @@ namespace ProjektMagazyn
         private DataGridView dvg_user_list;
         private TextBox tbx_search;
         private Button btn_search;
+        private Button btn_show_forgotten;
     }
 }

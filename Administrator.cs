@@ -200,7 +200,17 @@ namespace ProjektMagazyn
         private void btn_refresh_Click(object sender, EventArgs e)
         {
             DatabaseConnection databaseConnection = new DatabaseConnection();
-            databaseConnection.display_table_users(dvg_user_list);
+            string query = @"
+                SELECT 
+                    UzytkownikID, 
+                    Login, 
+                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
+                    Email, 
+                    PESEL 
+                FROM Uzytkownicy 
+                WHERE CzyZapomniany = 0
+                ORDER BY Nazwisko";
+            databaseConnection.display_table_users(dvg_user_list, query);
         }
 
         private void btn_forget_Click(object sender, EventArgs e)
@@ -286,7 +296,97 @@ namespace ProjektMagazyn
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-            
+            string match = tbx_search.Text.Trim();
+
+            if (!string.IsNullOrEmpty(match))
+            {
+                string name = null;
+                string surname = null;
+                long? pesel = null;
+
+                if (long.TryParse(match, out long parsedPesel))
+                {
+                    pesel = parsedPesel;
+                }
+                else
+                {
+                    string[] parts = match.Split(' ');
+
+                    if (parts.Length == 2)
+                    {
+                        name = parts[0];
+                        surname = parts[1];
+                    }
+                    else if (parts.Length == 1)
+                    {
+                        name = parts[0];
+                    }
+                }
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT 
+                    UzytkownikID, 
+                    Login, 
+                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
+                    Email, 
+                    PESEL 
+                FROM Uzytkownicy
+                WHERE
+                (@pesel IS NOT NULL AND PESEL = @pesel)
+                OR
+                (@pesel IS NULL AND
+                    (
+                        (@name IS NOT NULL AND @surname IS NULL 
+                            AND (Imie LIKE @name OR Nazwisko LIKE @name))
+                        
+                        OR
+                        
+                        (@name IS NOT NULL AND @surname IS NOT NULL 
+                            AND Imie LIKE @name AND Nazwisko LIKE @surname)
+                    )
+                )
+                AND CzyZapomniany = 0
+                ORDER BY Nazwisko";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@pesel", (object)pesel ?? DBNull.Value);
+
+                        cmd.Parameters.AddWithValue("@name",
+                            name != null ? "%" + name + "%" : (object)DBNull.Value);
+
+                        cmd.Parameters.AddWithValue("@surname",
+                            surname != null ? "%" + surname + "%" : (object)DBNull.Value);
+
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        dvg_user_list.DataSource = dt;
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Podaj informacje do wyszukania!");
+            }
+        }
+
+        private void btn_show_forgotten_Click(object sender, EventArgs e)
+        {
+            DatabaseConnection databaseConnection = new DatabaseConnection();
+            string query = @"
+                SELECT 
+                    UzytkownikID, 
+                    Login, 
+                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
+                    Email, 
+                    PESEL 
+                FROM Uzytkownicy 
+                WHERE CzyZapomniany = 1
+                ORDER BY Nazwisko";
+            databaseConnection.display_table_users(dvg_user_list, query);
         }
 
         private void btn_test_Click(object sender, EventArgs e)
