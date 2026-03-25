@@ -32,6 +32,7 @@ namespace ProjektMagazyn
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
             this.tabPage_overview = new System.Windows.Forms.TabPage();
+            this.btn_show_forgotten = new System.Windows.Forms.Button();
             this.tbx_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
             this.btn_forget = new System.Windows.Forms.Button();
@@ -101,7 +102,35 @@ namespace ProjektMagazyn
             this.label15 = new System.Windows.Forms.Label();
             this.msktbx_user_login_edit = new System.Windows.Forms.MaskedTextBox();
             this.label16 = new System.Windows.Forms.Label();
-            this.btn_show_forgotten = new System.Windows.Forms.Button();
+            this.tabPage_view_user = new System.Windows.Forms.TabPage();
+            this.btn_close_view = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cmbx_gender_view = new System.Windows.Forms.ComboBox();
+            this.btn_edit_from_view = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.msktbx_phone_view = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_email_view = new System.Windows.Forms.MaskedTextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.dtpckr_birthdate_view = new System.Windows.Forms.DateTimePicker();
+            this.label22 = new System.Windows.Forms.Label();
+            this.msktbx_pesel_view = new System.Windows.Forms.MaskedTextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.msktbx_locale_number_view = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_street_number_view = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_street_view = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_city_view = new System.Windows.Forms.MaskedTextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.msktbx_user_surname_view = new System.Windows.Forms.MaskedTextBox();
+            this.msktbx_user_name_view = new System.Windows.Forms.MaskedTextBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.msktbx_user_login_view = new System.Windows.Forms.MaskedTextBox();
+            this.label29 = new System.Windows.Forms.Label();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -111,6 +140,8 @@ namespace ProjektMagazyn
             this.grpbx_address.SuspendLayout();
             this.tabPage_edit_user.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPage_view_user.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // dotNetBarTabControl_main_view
@@ -142,6 +173,16 @@ namespace ProjektMagazyn
             this.tabPage_overview.TabIndex = 1;
             this.tabPage_overview.Text = "Przegląd";
             this.tabPage_overview.UseVisualStyleBackColor = true;
+            // 
+            // btn_show_forgotten
+            // 
+            this.btn_show_forgotten.Location = new System.Drawing.Point(4, 221);
+            this.btn_show_forgotten.Name = "btn_show_forgotten";
+            this.btn_show_forgotten.Size = new System.Drawing.Size(120, 36);
+            this.btn_show_forgotten.TabIndex = 9;
+            this.btn_show_forgotten.Text = "Wyświetl zapomnianych";
+            this.btn_show_forgotten.UseVisualStyleBackColor = true;
+            this.btn_show_forgotten.Click += new System.EventHandler(this.btn_show_forgotten_Click);
             // 
             // tbx_search
             // 
@@ -183,11 +224,17 @@ namespace ProjektMagazyn
             // 
             // dvg_user_list
             // 
+            this.dvg_user_list.AllowUserToAddRows = false;
+            this.dvg_user_list.AllowUserToDeleteRows = false;
+            this.dvg_user_list.AllowUserToResizeColumns = false;
+            this.dvg_user_list.AllowUserToResizeRows = false;
             this.dvg_user_list.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dvg_user_list.Location = new System.Drawing.Point(130, 107);
             this.dvg_user_list.Name = "dvg_user_list";
+            this.dvg_user_list.ReadOnly = true;
             this.dvg_user_list.Size = new System.Drawing.Size(589, 398);
             this.dvg_user_list.TabIndex = 4;
+            this.dvg_user_list.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dvg_user_list_CellContentDoubleClick);
             // 
             // tabPage_manage_users
             // 
@@ -205,6 +252,7 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_manage_users.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.dotNetBarTabControl_manage_users.Controls.Add(this.tabPage_add_user);
             this.dotNetBarTabControl_manage_users.Controls.Add(this.tabPage_edit_user);
+            this.dotNetBarTabControl_manage_users.Controls.Add(this.tabPage_view_user);
             this.dotNetBarTabControl_manage_users.ItemSize = new System.Drawing.Size(44, 136);
             this.dotNetBarTabControl_manage_users.Location = new System.Drawing.Point(0, -4);
             this.dotNetBarTabControl_manage_users.Multiline = true;
@@ -831,15 +879,308 @@ namespace ProjektMagazyn
             this.label16.TabIndex = 40;
             this.label16.Text = "Identyfikator użytkownika - login*";
             // 
-            // btn_show_forgotten
+            // tabPage_view_user
             // 
-            this.btn_show_forgotten.Location = new System.Drawing.Point(4, 221);
-            this.btn_show_forgotten.Name = "btn_show_forgotten";
-            this.btn_show_forgotten.Size = new System.Drawing.Size(120, 36);
-            this.btn_show_forgotten.TabIndex = 9;
-            this.btn_show_forgotten.Text = "Wyświetl zapomnianych";
-            this.btn_show_forgotten.UseVisualStyleBackColor = true;
-            this.btn_show_forgotten.Click += new System.EventHandler(this.btn_show_forgotten_Click);
+            this.tabPage_view_user.Controls.Add(this.btn_close_view);
+            this.tabPage_view_user.Controls.Add(this.label1);
+            this.tabPage_view_user.Controls.Add(this.cmbx_gender_view);
+            this.tabPage_view_user.Controls.Add(this.btn_edit_from_view);
+            this.tabPage_view_user.Controls.Add(this.label18);
+            this.tabPage_view_user.Controls.Add(this.label19);
+            this.tabPage_view_user.Controls.Add(this.msktbx_phone_view);
+            this.tabPage_view_user.Controls.Add(this.msktbx_email_view);
+            this.tabPage_view_user.Controls.Add(this.label20);
+            this.tabPage_view_user.Controls.Add(this.label21);
+            this.tabPage_view_user.Controls.Add(this.dtpckr_birthdate_view);
+            this.tabPage_view_user.Controls.Add(this.label22);
+            this.tabPage_view_user.Controls.Add(this.msktbx_pesel_view);
+            this.tabPage_view_user.Controls.Add(this.groupBox2);
+            this.tabPage_view_user.Controls.Add(this.label27);
+            this.tabPage_view_user.Controls.Add(this.msktbx_user_surname_view);
+            this.tabPage_view_user.Controls.Add(this.msktbx_user_name_view);
+            this.tabPage_view_user.Controls.Add(this.label28);
+            this.tabPage_view_user.Controls.Add(this.msktbx_user_login_view);
+            this.tabPage_view_user.Controls.Add(this.label29);
+            this.tabPage_view_user.Location = new System.Drawing.Point(140, 4);
+            this.tabPage_view_user.Name = "tabPage_view_user";
+            this.tabPage_view_user.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_view_user.Size = new System.Drawing.Size(597, 527);
+            this.tabPage_view_user.TabIndex = 2;
+            this.tabPage_view_user.Text = "Podgląd użytkownika";
+            this.tabPage_view_user.UseVisualStyleBackColor = true;
+            // 
+            // btn_close_view
+            // 
+            this.btn_close_view.BackColor = System.Drawing.Color.White;
+            this.btn_close_view.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_close_view.Location = new System.Drawing.Point(331, 498);
+            this.btn_close_view.Name = "btn_close_view";
+            this.btn_close_view.Size = new System.Drawing.Size(115, 23);
+            this.btn_close_view.TabIndex = 59;
+            this.btn_close_view.Text = "Zamknij";
+            this.btn_close_view.UseVisualStyleBackColor = false;
+            this.btn_close_view.Click += new System.EventHandler(this.btn_close_view_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(279, 119);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(30, 13);
+            this.label1.TabIndex = 58;
+            this.label1.Text = "Płeć";
+            // 
+            // cmbx_gender_view
+            // 
+            this.cmbx_gender_view.Enabled = false;
+            this.cmbx_gender_view.FormattingEnabled = true;
+            this.cmbx_gender_view.Items.AddRange(new object[] {
+            "kobieta",
+            "mężczyzna"});
+            this.cmbx_gender_view.Location = new System.Drawing.Point(315, 116);
+            this.cmbx_gender_view.Name = "cmbx_gender_view";
+            this.cmbx_gender_view.Size = new System.Drawing.Size(131, 21);
+            this.cmbx_gender_view.TabIndex = 57;
+            // 
+            // btn_edit_from_view
+            // 
+            this.btn_edit_from_view.BackColor = System.Drawing.Color.White;
+            this.btn_edit_from_view.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_edit_from_view.Location = new System.Drawing.Point(154, 498);
+            this.btn_edit_from_view.Name = "btn_edit_from_view";
+            this.btn_edit_from_view.Size = new System.Drawing.Size(115, 23);
+            this.btn_edit_from_view.TabIndex = 56;
+            this.btn_edit_from_view.Text = "Edytuj";
+            this.btn_edit_from_view.UseVisualStyleBackColor = false;
+            this.btn_edit_from_view.Click += new System.EventHandler(this.btn_edit_from_view_Click);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(198, 460);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(85, 13);
+            this.label18.TabIndex = 55;
+            this.label18.Text = "*pola wymagane";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(230, 217);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(83, 13);
+            this.label19.TabIndex = 53;
+            this.label19.Text = "Numer telefonu*";
+            // 
+            // msktbx_phone_view
+            // 
+            this.msktbx_phone_view.Enabled = false;
+            this.msktbx_phone_view.Location = new System.Drawing.Point(315, 214);
+            this.msktbx_phone_view.Mask = "000000000";
+            this.msktbx_phone_view.Name = "msktbx_phone_view";
+            this.msktbx_phone_view.ReadOnly = true;
+            this.msktbx_phone_view.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_phone_view.TabIndex = 52;
+            this.msktbx_phone_view.ValidatingType = typeof(int);
+            // 
+            // msktbx_email_view
+            // 
+            this.msktbx_email_view.Enabled = false;
+            this.msktbx_email_view.Location = new System.Drawing.Point(315, 182);
+            this.msktbx_email_view.Name = "msktbx_email_view";
+            this.msktbx_email_view.ReadOnly = true;
+            this.msktbx_email_view.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_email_view.TabIndex = 51;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(245, 185);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(68, 13);
+            this.label20.TabIndex = 50;
+            this.label20.Text = "Adres e-mail*";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(161, 264);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(83, 13);
+            this.label21.TabIndex = 49;
+            this.label21.Text = "Data urodzenia*\r\n";
+            // 
+            // dtpckr_birthdate_view
+            // 
+            this.dtpckr_birthdate_view.Enabled = false;
+            this.dtpckr_birthdate_view.Location = new System.Drawing.Point(246, 261);
+            this.dtpckr_birthdate_view.Name = "dtpckr_birthdate_view";
+            this.dtpckr_birthdate_view.Size = new System.Drawing.Size(200, 20);
+            this.dtpckr_birthdate_view.TabIndex = 48;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(268, 152);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(45, 13);
+            this.label22.TabIndex = 47;
+            this.label22.Text = "PESEL*";
+            // 
+            // msktbx_pesel_view
+            // 
+            this.msktbx_pesel_view.Enabled = false;
+            this.msktbx_pesel_view.Location = new System.Drawing.Point(315, 149);
+            this.msktbx_pesel_view.Mask = "00000000000";
+            this.msktbx_pesel_view.Name = "msktbx_pesel_view";
+            this.msktbx_pesel_view.ReadOnly = true;
+            this.msktbx_pesel_view.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_pesel_view.TabIndex = 46;
+            this.msktbx_pesel_view.ValidatingType = typeof(int);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label23);
+            this.groupBox2.Controls.Add(this.msktbx_locale_number_view);
+            this.groupBox2.Controls.Add(this.msktbx_street_number_view);
+            this.groupBox2.Controls.Add(this.msktbx_street_view);
+            this.groupBox2.Controls.Add(this.msktbx_city_view);
+            this.groupBox2.Controls.Add(this.label24);
+            this.groupBox2.Controls.Add(this.label25);
+            this.groupBox2.Controls.Add(this.label26);
+            this.groupBox2.Location = new System.Drawing.Point(154, 301);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(292, 152);
+            this.groupBox2.TabIndex = 45;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Adres";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(13, 88);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(77, 13);
+            this.label23.TabIndex = 7;
+            this.label23.Text = "Numer posesji*";
+            // 
+            // msktbx_locale_number_view
+            // 
+            this.msktbx_locale_number_view.Enabled = false;
+            this.msktbx_locale_number_view.Location = new System.Drawing.Point(92, 118);
+            this.msktbx_locale_number_view.Name = "msktbx_locale_number_view";
+            this.msktbx_locale_number_view.ReadOnly = true;
+            this.msktbx_locale_number_view.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_locale_number_view.TabIndex = 6;
+            // 
+            // msktbx_street_number_view
+            // 
+            this.msktbx_street_number_view.Enabled = false;
+            this.msktbx_street_number_view.Location = new System.Drawing.Point(92, 85);
+            this.msktbx_street_number_view.Name = "msktbx_street_number_view";
+            this.msktbx_street_number_view.ReadOnly = true;
+            this.msktbx_street_number_view.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_street_number_view.TabIndex = 5;
+            // 
+            // msktbx_street_view
+            // 
+            this.msktbx_street_view.Enabled = false;
+            this.msktbx_street_view.Location = new System.Drawing.Point(92, 52);
+            this.msktbx_street_view.Name = "msktbx_street_view";
+            this.msktbx_street_view.ReadOnly = true;
+            this.msktbx_street_view.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_street_view.TabIndex = 4;
+            // 
+            // msktbx_city_view
+            // 
+            this.msktbx_city_view.Enabled = false;
+            this.msktbx_city_view.Location = new System.Drawing.Point(92, 19);
+            this.msktbx_city_view.Name = "msktbx_city_view";
+            this.msktbx_city_view.ReadOnly = true;
+            this.msktbx_city_view.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_city_view.TabIndex = 3;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(17, 121);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(69, 13);
+            this.label24.TabIndex = 2;
+            this.label24.Text = "Numer lokalu";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(55, 55);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(31, 13);
+            this.label25.TabIndex = 1;
+            this.label25.Text = "Ulica";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(18, 22);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(72, 13);
+            this.label26.TabIndex = 0;
+            this.label26.Text = "Miejscowość*";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(256, 86);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(57, 13);
+            this.label27.TabIndex = 44;
+            this.label27.Text = "Nazwisko*";
+            // 
+            // msktbx_user_surname_view
+            // 
+            this.msktbx_user_surname_view.Enabled = false;
+            this.msktbx_user_surname_view.Location = new System.Drawing.Point(315, 83);
+            this.msktbx_user_surname_view.Name = "msktbx_user_surname_view";
+            this.msktbx_user_surname_view.ReadOnly = true;
+            this.msktbx_user_surname_view.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_user_surname_view.TabIndex = 43;
+            // 
+            // msktbx_user_name_view
+            // 
+            this.msktbx_user_name_view.Enabled = false;
+            this.msktbx_user_name_view.Location = new System.Drawing.Point(315, 50);
+            this.msktbx_user_name_view.Name = "msktbx_user_name_view";
+            this.msktbx_user_name_view.ReadOnly = true;
+            this.msktbx_user_name_view.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_user_name_view.TabIndex = 42;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(283, 53);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(30, 13);
+            this.label28.TabIndex = 41;
+            this.label28.Text = "Imię*";
+            // 
+            // msktbx_user_login_view
+            // 
+            this.msktbx_user_login_view.BackColor = System.Drawing.Color.White;
+            this.msktbx_user_login_view.Enabled = false;
+            this.msktbx_user_login_view.Location = new System.Drawing.Point(315, 17);
+            this.msktbx_user_login_view.Name = "msktbx_user_login_view";
+            this.msktbx_user_login_view.ReadOnly = true;
+            this.msktbx_user_login_view.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_user_login_view.TabIndex = 40;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(151, 20);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(162, 13);
+            this.label29.TabIndex = 39;
+            this.label29.Text = "Identyfikator użytkownika - login*";
             // 
             // Administrator
             // 
@@ -865,6 +1206,10 @@ namespace ProjektMagazyn
             this.tabPage_edit_user.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPage_view_user.ResumeLayout(false);
+            this.tabPage_view_user.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -943,5 +1288,34 @@ namespace ProjektMagazyn
         private TextBox tbx_search;
         private Button btn_search;
         private Button btn_show_forgotten;
+        private TabPage tabPage_view_user;
+        private Label label1;
+        private ComboBox cmbx_gender_view;
+        private Button btn_edit_from_view;
+        private Label label18;
+        private Label label19;
+        private MaskedTextBox msktbx_phone_view;
+        private MaskedTextBox msktbx_email_view;
+        private Label label20;
+        private Label label21;
+        private DateTimePicker dtpckr_birthdate_view;
+        private Label label22;
+        private MaskedTextBox msktbx_pesel_view;
+        private GroupBox groupBox2;
+        private Label label23;
+        private MaskedTextBox msktbx_locale_number_view;
+        private MaskedTextBox msktbx_street_number_view;
+        private MaskedTextBox msktbx_street_view;
+        private MaskedTextBox msktbx_city_view;
+        private Label label24;
+        private Label label25;
+        private Label label26;
+        private Label label27;
+        private MaskedTextBox msktbx_user_surname_view;
+        private MaskedTextBox msktbx_user_name_view;
+        private Label label28;
+        private MaskedTextBox msktbx_user_login_view;
+        private Label label29;
+        private Button btn_close_view;
     }
 }

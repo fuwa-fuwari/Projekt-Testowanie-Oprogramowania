@@ -23,6 +23,7 @@ namespace ProjektMagazyn
     {
         private int selectedUserId = -1;
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
+        private int currentViewUserId = -1;
 
         // Zmienne do sprawdzania, czy wprowadzono zmiany (można usnąć, ale będą wysyłane zapytania do bazy nawet, jeśli nic się nie zmieniło)
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
@@ -34,6 +35,12 @@ namespace ProjektMagazyn
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
             tbx_search.GotFocus += tbx_search_GotFocus;
+            
+            //Ukrywanie zakładki z podglądem
+            if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
+            {
+                dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
+            }
 
         }
         private void tbx_search_GotFocus(object sender, EventArgs e)
@@ -389,6 +396,18 @@ namespace ProjektMagazyn
             databaseConnection.display_table_users(dvg_user_list, query);
         }
 
+        private void dvg_user_list_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                currentViewUserId = Convert.ToInt32(dvg_user_list.Rows[e.RowIndex].Cells["UzytkownikID"].Value);
+
+                ZaladujPodgladUzytkownika(currentViewUserId);
+
+                PokazZakladkePodgladu();
+            }
+        }
+
         private void btn_test_Click(object sender, EventArgs e)
         {
             msktbx_user_login.Text = "aaaaaaa";
@@ -403,6 +422,24 @@ namespace ProjektMagazyn
             msktbx_street.Text = "aaaaaaa";
             msktbx_street_number.Text = "22";
             msktbx_locale_number.Text = "22";
+        }
+
+        private void btn_close_view_Click(object sender, EventArgs e)
+        {
+            dotNetBarTabControl_manage_users.SelectedIndex = 0;
+
+            dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
+        }
+
+        private void btn_edit_from_view_Click(object sender, EventArgs e)
+        {
+            if (currentViewUserId == -1) return;
+
+            UkryjZakladkePodgladu();
+
+            dotNetBarTabControl_manage_users.SelectedTab = tabPage_edit_user;
+
+            cmbx_select_user_edit.SelectedValue = currentViewUserId;
         }
 
         private void WczytajUzytkownikowDoListy()
@@ -671,6 +708,70 @@ namespace ProjektMagazyn
             if (dotNetBarTabControl_manage_users.SelectedTab == tabPage_edit_user)
             {
                 WczytajUzytkownikowDoListy();
+            }
+        }
+
+        private void ZaladujPodgladUzytkownika(int id)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT * FROM Uzytkownicy WHERE UzytkownikID = @id";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                msktbx_user_login_view.Text = reader["Login"].ToString();
+                                msktbx_user_name_view.Text = reader["Imie"].ToString();
+                                msktbx_user_surname_view.Text = reader["Nazwisko"].ToString();
+                                cmbx_gender_view.Text = reader["Plec"].ToString();
+                                msktbx_pesel_view.Text = reader["PESEL"].ToString();
+                                msktbx_email_view.Text = reader["Email"].ToString();
+                                msktbx_phone_view.Text = reader["Telefon"].ToString();
+                                dtpckr_birthdate_view.Value = Convert.ToDateTime(reader["DataUrodzenia"]);
+                                msktbx_city_view.Text = reader["Miejscowosc"].ToString();
+                                msktbx_street_view.Text = reader["Ulica"].ToString();
+                                msktbx_street_number_view.Text = reader["NumerPosesji"].ToString();
+                                msktbx_locale_number_view.Text = reader["NumerLokalu"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd pobierania szczegółów: " + ex.Message);
+            }
+        }
+
+        private void PokazZakladkePodgladu()
+        {
+
+            if (!dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
+            {
+                dotNetBarTabControl_manage_users.TabPages.Add(tabPage_view_user);
+            }
+
+            dotNetBarTabControl_main_view.SelectedTab = tabPage_manage_users;
+
+            dotNetBarTabControl_manage_users.SelectedTab = tabPage_view_user;
+        }
+
+        private void UkryjZakladkePodgladu()
+        {
+            if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
+            {
+                if (dotNetBarTabControl_manage_users.SelectedTab == tabPage_view_user)
+                {
+                    dotNetBarTabControl_manage_users.SelectedIndex = 0;
+                }
+
+                dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
             }
         }
     }
