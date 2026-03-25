@@ -51,6 +51,7 @@ namespace ProjektMagazyn
         {
             Validation validation = new Validation();
             var login = msktbx_user_login.Text;
+            var password = msktbx_password.Text;
             var name = msktbx_user_name.Text;
             var surname = msktbx_user_surname.Text;
             var gender = cmbx_gender.Text;
@@ -67,6 +68,7 @@ namespace ProjektMagazyn
             List<Control> textboxes = new List<Control>
                 {
                     msktbx_user_login,
+                    msktbx_password,
                     msktbx_user_name,
                     msktbx_user_surname,
                     cmbx_gender,
@@ -89,6 +91,11 @@ namespace ProjektMagazyn
 
                 invalids++;
                 msktbx_user_login.BackColor = Color.Red;
+            }
+            if (!validation.valid_password(password))
+            {
+                invalids++;
+                msktbx_password.BackColor = Color.Red;
             }
             if (!validation.valid_name(name))
             {
@@ -155,6 +162,8 @@ namespace ProjektMagazyn
 
                 try
                 {
+                    var hashed_password = SecurePasswordHasher.Hash(password);
+
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         conn.Open();
@@ -167,11 +176,9 @@ namespace ProjektMagazyn
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
-                            // TODO: hashing
-                            string hasloHash = "test123";
 
                             cmd.Parameters.AddWithValue("@login", login);
-                            cmd.Parameters.AddWithValue("@haslo", hasloHash);
+                            cmd.Parameters.AddWithValue("@haslo", hashed_password);
                             cmd.Parameters.AddWithValue("@imie", name);
                             cmd.Parameters.AddWithValue("@nazwisko", surname);
                             cmd.Parameters.AddWithValue("@miasto", city);
