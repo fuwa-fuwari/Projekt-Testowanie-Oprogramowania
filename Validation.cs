@@ -18,16 +18,21 @@ namespace ProjektMagazyn
         }
         public bool valid_login(string login)
         {
-            //must be unique in database
-            if (login == null || login == string.Empty) 
-            { 
+            //TODO: must be unique in database
+            if (login == null || login == string.Empty)
+            {
                 return false;
             }
             return true;
         }
+        internal bool valid_password(string password)
+        {
+            //TODO: implement validation that will appear in analysis
+            return true;
+        }
         public bool valid_name(string name)
         {
-            // Dodane polskie znaki, spacje (dla drugiego imienia) i myślniki
+
             if (!Regex.IsMatch(name, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\-]+$"))
             {
                 return false;
@@ -37,7 +42,7 @@ namespace ProjektMagazyn
 
         public bool valid_surname(string surname)
         {
-            // Dodane polskie znaki, spacje i myślniki (dla nazwisk dwuczłonowych)
+
             if (!Regex.IsMatch(surname, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\-]+$"))
             {
                 return false;
@@ -83,8 +88,8 @@ namespace ProjektMagazyn
 
         public bool valid_street(string street)
         {
-            // Ulice mogą mieć cyfry (np. 11 Listopada)
-            if (!string.IsNullOrEmpty(street) && !Regex.IsMatch(street, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ0-9\s\-]+$"))
+
+            if (!string.IsNullOrEmpty(street) && !Regex.IsMatch(street, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ0]+$"))
             {
                 return false;
             }
@@ -93,8 +98,7 @@ namespace ProjektMagazyn
 
         public bool valid_street_number(string street_number)
         {
-            // Numer posesji może zawierać litery i znaki 
-            if (!Regex.IsMatch(street_number, @"^[0-9A-Za-z\s\-\/]+$"))
+            if (!Regex.IsMatch(street_number, @"^[0-9]+$"))
             {
                 return false;
             }
@@ -103,7 +107,6 @@ namespace ProjektMagazyn
 
         public bool valid_locale_number(string locale_number)
         {
-            // Numer lokalu jest często opcjonalny, więc przepuszczamy pusty ciąg, jeśli jest wypełniony, pozwalamy na litery (np. lokal 12B)
             if (string.IsNullOrEmpty(locale_number))
             {
                 return true;
@@ -119,7 +122,6 @@ namespace ProjektMagazyn
         {
             if (string.IsNullOrEmpty(gender)) return false;
 
-            // Normalizacja: usuwamy białe znaki z początku/końca i zamieniamy na małe litery
             gender = gender.Trim().ToLower();
 
             if (!(gender == "kobieta" || gender == "mężczyzna"))
@@ -127,7 +129,6 @@ namespace ProjektMagazyn
 
             if (!string.IsNullOrEmpty(pesel))
             {
-                // Usuwamy ewentualne spacje z MaskedTextBoxa
                 pesel = pesel.Replace(" ", "").Trim();
 
                 if (pesel.Length == 11 && pesel.All(char.IsDigit))
@@ -197,7 +198,7 @@ namespace ProjektMagazyn
             int controlDigit = (10 - (sum % 10)) % 10;
 
             if (controlDigit != int.Parse(pesel[10].ToString()))
-                return false; 
+                return false;
 
             return true;
         }
@@ -224,7 +225,7 @@ namespace ProjektMagazyn
             if (string.IsNullOrWhiteSpace(phone)) return false;
 
             phone = phone.Replace(" ", "").Trim();
- 
+
             if (!Regex.IsMatch(phone, @"^[0-9]{9}$"))
             {
                 return false;

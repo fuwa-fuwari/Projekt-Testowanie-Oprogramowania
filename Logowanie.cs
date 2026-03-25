@@ -19,7 +19,10 @@ namespace ProjektMagazyn
 
         private void btn_zaloguj_Click(object sender, EventArgs e)
         {
-            if(tbx_login.Text == "admin" && tbx_password.Text == "admin")
+            //TODO: integrate into database
+            string hash = "$MYHASH$V1$10000$II1qT0FbjfgzCRkK4fmstreqgqpwhy+Zv8p2Xv/SVHalAktO";
+
+            if (tbx_login.Text == "admin1" && SecurePasswordHasher.Verify(tbx_password.Text, hash))
             {
                 Administrator administrator = new Administrator();
                 administrator.Location = this.Location;
@@ -30,13 +33,13 @@ namespace ProjektMagazyn
                 this.Hide();
                 administrator.Show();
             }
-            else if (tbx_login.Text != "admin" && tbx_password.Text == "admin")
+            else if (tbx_login.Text != "admin1" && SecurePasswordHasher.Verify(tbx_password.Text, hash))
             {
                 MessageBox.Show("Podano niepoprawny login");
                 clear_field(tbx_login);
                 tbx_login.Focus();
             }
-            else if(tbx_login.Text == "admin" && tbx_password.Text != "admin")
+            else if (tbx_login.Text == "admin1" && SecurePasswordHasher.Verify(tbx_password.Text, hash))
             {
                 MessageBox.Show("Podano niepoprawne hasło");
                 clear_field(tbx_password);

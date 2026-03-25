@@ -131,6 +131,8 @@ namespace ProjektMagazyn
             this.label28 = new System.Windows.Forms.Label();
             this.msktbx_user_login_view = new System.Windows.Forms.MaskedTextBox();
             this.label29 = new System.Windows.Forms.Label();
+            this.lbl_password = new System.Windows.Forms.Label();
+            this.msktbx_password = new System.Windows.Forms.MaskedTextBox();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -265,6 +267,8 @@ namespace ProjektMagazyn
             // 
             // tabPage_add_user
             // 
+            this.tabPage_add_user.Controls.Add(this.msktbx_password);
+            this.tabPage_add_user.Controls.Add(this.lbl_password);
             this.tabPage_add_user.Controls.Add(this.btn_test);
             this.tabPage_add_user.Controls.Add(this.lbl_gender);
             this.tabPage_add_user.Controls.Add(this.cmbx_gender);
@@ -1182,6 +1186,23 @@ namespace ProjektMagazyn
             this.label29.TabIndex = 39;
             this.label29.Text = "Identyfikator użytkownika - login*";
             // 
+            // lbl_password
+            // 
+            this.lbl_password.AutoSize = true;
+            this.lbl_password.Location = new System.Drawing.Point(457, 32);
+            this.lbl_password.Name = "lbl_password";
+            this.lbl_password.Size = new System.Drawing.Size(53, 13);
+            this.lbl_password.TabIndex = 42;
+            this.lbl_password.Text = "Password";
+            // 
+            // msktbx_password
+            // 
+            this.msktbx_password.BackColor = System.Drawing.Color.White;
+            this.msktbx_password.Location = new System.Drawing.Point(460, 58);
+            this.msktbx_password.Name = "msktbx_password";
+            this.msktbx_password.Size = new System.Drawing.Size(131, 20);
+            this.msktbx_password.TabIndex = 43;
+            // 
             // Administrator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1317,5 +1338,7 @@ namespace ProjektMagazyn
         private MaskedTextBox msktbx_user_login_view;
         private Label label29;
         private Button btn_close_view;
+        private MaskedTextBox msktbx_password;
+        private Label lbl_password;
     }
 }
