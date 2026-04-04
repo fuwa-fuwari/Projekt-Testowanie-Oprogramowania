@@ -39,7 +39,7 @@ namespace ProjektMagazyn
                 clear_field(tbx_login);
                 tbx_login.Focus();
             }
-            else if (tbx_login.Text == "admin1" && SecurePasswordHasher.Verify(tbx_password.Text, hash))
+            else if (tbx_login.Text == "admin1" && !SecurePasswordHasher.Verify(tbx_password.Text, hash))
             {
                 MessageBox.Show("Podano niepoprawne hasło");
                 clear_field(tbx_password);
