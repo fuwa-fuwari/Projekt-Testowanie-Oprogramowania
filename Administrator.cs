@@ -247,7 +247,9 @@ namespace ProjektMagazyn
             if (potwierdzenie != DialogResult.Yes)
                 return;
 
-            string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
+            string randomString = Guid.NewGuid().ToString("N");
+            string fakePesel = Math.Abs(DateTime.Now.Ticks).ToString().Substring(0, 11);
+            string fakeEmail = $"del_{id}_{randomString.Substring(0, 10)}@anon.pl";
 
             try
             {
@@ -266,25 +268,28 @@ namespace ProjektMagazyn
                             }
 
                             string anonimizacjaQuery = @"
-                        UPDATE Uzytkownicy SET
-                            Imie = 'Zanonimizowano',
-                            Nazwisko = 'Zanonimizowano',
-                            Login = 'usuniety_' + CAST(UzytkownikID AS VARCHAR),
-                            Email = 'usuniety_' + CAST(UzytkownikID AS VARCHAR) + '@zanonimizowano.pl',
-                            PESEL = '00000000000', 
-                            DataUrodzenia = '1900-01-01',
-                            Plec = 'zanonimizowano',
-                            Miejscowosc = '***',
-                            Ulica = '***',
-                            Telefon = '000000000',
-                            HasloHash = 'ZABLOKOWANE',
-                            CzyZapomniany = 1,
-                            DataZapomnienia = GETDATE()
-                        WHERE UzytkownikID = @id";
+                UPDATE Uzytkownicy SET
+                    Imie = 'Zanonimizowano',
+                    Nazwisko = 'Zanonimizowano',
+                    Login = @fakeLogin,
+                    Email = @fakeEmail,
+                    PESEL = @fakePesel, 
+                    DataUrodzenia = '1900-01-01',
+                    Plec = 'zanonimizowano',
+                    Miejscowosc = '***',
+                    Ulica = '***',
+                    Telefon = '000000000',
+                    HasloHash = 'ZABLOKOWANE',
+                    CzyZapomniany = 1,
+                    DataZapomnienia = GETDATE()
+                WHERE UzytkownikID = @id";
 
                             using (SqlCommand cmdAnonimizacja = new SqlCommand(anonimizacjaQuery, conn, transaction))
                             {
                                 cmdAnonimizacja.Parameters.AddWithValue("@id", id);
+                                cmdAnonimizacja.Parameters.AddWithValue("@fakeLogin", $"del_{id}_{randomString.Substring(0, 8)}");
+                                cmdAnonimizacja.Parameters.AddWithValue("@fakeEmail", fakeEmail);
+                                cmdAnonimizacja.Parameters.AddWithValue("@fakePesel", fakePesel);
                                 cmdAnonimizacja.ExecuteNonQuery();
                             }
 
