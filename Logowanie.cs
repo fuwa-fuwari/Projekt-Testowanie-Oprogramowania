@@ -24,7 +24,7 @@ namespace ProjektMagazyn
 
             if (tbx_login.Text == "admin1" && SecurePasswordHasher.Verify(tbx_password.Text, hash))
             {
-                Administrator administrator = new Administrator();
+                ControlPanel administrator = new ControlPanel();
                 administrator.Location = this.Location;
                 administrator.FormClosed += new FormClosedEventHandler(otherForm_FormClosed);
                 clear_field(tbx_login);

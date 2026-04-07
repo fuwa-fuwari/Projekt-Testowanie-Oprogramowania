@@ -19,7 +19,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace ProjektMagazyn
 {
-    public partial class Administrator : Form
+    public partial class ControlPanel : Form
     {
         private int selectedUserId = -1;
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
@@ -29,7 +29,7 @@ namespace ProjektMagazyn
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
         private DateTime origBirthdate;
         private string origCity, origStreet, origStreetNumber, origLocaleNumber;
-        public Administrator()
+        public ControlPanel()
         {
             InitializeComponent();
             WczytajUzytkownikowDoListy();
@@ -769,7 +769,7 @@ namespace ProjektMagazyn
                 dotNetBarTabControl_manage_users.TabPages.Add(tabPage_view_user);
             }
 
-            dotNetBarTabControl_main_view.SelectedTab = tabPage_manage_users;
+            dotNetBarTabControl_main_view.SelectedTab = tabPage_users;
 
             dotNetBarTabControl_manage_users.SelectedTab = tabPage_view_user;
         }
@@ -784,6 +784,42 @@ namespace ProjektMagazyn
                 }
 
                 dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
+            }
+        }
+        private void dotNetBarTabControl_manage_roles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(dotNetBarTabControl_manage_roles.SelectedTab.Name == "tabPage_roles_overview")
+            {
+                OdswiezListeUprawnien();
+            }
+        }
+        private void OdswiezListeUprawnien()
+        {
+            string query = @"
+                SELECT 
+                    u.UprawnienieID, 
+                    u.Nazwa, 
+                    COUNT(uu.UzytkownikID) AS PosiadaUprawnienie
+                FROM Uprawnienia u
+                LEFT JOIN Uzytkownicy_Uprawnienia uu ON u.UprawnienieID = uu.UprawnienieID
+                GROUP BY u.UprawnienieID, u.Nazwa";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    // SqlDataAdapter automatycznie otwiera i zamyka połączenie
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    // Zakładamy, że Twoja kontrolka nazywa się dataGridView1
+                    dgv_roles.DataSource = dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd podczas pobierania danych: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

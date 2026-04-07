@@ -2,7 +2,7 @@
 
 namespace ProjektMagazyn
 {
-    partial class Administrator
+    partial class ControlPanel
     {
         /// <summary>
         /// Required designer variable.
@@ -38,7 +38,7 @@ namespace ProjektMagazyn
             this.btn_forget = new System.Windows.Forms.Button();
             this.btn_refresh = new System.Windows.Forms.Button();
             this.dvg_user_list = new System.Windows.Forms.DataGridView();
-            this.tabPage_manage_users = new System.Windows.Forms.TabPage();
+            this.tabPage_users = new System.Windows.Forms.TabPage();
             this.dotNetBarTabControl_manage_users = new TabControls.DotNetBarTabControl();
             this.tabPage_add_user = new System.Windows.Forms.TabPage();
             this.msktbx_password = new System.Windows.Forms.MaskedTextBox();
@@ -133,23 +133,24 @@ namespace ProjektMagazyn
             this.label28 = new System.Windows.Forms.Label();
             this.msktbx_user_login_view = new System.Windows.Forms.MaskedTextBox();
             this.label29 = new System.Windows.Forms.Label();
-            this.dotNetBarTabControl_manage_roles = new System.Windows.Forms.TabPage();
-            this.dotNetBarTabControl1 = new TabControls.DotNetBarTabControl();
+            this.tabPage_roles = new System.Windows.Forms.TabPage();
+            this.dotNetBarTabControl_manage_roles = new TabControls.DotNetBarTabControl();
             this.tabPage_roles_overview = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dgv_roles = new System.Windows.Forms.DataGridView();
             this.tabPage_edit_roles = new System.Windows.Forms.TabPage();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.lbl_choose_user = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.label30 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.lbl_choose_user = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.lbl_roles = new System.Windows.Forms.Label();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
-            this.tabPage_manage_users.SuspendLayout();
+            this.tabPage_users.SuspendLayout();
             this.dotNetBarTabControl_manage_users.SuspendLayout();
             this.tabPage_add_user.SuspendLayout();
             this.grpbx_address.SuspendLayout();
@@ -157,10 +158,10 @@ namespace ProjektMagazyn
             this.groupBox1.SuspendLayout();
             this.tabPage_view_user.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tabPage_roles.SuspendLayout();
             this.dotNetBarTabControl_manage_roles.SuspendLayout();
-            this.dotNetBarTabControl1.SuspendLayout();
             this.tabPage_roles_overview.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).BeginInit();
             this.tabPage_edit_roles.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -168,8 +169,8 @@ namespace ProjektMagazyn
             // 
             this.dotNetBarTabControl_main_view.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_overview);
-            this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_manage_users);
-            this.dotNetBarTabControl_main_view.Controls.Add(this.dotNetBarTabControl_manage_roles);
+            this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_users);
+            this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_roles);
             this.dotNetBarTabControl_main_view.ItemSize = new System.Drawing.Size(44, 142);
             this.dotNetBarTabControl_main_view.Location = new System.Drawing.Point(12, 12);
             this.dotNetBarTabControl_main_view.Multiline = true;
@@ -257,16 +258,16 @@ namespace ProjektMagazyn
             this.dvg_user_list.TabIndex = 4;
             this.dvg_user_list.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dvg_user_list_CellContentDoubleClick);
             // 
-            // tabPage_manage_users
+            // tabPage_users
             // 
-            this.tabPage_manage_users.Controls.Add(this.dotNetBarTabControl_manage_users);
-            this.tabPage_manage_users.Location = new System.Drawing.Point(146, 4);
-            this.tabPage_manage_users.Name = "tabPage_manage_users";
-            this.tabPage_manage_users.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_manage_users.Size = new System.Drawing.Size(737, 527);
-            this.tabPage_manage_users.TabIndex = 0;
-            this.tabPage_manage_users.Text = "Zarządzaj użytkownikami";
-            this.tabPage_manage_users.UseVisualStyleBackColor = true;
+            this.tabPage_users.Controls.Add(this.dotNetBarTabControl_manage_users);
+            this.tabPage_users.Location = new System.Drawing.Point(146, 4);
+            this.tabPage_users.Name = "tabPage_users";
+            this.tabPage_users.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_users.Size = new System.Drawing.Size(737, 527);
+            this.tabPage_users.TabIndex = 0;
+            this.tabPage_users.Text = "Zarządzaj użytkownikami";
+            this.tabPage_users.UseVisualStyleBackColor = true;
             // 
             // dotNetBarTabControl_manage_users
             // 
@@ -1222,34 +1223,35 @@ namespace ProjektMagazyn
             this.label29.TabIndex = 39;
             this.label29.Text = "Identyfikator użytkownika - login*";
             // 
+            // tabPage_roles
+            // 
+            this.tabPage_roles.Controls.Add(this.dotNetBarTabControl_manage_roles);
+            this.tabPage_roles.Location = new System.Drawing.Point(146, 4);
+            this.tabPage_roles.Name = "tabPage_roles";
+            this.tabPage_roles.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_roles.Size = new System.Drawing.Size(737, 527);
+            this.tabPage_roles.TabIndex = 2;
+            this.tabPage_roles.Text = "Zarządzaj uprawnieniami";
+            this.tabPage_roles.UseVisualStyleBackColor = true;
+            // 
             // dotNetBarTabControl_manage_roles
             // 
-            this.dotNetBarTabControl_manage_roles.Controls.Add(this.dotNetBarTabControl1);
-            this.dotNetBarTabControl_manage_roles.Location = new System.Drawing.Point(146, 4);
+            this.dotNetBarTabControl_manage_roles.Alignment = System.Windows.Forms.TabAlignment.Left;
+            this.dotNetBarTabControl_manage_roles.Controls.Add(this.tabPage_roles_overview);
+            this.dotNetBarTabControl_manage_roles.Controls.Add(this.tabPage_edit_roles);
+            this.dotNetBarTabControl_manage_roles.ItemSize = new System.Drawing.Size(44, 136);
+            this.dotNetBarTabControl_manage_roles.Location = new System.Drawing.Point(-2, -4);
+            this.dotNetBarTabControl_manage_roles.Multiline = true;
             this.dotNetBarTabControl_manage_roles.Name = "dotNetBarTabControl_manage_roles";
-            this.dotNetBarTabControl_manage_roles.Padding = new System.Windows.Forms.Padding(3);
-            this.dotNetBarTabControl_manage_roles.Size = new System.Drawing.Size(737, 527);
-            this.dotNetBarTabControl_manage_roles.TabIndex = 2;
-            this.dotNetBarTabControl_manage_roles.Text = "Zarządzaj uprawnieniami";
-            this.dotNetBarTabControl_manage_roles.UseVisualStyleBackColor = true;
-            // 
-            // dotNetBarTabControl1
-            // 
-            this.dotNetBarTabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
-            this.dotNetBarTabControl1.Controls.Add(this.tabPage_roles_overview);
-            this.dotNetBarTabControl1.Controls.Add(this.tabPage_edit_roles);
-            this.dotNetBarTabControl1.ItemSize = new System.Drawing.Size(44, 136);
-            this.dotNetBarTabControl1.Location = new System.Drawing.Point(-2, -4);
-            this.dotNetBarTabControl1.Multiline = true;
-            this.dotNetBarTabControl1.Name = "dotNetBarTabControl1";
-            this.dotNetBarTabControl1.SelectedIndex = 0;
-            this.dotNetBarTabControl1.Size = new System.Drawing.Size(741, 535);
-            this.dotNetBarTabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.dotNetBarTabControl1.TabIndex = 1;
+            this.dotNetBarTabControl_manage_roles.SelectedIndex = 0;
+            this.dotNetBarTabControl_manage_roles.Size = new System.Drawing.Size(741, 535);
+            this.dotNetBarTabControl_manage_roles.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.dotNetBarTabControl_manage_roles.TabIndex = 1;
             // 
             // tabPage_roles_overview
             // 
-            this.tabPage_roles_overview.Controls.Add(this.dataGridView1);
+            this.tabPage_roles_overview.Controls.Add(this.lbl_roles);
+            this.tabPage_roles_overview.Controls.Add(this.dgv_roles);
             this.tabPage_roles_overview.Location = new System.Drawing.Point(140, 4);
             this.tabPage_roles_overview.Name = "tabPage_roles_overview";
             this.tabPage_roles_overview.Padding = new System.Windows.Forms.Padding(3);
@@ -1257,14 +1259,16 @@ namespace ProjektMagazyn
             this.tabPage_roles_overview.TabIndex = 0;
             this.tabPage_roles_overview.Text = "Przegląd uprawnień";
             this.tabPage_roles_overview.UseVisualStyleBackColor = true;
+            this.tabPage_roles_overview.Enter += new System.EventHandler(this.dotNetBarTabControl_manage_roles_SelectedIndexChanged);
             // 
-            // dataGridView1
+            // dgv_roles
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(145, 108);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(306, 272);
-            this.dataGridView1.TabIndex = 0;
+            this.dgv_roles.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgv_roles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_roles.Location = new System.Drawing.Point(77, 126);
+            this.dgv_roles.Name = "dgv_roles";
+            this.dgv_roles.Size = new System.Drawing.Size(438, 272);
+            this.dgv_roles.TabIndex = 0;
             // 
             // tabPage_edit_roles
             // 
@@ -1284,53 +1288,23 @@ namespace ProjektMagazyn
             this.tabPage_edit_roles.Text = "Edytuj uprawnienia";
             this.tabPage_edit_roles.UseVisualStyleBackColor = true;
             // 
-            // comboBox1
+            // label30
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(51, 96);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(493, 21);
-            this.comboBox1.TabIndex = 0;
-            this.comboBox1.Text = "Dane użytkownika z bazy";
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(48, 313);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(327, 13);
+            this.label30.TabIndex = 7;
+            this.label30.Text = "// jak user posiada uprawnienie to checkbox ładuje się zaznaczony";
             // 
-            // lbl_choose_user
+            // button1
             // 
-            this.lbl_choose_user.AutoSize = true;
-            this.lbl_choose_user.Location = new System.Drawing.Point(48, 80);
-            this.lbl_choose_user.Name = "lbl_choose_user";
-            this.lbl_choose_user.Size = new System.Drawing.Size(107, 13);
-            this.lbl_choose_user.TabIndex = 1;
-            this.lbl_choose_user.Text = "Wybierz użytkownika";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(51, 139);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(92, 17);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "uprawnienie 1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(51, 171);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(92, 17);
-            this.checkBox2.TabIndex = 3;
-            this.checkBox2.Text = "uprawnienie 2";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(51, 203);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(92, 17);
-            this.checkBox3.TabIndex = 4;
-            this.checkBox3.Text = "uprawnienie 3";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.button1.Location = new System.Drawing.Point(51, 276);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(92, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Zapisz";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // checkBox4
             // 
@@ -1342,39 +1316,78 @@ namespace ProjektMagazyn
             this.checkBox4.Text = "uprawnienie 4";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // checkBox3
             // 
-            this.button1.Location = new System.Drawing.Point(51, 276);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(92, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Zapisz";
-            this.button1.UseVisualStyleBackColor = true;
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(51, 203);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(92, 17);
+            this.checkBox3.TabIndex = 4;
+            this.checkBox3.Text = "uprawnienie 3";
+            this.checkBox3.UseVisualStyleBackColor = true;
             // 
-            // label30
+            // checkBox2
             // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(48, 313);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(327, 13);
-            this.label30.TabIndex = 7;
-            this.label30.Text = "// jak user posiada uprawnienie to checkbox ładuje się zaznaczony";
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(51, 171);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(92, 17);
+            this.checkBox2.TabIndex = 3;
+            this.checkBox2.Text = "uprawnienie 2";
+            this.checkBox2.UseVisualStyleBackColor = true;
             // 
-            // Administrator
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(51, 139);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(92, 17);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "uprawnienie 1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // lbl_choose_user
+            // 
+            this.lbl_choose_user.AutoSize = true;
+            this.lbl_choose_user.Location = new System.Drawing.Point(48, 80);
+            this.lbl_choose_user.Name = "lbl_choose_user";
+            this.lbl_choose_user.Size = new System.Drawing.Size(107, 13);
+            this.lbl_choose_user.TabIndex = 1;
+            this.lbl_choose_user.Text = "Wybierz użytkownika";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(51, 96);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(493, 21);
+            this.comboBox1.TabIndex = 0;
+            this.comboBox1.Text = "Dane użytkownika z bazy";
+            // 
+            // lbl_roles
+            // 
+            this.lbl_roles.AutoSize = true;
+            this.lbl_roles.Location = new System.Drawing.Point(74, 97);
+            this.lbl_roles.Name = "lbl_roles";
+            this.lbl_roles.Size = new System.Drawing.Size(159, 13);
+            this.lbl_roles.TabIndex = 1;
+            this.lbl_roles.Text = "Uprawnienia nadane w systemie";
+            // 
+            // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(911, 559);
             this.Controls.Add(this.dotNetBarTabControl_main_view);
-            this.Name = "Administrator";
+            this.Name = "ControlPanel";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "System magazynowy";
             this.dotNetBarTabControl_main_view.ResumeLayout(false);
             this.tabPage_overview.ResumeLayout(false);
             this.tabPage_overview.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).EndInit();
-            this.tabPage_manage_users.ResumeLayout(false);
+            this.tabPage_users.ResumeLayout(false);
             this.dotNetBarTabControl_manage_users.ResumeLayout(false);
             this.tabPage_add_user.ResumeLayout(false);
             this.tabPage_add_user.PerformLayout();
@@ -1388,10 +1401,11 @@ namespace ProjektMagazyn
             this.tabPage_view_user.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tabPage_roles.ResumeLayout(false);
             this.dotNetBarTabControl_manage_roles.ResumeLayout(false);
-            this.dotNetBarTabControl1.ResumeLayout(false);
             this.tabPage_roles_overview.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tabPage_roles_overview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).EndInit();
             this.tabPage_edit_roles.ResumeLayout(false);
             this.tabPage_edit_roles.PerformLayout();
             this.ResumeLayout(false);
@@ -1401,7 +1415,7 @@ namespace ProjektMagazyn
         #endregion
 
         private TabControls.DotNetBarTabControl dotNetBarTabControl_main_view;
-        private System.Windows.Forms.TabPage tabPage_manage_users;
+        private System.Windows.Forms.TabPage tabPage_users;
         private TabControls.DotNetBarTabControl dotNetBarTabControl_manage_users;
         private System.Windows.Forms.TabPage tabPage_add_user;
         private System.Windows.Forms.Label lbl_required;
@@ -1503,11 +1517,11 @@ namespace ProjektMagazyn
         private Button btn_close_view;
         private MaskedTextBox msktbx_password;
         private Label lbl_password;
-        private TabPage dotNetBarTabControl_manage_roles;
-        private TabControls.DotNetBarTabControl dotNetBarTabControl1;
+        private TabPage tabPage_roles;
+        private TabControls.DotNetBarTabControl dotNetBarTabControl_manage_roles;
         private TabPage tabPage_roles_overview;
         private TabPage tabPage_edit_roles;
-        private DataGridView dataGridView1;
+        private DataGridView dgv_roles;
         private CheckBox checkBox4;
         private CheckBox checkBox3;
         private CheckBox checkBox2;
@@ -1516,5 +1530,6 @@ namespace ProjektMagazyn
         private ComboBox comboBox1;
         private Label label30;
         private Button button1;
+        private Label lbl_roles;
     }
 }
