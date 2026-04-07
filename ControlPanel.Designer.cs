@@ -139,14 +139,12 @@ namespace ProjektMagazyn
             this.dgv_roles = new System.Windows.Forms.DataGridView();
             this.tabPage_edit_roles = new System.Windows.Forms.TabPage();
             this.label30 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.btn_save_role_changes = new System.Windows.Forms.Button();
             this.lbl_choose_user = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cmbx_select_user_role_edit = new System.Windows.Forms.ComboBox();
             this.lbl_roles = new System.Windows.Forms.Label();
+            this.clb_roles = new System.Windows.Forms.CheckedListBox();
+            this.btn_cancel_role = new System.Windows.Forms.Button();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -1272,14 +1270,12 @@ namespace ProjektMagazyn
             // 
             // tabPage_edit_roles
             // 
+            this.tabPage_edit_roles.Controls.Add(this.btn_cancel_role);
+            this.tabPage_edit_roles.Controls.Add(this.clb_roles);
             this.tabPage_edit_roles.Controls.Add(this.label30);
-            this.tabPage_edit_roles.Controls.Add(this.button1);
-            this.tabPage_edit_roles.Controls.Add(this.checkBox4);
-            this.tabPage_edit_roles.Controls.Add(this.checkBox3);
-            this.tabPage_edit_roles.Controls.Add(this.checkBox2);
-            this.tabPage_edit_roles.Controls.Add(this.checkBox1);
+            this.tabPage_edit_roles.Controls.Add(this.btn_save_role_changes);
             this.tabPage_edit_roles.Controls.Add(this.lbl_choose_user);
-            this.tabPage_edit_roles.Controls.Add(this.comboBox1);
+            this.tabPage_edit_roles.Controls.Add(this.cmbx_select_user_role_edit);
             this.tabPage_edit_roles.Location = new System.Drawing.Point(140, 4);
             this.tabPage_edit_roles.Name = "tabPage_edit_roles";
             this.tabPage_edit_roles.Padding = new System.Windows.Forms.Padding(3);
@@ -1287,6 +1283,7 @@ namespace ProjektMagazyn
             this.tabPage_edit_roles.TabIndex = 1;
             this.tabPage_edit_roles.Text = "Edytuj uprawnienia";
             this.tabPage_edit_roles.UseVisualStyleBackColor = true;
+            this.tabPage_edit_roles.Enter += new System.EventHandler(this.tabPage_edit_roles_Enter);
             // 
             // label30
             // 
@@ -1297,54 +1294,15 @@ namespace ProjektMagazyn
             this.label30.TabIndex = 7;
             this.label30.Text = "// jak user posiada uprawnienie to checkbox ładuje się zaznaczony";
             // 
-            // button1
+            // btn_save_role_changes
             // 
-            this.button1.Location = new System.Drawing.Point(51, 276);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(92, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Zapisz";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox4
-            // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(51, 236);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(92, 17);
-            this.checkBox4.TabIndex = 5;
-            this.checkBox4.Text = "uprawnienie 4";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(51, 203);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(92, 17);
-            this.checkBox3.TabIndex = 4;
-            this.checkBox3.Text = "uprawnienie 3";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(51, 171);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(92, 17);
-            this.checkBox2.TabIndex = 3;
-            this.checkBox2.Text = "uprawnienie 2";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(51, 139);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(92, 17);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "uprawnienie 1";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.btn_save_role_changes.Location = new System.Drawing.Point(175, 277);
+            this.btn_save_role_changes.Name = "btn_save_role_changes";
+            this.btn_save_role_changes.Size = new System.Drawing.Size(92, 23);
+            this.btn_save_role_changes.TabIndex = 6;
+            this.btn_save_role_changes.Text = "Zapisz";
+            this.btn_save_role_changes.UseVisualStyleBackColor = true;
+            this.btn_save_role_changes.Click += new System.EventHandler(this.btn_save_role_changes_Click);
             // 
             // lbl_choose_user
             // 
@@ -1355,23 +1313,41 @@ namespace ProjektMagazyn
             this.lbl_choose_user.TabIndex = 1;
             this.lbl_choose_user.Text = "Wybierz użytkownika";
             // 
-            // comboBox1
+            // cmbx_select_user_role_edit
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(51, 96);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(493, 21);
-            this.comboBox1.TabIndex = 0;
-            this.comboBox1.Text = "Dane użytkownika z bazy";
+            this.cmbx_select_user_role_edit.FormattingEnabled = true;
+            this.cmbx_select_user_role_edit.Location = new System.Drawing.Point(51, 96);
+            this.cmbx_select_user_role_edit.Name = "cmbx_select_user_role_edit";
+            this.cmbx_select_user_role_edit.Size = new System.Drawing.Size(493, 21);
+            this.cmbx_select_user_role_edit.TabIndex = 0;
+            this.cmbx_select_user_role_edit.SelectedIndexChanged += new System.EventHandler(this.cmbx_select_user_role_edit_SelectedIndexChanged);
             // 
             // lbl_roles
             // 
             this.lbl_roles.AutoSize = true;
-            this.lbl_roles.Location = new System.Drawing.Point(74, 97);
+            this.lbl_roles.Location = new System.Drawing.Point(74, 99);
             this.lbl_roles.Name = "lbl_roles";
             this.lbl_roles.Size = new System.Drawing.Size(159, 13);
             this.lbl_roles.TabIndex = 1;
             this.lbl_roles.Text = "Uprawnienia nadane w systemie";
+            // 
+            // clb_roles
+            // 
+            this.clb_roles.FormattingEnabled = true;
+            this.clb_roles.Location = new System.Drawing.Point(51, 141);
+            this.clb_roles.Name = "clb_roles";
+            this.clb_roles.Size = new System.Drawing.Size(493, 94);
+            this.clb_roles.TabIndex = 8;
+            // 
+            // btn_cancel_role
+            // 
+            this.btn_cancel_role.Location = new System.Drawing.Point(51, 277);
+            this.btn_cancel_role.Name = "btn_cancel_role";
+            this.btn_cancel_role.Size = new System.Drawing.Size(92, 23);
+            this.btn_cancel_role.TabIndex = 9;
+            this.btn_cancel_role.Text = "Anuluj";
+            this.btn_cancel_role.UseVisualStyleBackColor = true;
+            this.btn_cancel_role.Click += new System.EventHandler(this.btn_cancel_role_Click);
             // 
             // ControlPanel
             // 
@@ -1522,14 +1498,12 @@ namespace ProjektMagazyn
         private TabPage tabPage_roles_overview;
         private TabPage tabPage_edit_roles;
         private DataGridView dgv_roles;
-        private CheckBox checkBox4;
-        private CheckBox checkBox3;
-        private CheckBox checkBox2;
-        private CheckBox checkBox1;
         private Label lbl_choose_user;
-        private ComboBox comboBox1;
+        private ComboBox cmbx_select_user_role_edit;
         private Label label30;
-        private Button button1;
+        private Button btn_save_role_changes;
         private Label lbl_roles;
+        private CheckedListBox clb_roles;
+        private Button btn_cancel_role;
     }
 }
