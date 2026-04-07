@@ -24,6 +24,7 @@ namespace ProjektMagazyn
         private int selectedUserId = -1;
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
         private int currentViewUserId = -1;
+        private bool isFiltered = false;
 
         // Zmienne do sprawdzania, czy wprowadzono zmiany (można usnąć, ale będą wysyłane zapytania do bazy nawet, jeśli nic się nie zmieniło)
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
@@ -34,6 +35,8 @@ namespace ProjektMagazyn
             InitializeComponent();
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
+            WczytajUprawnienia();
+            WczytajUzytkownikowZUprawnieniami();
             tbx_search.GotFocus += tbx_search_GotFocus;
             
             //Ukrywanie zakładki z podglądem
@@ -268,21 +271,21 @@ namespace ProjektMagazyn
                             }
 
                             string anonimizacjaQuery = @"
-                UPDATE Uzytkownicy SET
-                    Imie = 'Zanonimizowano',
-                    Nazwisko = 'Zanonimizowano',
-                    Login = @fakeLogin,
-                    Email = @fakeEmail,
-                    PESEL = @fakePesel, 
-                    DataUrodzenia = '1900-01-01',
-                    Plec = 'zanonimizowano',
-                    Miejscowosc = '***',
-                    Ulica = '***',
-                    Telefon = '000000000',
-                    HasloHash = 'ZABLOKOWANE',
-                    CzyZapomniany = 1,
-                    DataZapomnienia = GETDATE()
-                WHERE UzytkownikID = @id";
+                                UPDATE Uzytkownicy SET
+                                    Imie = 'Zanonimizowano',
+                                    Nazwisko = 'Zanonimizowano',
+                                    Login = @fakeLogin,
+                                    Email = @fakeEmail,
+                                    PESEL = @fakePesel, 
+                                    DataUrodzenia = '1900-01-01',
+                                    Plec = 'zanonimizowano',
+                                    Miejscowosc = '***',
+                                    Ulica = '***',
+                                    Telefon = '000000000',
+                                    HasloHash = 'ZABLOKOWANE',
+                                    CzyZapomniany = 1,
+                                    DataZapomnienia = GETDATE()
+                                WHERE UzytkownikID = @id";
 
                             using (SqlCommand cmdAnonimizacja = new SqlCommand(anonimizacjaQuery, conn, transaction))
                             {
@@ -774,6 +777,72 @@ namespace ProjektMagazyn
             dotNetBarTabControl_manage_users.SelectedTab = tabPage_view_user;
         }
 
+        private void btn_save_role_changes_Click(object sender, EventArgs e)
+        {
+            if (cmbx_select_user_role_edit.SelectedIndex == -1)
+            {
+                MessageBox.Show("Wybierz użytkownika przed zapisaniem zmian.", "Uwaga", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int userId = Convert.ToInt32(cmbx_select_user_role_edit.SelectedValue);
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlTransaction transaction = conn.BeginTransaction();
+
+                    try
+                    {
+                        using (SqlCommand deleteCmd = new SqlCommand(
+                            "DELETE FROM Uzytkownicy_Uprawnienia WHERE UzytkownikID = @UserID", conn, transaction))
+                        {
+                            deleteCmd.Parameters.AddWithValue("@UserID", userId);
+                            deleteCmd.ExecuteNonQuery();
+                        }
+
+                        foreach (var item in clb_roles.CheckedItems)
+                        {
+                            DataRowView drv = (DataRowView)item;
+                            int uprawnienieId = Convert.ToInt32(drv["UprawnienieID"]);
+
+                            using (SqlCommand insertCmd = new SqlCommand(
+                                "INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikID, UprawnienieID) VALUES (@UserID, @UprawnienieID)",
+                                conn, transaction))
+                            {
+                                insertCmd.Parameters.AddWithValue("@UserID", userId);
+                                insertCmd.Parameters.AddWithValue("@UprawnienieID", uprawnienieId);
+                                insertCmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+                        MessageBox.Show("Uprawnienia zapisane pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd podczas zapisywania uprawnień: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            ZaladujUprawnieniaUzytkownika(userId);
+        }
+
+        private void btn_cancel_role_Click(object sender, EventArgs e)
+        {
+            dotNetBarTabControl_manage_roles.SelectedTab = tabPage_roles_overview;
+        }
+
+ 
+
         private void UkryjZakladkePodgladu()
         {
             if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
@@ -788,10 +857,54 @@ namespace ProjektMagazyn
         }
         private void dotNetBarTabControl_manage_roles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(dotNetBarTabControl_manage_roles.SelectedTab.Name == "tabPage_roles_overview")
+            if (dotNetBarTabControl_manage_roles.SelectedTab.Name == "tabPage_roles_overview")
             {
                 OdswiezListeUprawnien();
             }
+        }
+
+        private void btn_filter_perms_Click(object sender, EventArgs e)
+        {
+            if (!isFiltered)
+            {
+                if (cmbx_permissions.SelectedIndex <= 0 || cmbx_permissions.SelectedValue == DBNull.Value)
+                {
+                    MessageBox.Show("Wybierz najpierw uprawnienie z listy rozwijanej.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int wybraneUprawnienieId = Convert.ToInt32(cmbx_permissions.SelectedValue);
+
+                WczytajUzytkownikowZUprawnieniami(wybraneUprawnienieId);
+
+                if (dvg_users_perms.DataSource != null)
+                {
+                    isFiltered = true;
+                    btn_filter_perms.Text = "Odfiltruj";
+                    btn_filter_perms.BackColor = Color.LightCoral; 
+                    cmbx_permissions.Enabled = false;
+                }
+            }
+            // Jeśli lista jest już przefiltrowana (przycisk działa jako "Odfiltruj")
+            else
+            {
+                WczytajUzytkownikowZUprawnieniami();
+
+                isFiltered = false;
+                btn_filter_perms.Text = "Filtruj";
+                btn_filter_perms.BackColor = SystemColors.Control;
+                cmbx_permissions.Enabled = true;
+                cmbx_permissions.SelectedIndex = 0; 
+            }
+        }
+
+        private void tabPage_edit_roles_Enter(object sender, EventArgs e)
+        {
+            if (cmbx_select_user_role_edit.DataSource == null)
+                ZaladujListeUzytkownikow();
+
+            if (clb_roles.DataSource == null)
+                ZaladujListeUprawnien();
         }
         private void OdswiezListeUprawnien()
         {
@@ -808,12 +921,10 @@ namespace ProjektMagazyn
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    // SqlDataAdapter automatycznie otwiera i zamyka połączenie
                     SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
 
-                    // Zakładamy, że Twoja kontrolka nazywa się dataGridView1
                     dgv_roles.DataSource = dt;
                 }
             }
@@ -821,6 +932,182 @@ namespace ProjektMagazyn
             {
                 MessageBox.Show("Błąd podczas pobierania danych: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void ZaladujListeUzytkownikow()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT UzytkownikID, Login + ' - ' + Imie + ' ' + Nazwisko AS DisplayText FROM Uzytkownicy WHERE ISNULL(CzyZapomniany, 0) = 0";
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    cmbx_select_user_role_edit.DisplayMember = "DisplayText";
+                    cmbx_select_user_role_edit.ValueMember = "UzytkownikID";
+                    cmbx_select_user_role_edit.DataSource = dt;
+                    cmbx_select_user_role_edit.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania listy użytkowników: " + ex.Message);
+            }
+        }
+        private void ZaladujListeUprawnien()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT UprawnienieID, Nazwa FROM Uprawnienia";
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    clb_roles.DataSource = dt;
+                    clb_roles.DisplayMember = "Nazwa";
+                    clb_roles.ValueMember = "UprawnienieID";
+                    clb_roles.ClearSelected();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
+            }
+        }
+        private void ZaladujUprawnieniaUzytkownika(int userId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = @"
+                SELECT UprawnienieID
+                FROM Uzytkownicy_Uprawnienia
+                WHERE UzytkownikID = @UserID";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    for (int i = 0; i < clb_roles.Items.Count; i++)
+                        clb_roles.SetItemChecked(i, false);
+
+                    while (reader.Read())
+                    {
+                        int uprawnienieId = reader.GetInt32(0);
+                        for (int i = 0; i < clb_roles.Items.Count; i++)
+                        {
+                            DataRowView drv = (DataRowView)clb_roles.Items[i];
+                            if ((int)drv["UprawnienieID"] == uprawnienieId)
+                            {
+                                clb_roles.SetItemChecked(i, true);
+                                break;
+                            }
+                        }
+                    }
+                    clb_roles.ClearSelected();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania uprawnień użytkownika: " + ex.Message);
+            }
+        }
+
+        private void WczytajUprawnienia()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT UprawnienieID, Nazwa FROM Uprawnienia";
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    DataRow emptyRow = dt.NewRow();
+                    emptyRow["UprawnienieID"] = DBNull.Value;
+                    emptyRow["Nazwa"] = "--- Wybierz uprawnienie ---";
+                    dt.Rows.InsertAt(emptyRow, 0);
+
+                    cmbx_permissions.DataSource = dt;
+                    cmbx_permissions.DisplayMember = "Nazwa";
+                    cmbx_permissions.ValueMember = "UprawnienieID";
+                    cmbx_permissions.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
+            }
+        }
+
+        private void WczytajUzytkownikowZUprawnieniami(int? uprawnienieId = null)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = conn;
+
+                    string baseQuery = @"
+                SELECT 
+                    u.Imie, 
+                    u.Nazwisko, 
+                    u.Login, 
+                    u.Email, 
+                    u.PESEL, 
+                    uu.UprawnienieID,
+                    up.Nazwa AS NazwaUprawnienia
+                FROM Uzytkownicy u
+                LEFT JOIN Uzytkownicy_Uprawnienia uu ON u.UzytkownikID = uu.UzytkownikID
+                LEFT JOIN Uprawnienia up ON uu.UprawnienieID = up.UprawnienieID
+                WHERE ISNULL(u.CzyZapomniany, 0) = 0";
+
+                    if (uprawnienieId.HasValue)
+                    {
+                        baseQuery += " AND uu.UprawnienieID = @permId";
+                        cmd.Parameters.AddWithValue("@permId", uprawnienieId.Value);
+                    }
+
+                    baseQuery += " ORDER BY u.Nazwisko, u.Imie";
+                    cmd.CommandText = baseQuery;
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    if (uprawnienieId.HasValue && dt.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Nie znaleziono użytkowników o wskazanym uprawnieniu", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        dvg_users_perms.DataSource = null;
+                        return;
+                    }
+
+                    dvg_users_perms.DataSource = dt;
+                    dvg_users_perms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania danych: " + ex.Message);
+            }
+        }
+        private void cmbx_select_user_role_edit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbx_select_user_role_edit.SelectedIndex == -1)
+                return;
+
+            int userId = Convert.ToInt32(cmbx_select_user_role_edit.SelectedValue);
+
+            if (clb_roles.DataSource != null)
+                ZaladujUprawnieniaUzytkownika(userId);
         }
     }
 }
