@@ -1385,6 +1385,24 @@ namespace ProjektMagazyn
             this.btn_filter_perms.UseVisualStyleBackColor = true;
             this.btn_filter_perms.Click += new System.EventHandler(this.btn_filter_perms_Click);
             // 
+            // clb_roles
+            // 
+            this.clb_roles.FormattingEnabled = true;
+            this.clb_roles.Location = new System.Drawing.Point(51, 141);
+            this.clb_roles.Name = "clb_roles";
+            this.clb_roles.Size = new System.Drawing.Size(493, 94);
+            this.clb_roles.TabIndex = 8;
+            // 
+            // btn_cancel_role
+            // 
+            this.btn_cancel_role.Location = new System.Drawing.Point(51, 277);
+            this.btn_cancel_role.Name = "btn_cancel_role";
+            this.btn_cancel_role.Size = new System.Drawing.Size(92, 23);
+            this.btn_cancel_role.TabIndex = 9;
+            this.btn_cancel_role.Text = "Anuluj";
+            this.btn_cancel_role.UseVisualStyleBackColor = true;
+            this.btn_cancel_role.Click += new System.EventHandler(this.btn_cancel_role_Click);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

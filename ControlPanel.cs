@@ -862,6 +862,14 @@ namespace ProjektMagazyn
                 OdswiezListeUprawnien();
             }
         }
+        private void tabPage_edit_roles_Enter(object sender, EventArgs e)
+        {
+            if (cmbx_select_user_role_edit.DataSource == null)
+                ZaladujListeUzytkownikow();
+
+            if (clb_roles.DataSource == null)
+                ZaladujListeUprawnien();
+        }
 
         private void btn_filter_perms_Click(object sender, EventArgs e)
         {
