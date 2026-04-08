@@ -136,6 +136,8 @@ namespace ProjektMagazyn
             this.tabPage_roles = new System.Windows.Forms.TabPage();
             this.dotNetBarTabControl_manage_roles = new TabControls.DotNetBarTabControl();
             this.tabPage_roles_overview = new System.Windows.Forms.TabPage();
+            this.btn_filter_perms = new System.Windows.Forms.Button();
+            this.cmbx_permissions = new System.Windows.Forms.ComboBox();
             this.dvg_users_perms = new System.Windows.Forms.DataGridView();
             this.lbl_roles = new System.Windows.Forms.Label();
             this.dgv_roles = new System.Windows.Forms.DataGridView();
@@ -146,8 +148,8 @@ namespace ProjektMagazyn
             this.btn_save_role_changes = new System.Windows.Forms.Button();
             this.lbl_choose_user = new System.Windows.Forms.Label();
             this.cmbx_select_user_role_edit = new System.Windows.Forms.ComboBox();
-            this.cmbx_permissions = new System.Windows.Forms.ComboBox();
-            this.btn_filter_perms = new System.Windows.Forms.Button();
+            this.clb_add_user_role = new System.Windows.Forms.CheckedListBox();
+            this.lbl_role = new System.Windows.Forms.Label();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -289,6 +291,8 @@ namespace ProjektMagazyn
             // 
             // tabPage_add_user
             // 
+            this.tabPage_add_user.Controls.Add(this.lbl_role);
+            this.tabPage_add_user.Controls.Add(this.clb_add_user_role);
             this.tabPage_add_user.Controls.Add(this.msktbx_password);
             this.tabPage_add_user.Controls.Add(this.lbl_password);
             this.tabPage_add_user.Controls.Add(this.btn_test);
@@ -323,7 +327,7 @@ namespace ProjektMagazyn
             // msktbx_password
             // 
             this.msktbx_password.BackColor = System.Drawing.Color.White;
-            this.msktbx_password.Location = new System.Drawing.Point(460, 58);
+            this.msktbx_password.Location = new System.Drawing.Point(366, 27);
             this.msktbx_password.Name = "msktbx_password";
             this.msktbx_password.Size = new System.Drawing.Size(131, 20);
             this.msktbx_password.TabIndex = 43;
@@ -331,7 +335,7 @@ namespace ProjektMagazyn
             // lbl_password
             // 
             this.lbl_password.AutoSize = true;
-            this.lbl_password.Location = new System.Drawing.Point(457, 32);
+            this.lbl_password.Location = new System.Drawing.Point(307, 30);
             this.lbl_password.Name = "lbl_password";
             this.lbl_password.Size = new System.Drawing.Size(53, 13);
             this.lbl_password.TabIndex = 42;
@@ -339,7 +343,7 @@ namespace ProjektMagazyn
             // 
             // btn_test
             // 
-            this.btn_test.Location = new System.Drawing.Point(70, 121);
+            this.btn_test.Location = new System.Drawing.Point(18, 448);
             this.btn_test.Name = "btn_test";
             this.btn_test.Size = new System.Drawing.Size(93, 23);
             this.btn_test.TabIndex = 39;
@@ -350,7 +354,7 @@ namespace ProjektMagazyn
             // lbl_gender
             // 
             this.lbl_gender.AutoSize = true;
-            this.lbl_gender.Location = new System.Drawing.Point(274, 127);
+            this.lbl_gender.Location = new System.Drawing.Point(134, 129);
             this.lbl_gender.Name = "lbl_gender";
             this.lbl_gender.Size = new System.Drawing.Size(30, 13);
             this.lbl_gender.TabIndex = 38;
@@ -362,7 +366,7 @@ namespace ProjektMagazyn
             this.cmbx_gender.Items.AddRange(new object[] {
             "kobieta",
             "mężczyzna"});
-            this.cmbx_gender.Location = new System.Drawing.Point(310, 124);
+            this.cmbx_gender.Location = new System.Drawing.Point(170, 126);
             this.cmbx_gender.Name = "cmbx_gender";
             this.cmbx_gender.Size = new System.Drawing.Size(131, 21);
             this.cmbx_gender.TabIndex = 37;
@@ -403,7 +407,7 @@ namespace ProjektMagazyn
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(225, 225);
+            this.label2.Location = new System.Drawing.Point(85, 227);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 13);
             this.label2.TabIndex = 33;
@@ -411,7 +415,7 @@ namespace ProjektMagazyn
             // 
             // msktbx_phone
             // 
-            this.msktbx_phone.Location = new System.Drawing.Point(310, 222);
+            this.msktbx_phone.Location = new System.Drawing.Point(170, 224);
             this.msktbx_phone.Mask = "000000000";
             this.msktbx_phone.Name = "msktbx_phone";
             this.msktbx_phone.Size = new System.Drawing.Size(131, 20);
@@ -420,7 +424,7 @@ namespace ProjektMagazyn
             // 
             // msktbx_email
             // 
-            this.msktbx_email.Location = new System.Drawing.Point(310, 190);
+            this.msktbx_email.Location = new System.Drawing.Point(170, 192);
             this.msktbx_email.Name = "msktbx_email";
             this.msktbx_email.Size = new System.Drawing.Size(131, 20);
             this.msktbx_email.TabIndex = 31;
@@ -428,7 +432,7 @@ namespace ProjektMagazyn
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(240, 193);
+            this.label3.Location = new System.Drawing.Point(100, 195);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 13);
             this.label3.TabIndex = 30;
@@ -453,7 +457,7 @@ namespace ProjektMagazyn
             // lbl_pesel
             // 
             this.lbl_pesel.AutoSize = true;
-            this.lbl_pesel.Location = new System.Drawing.Point(263, 160);
+            this.lbl_pesel.Location = new System.Drawing.Point(123, 162);
             this.lbl_pesel.Name = "lbl_pesel";
             this.lbl_pesel.Size = new System.Drawing.Size(45, 13);
             this.lbl_pesel.TabIndex = 27;
@@ -461,7 +465,7 @@ namespace ProjektMagazyn
             // 
             // msktbx_pesel
             // 
-            this.msktbx_pesel.Location = new System.Drawing.Point(310, 157);
+            this.msktbx_pesel.Location = new System.Drawing.Point(170, 159);
             this.msktbx_pesel.Mask = "00000000000";
             this.msktbx_pesel.Name = "msktbx_pesel";
             this.msktbx_pesel.Size = new System.Drawing.Size(131, 20);
@@ -552,7 +556,7 @@ namespace ProjektMagazyn
             // lbl_user_surname
             // 
             this.lbl_user_surname.AutoSize = true;
-            this.lbl_user_surname.Location = new System.Drawing.Point(251, 94);
+            this.lbl_user_surname.Location = new System.Drawing.Point(111, 96);
             this.lbl_user_surname.Name = "lbl_user_surname";
             this.lbl_user_surname.Size = new System.Drawing.Size(57, 13);
             this.lbl_user_surname.TabIndex = 24;
@@ -560,14 +564,14 @@ namespace ProjektMagazyn
             // 
             // msktbx_user_surname
             // 
-            this.msktbx_user_surname.Location = new System.Drawing.Point(310, 91);
+            this.msktbx_user_surname.Location = new System.Drawing.Point(170, 93);
             this.msktbx_user_surname.Name = "msktbx_user_surname";
             this.msktbx_user_surname.Size = new System.Drawing.Size(131, 20);
             this.msktbx_user_surname.TabIndex = 23;
             // 
             // msktbx_user_name
             // 
-            this.msktbx_user_name.Location = new System.Drawing.Point(310, 58);
+            this.msktbx_user_name.Location = new System.Drawing.Point(170, 60);
             this.msktbx_user_name.Name = "msktbx_user_name";
             this.msktbx_user_name.Size = new System.Drawing.Size(131, 20);
             this.msktbx_user_name.TabIndex = 22;
@@ -575,7 +579,7 @@ namespace ProjektMagazyn
             // lbl_user_name
             // 
             this.lbl_user_name.AutoSize = true;
-            this.lbl_user_name.Location = new System.Drawing.Point(278, 61);
+            this.lbl_user_name.Location = new System.Drawing.Point(138, 63);
             this.lbl_user_name.Name = "lbl_user_name";
             this.lbl_user_name.Size = new System.Drawing.Size(30, 13);
             this.lbl_user_name.TabIndex = 21;
@@ -584,7 +588,7 @@ namespace ProjektMagazyn
             // msktbx_user_login
             // 
             this.msktbx_user_login.BackColor = System.Drawing.Color.White;
-            this.msktbx_user_login.Location = new System.Drawing.Point(310, 25);
+            this.msktbx_user_login.Location = new System.Drawing.Point(170, 27);
             this.msktbx_user_login.Name = "msktbx_user_login";
             this.msktbx_user_login.Size = new System.Drawing.Size(131, 20);
             this.msktbx_user_login.TabIndex = 20;
@@ -592,7 +596,7 @@ namespace ProjektMagazyn
             // lbl_user_login
             // 
             this.lbl_user_login.AutoSize = true;
-            this.lbl_user_login.Location = new System.Drawing.Point(146, 28);
+            this.lbl_user_login.Location = new System.Drawing.Point(6, 30);
             this.lbl_user_login.Name = "lbl_user_login";
             this.lbl_user_login.Size = new System.Drawing.Size(162, 13);
             this.lbl_user_login.TabIndex = 19;
@@ -1266,21 +1270,39 @@ namespace ProjektMagazyn
             this.tabPage_roles_overview.UseVisualStyleBackColor = true;
             this.tabPage_roles_overview.Enter += new System.EventHandler(this.dotNetBarTabControl_manage_roles_SelectedIndexChanged);
             // 
+            // btn_filter_perms
+            // 
+            this.btn_filter_perms.Location = new System.Drawing.Point(310, 252);
+            this.btn_filter_perms.Name = "btn_filter_perms";
+            this.btn_filter_perms.Size = new System.Drawing.Size(204, 23);
+            this.btn_filter_perms.TabIndex = 4;
+            this.btn_filter_perms.Text = "Filtruj";
+            this.btn_filter_perms.UseVisualStyleBackColor = true;
+            this.btn_filter_perms.Click += new System.EventHandler(this.btn_filter_perms_Click);
+            // 
+            // cmbx_permissions
+            // 
+            this.cmbx_permissions.FormattingEnabled = true;
+            this.cmbx_permissions.Location = new System.Drawing.Point(77, 252);
+            this.cmbx_permissions.Name = "cmbx_permissions";
+            this.cmbx_permissions.Size = new System.Drawing.Size(208, 21);
+            this.cmbx_permissions.TabIndex = 3;
+            // 
             // dvg_users_perms
             // 
             this.dvg_users_perms.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dvg_users_perms.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dvg_users_perms.Location = new System.Drawing.Point(77, 316);
+            this.dvg_users_perms.Location = new System.Drawing.Point(77, 279);
             this.dvg_users_perms.Name = "dvg_users_perms";
             this.dvg_users_perms.ReadOnly = true;
             this.dvg_users_perms.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dvg_users_perms.Size = new System.Drawing.Size(438, 188);
+            this.dvg_users_perms.Size = new System.Drawing.Size(438, 201);
             this.dvg_users_perms.TabIndex = 2;
             // 
             // lbl_roles
             // 
             this.lbl_roles.AutoSize = true;
-            this.lbl_roles.Location = new System.Drawing.Point(74, 3);
+            this.lbl_roles.Location = new System.Drawing.Point(74, 35);
             this.lbl_roles.Name = "lbl_roles";
             this.lbl_roles.Size = new System.Drawing.Size(159, 13);
             this.lbl_roles.TabIndex = 1;
@@ -1290,9 +1312,9 @@ namespace ProjektMagazyn
             // 
             this.dgv_roles.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv_roles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_roles.Location = new System.Drawing.Point(77, 19);
+            this.dgv_roles.Location = new System.Drawing.Point(77, 51);
             this.dgv_roles.Name = "dgv_roles";
-            this.dgv_roles.Size = new System.Drawing.Size(438, 188);
+            this.dgv_roles.Size = new System.Drawing.Size(438, 165);
             this.dgv_roles.TabIndex = 0;
             // 
             // tabPage_edit_roles
@@ -1367,41 +1389,22 @@ namespace ProjektMagazyn
             this.cmbx_select_user_role_edit.TabIndex = 0;
             this.cmbx_select_user_role_edit.SelectedIndexChanged += new System.EventHandler(this.cmbx_select_user_role_edit_SelectedIndexChanged);
             // 
-            // cmbx_permissions
+            // clb_add_user_role
             // 
-            this.cmbx_permissions.FormattingEnabled = true;
-            this.cmbx_permissions.Location = new System.Drawing.Point(77, 289);
-            this.cmbx_permissions.Name = "cmbx_permissions";
-            this.cmbx_permissions.Size = new System.Drawing.Size(208, 21);
-            this.cmbx_permissions.TabIndex = 3;
+            this.clb_add_user_role.FormattingEnabled = true;
+            this.clb_add_user_role.Location = new System.Drawing.Point(310, 93);
+            this.clb_add_user_role.Name = "clb_add_user_role";
+            this.clb_add_user_role.Size = new System.Drawing.Size(212, 79);
+            this.clb_add_user_role.TabIndex = 44;
             // 
-            // btn_filter_perms
+            // lbl_role
             // 
-            this.btn_filter_perms.Location = new System.Drawing.Point(310, 289);
-            this.btn_filter_perms.Name = "btn_filter_perms";
-            this.btn_filter_perms.Size = new System.Drawing.Size(204, 23);
-            this.btn_filter_perms.TabIndex = 4;
-            this.btn_filter_perms.Text = "Filtruj";
-            this.btn_filter_perms.UseVisualStyleBackColor = true;
-            this.btn_filter_perms.Click += new System.EventHandler(this.btn_filter_perms_Click);
-            // 
-            // clb_roles
-            // 
-            this.clb_roles.FormattingEnabled = true;
-            this.clb_roles.Location = new System.Drawing.Point(51, 141);
-            this.clb_roles.Name = "clb_roles";
-            this.clb_roles.Size = new System.Drawing.Size(493, 94);
-            this.clb_roles.TabIndex = 8;
-            // 
-            // btn_cancel_role
-            // 
-            this.btn_cancel_role.Location = new System.Drawing.Point(51, 277);
-            this.btn_cancel_role.Name = "btn_cancel_role";
-            this.btn_cancel_role.Size = new System.Drawing.Size(92, 23);
-            this.btn_cancel_role.TabIndex = 9;
-            this.btn_cancel_role.Text = "Anuluj";
-            this.btn_cancel_role.UseVisualStyleBackColor = true;
-            this.btn_cancel_role.Click += new System.EventHandler(this.btn_cancel_role_Click);
+            this.lbl_role.AutoSize = true;
+            this.lbl_role.Location = new System.Drawing.Point(307, 67);
+            this.lbl_role.Name = "lbl_role";
+            this.lbl_role.Size = new System.Drawing.Size(219, 13);
+            this.lbl_role.TabIndex = 45;
+            this.lbl_role.Text = "Uprawnienie* (przynajmniej jedno wymagane)";
             // 
             // ControlPanel
             // 
@@ -1563,5 +1566,7 @@ namespace ProjektMagazyn
         private DataGridView dvg_users_perms;
         private Button btn_filter_perms;
         private ComboBox cmbx_permissions;
+        private CheckedListBox clb_add_user_role;
+        private Label lbl_role;
     }
 }

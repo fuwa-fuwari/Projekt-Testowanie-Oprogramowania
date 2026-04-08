@@ -35,6 +35,8 @@ namespace ProjektMagazyn
             InitializeComponent();
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
+            OdswiezListeUprawnien();
+            ListaUprawnien();
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
             tbx_search.GotFocus += tbx_search_GotFocus;
@@ -49,6 +51,28 @@ namespace ProjektMagazyn
         private void tbx_search_GotFocus(object sender, EventArgs e)
         {
             tbx_search.Clear();
+        }
+        private void ListaUprawnien()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT UprawnienieID, Nazwa FROM Uprawnienia";
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    clb_add_user_role.DataSource = dt;
+                    clb_add_user_role.DisplayMember = "Nazwa";
+                    clb_add_user_role.ValueMember = "UprawnienieID";
+                    clb_add_user_role.ClearSelected();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
+            }
         }
         private void btn_add_user_Click(object sender, EventArgs e)
         {
@@ -88,6 +112,7 @@ namespace ProjektMagazyn
             {
                 textbox.BackColor = Color.White;
             }
+            clb_add_user_role.BackColor = Color.White;
 
             if (!validation.valid_login(login))
             {
@@ -99,6 +124,11 @@ namespace ProjektMagazyn
             {
                 invalids++;
                 msktbx_password.BackColor = Color.Red;
+            }
+            if(clb_add_user_role.SelectedIndex == -1)
+            {
+                invalids++;
+                clb_add_user_role.BackColor = Color.Red;
             }
             if (!validation.valid_name(name))
             {
@@ -161,8 +191,6 @@ namespace ProjektMagazyn
             }
             else
             {
-
-
                 try
                 {
                     var hashed_password = SecurePasswordHasher.Hash(password);
@@ -175,7 +203,8 @@ namespace ProjektMagazyn
                         INSERT INTO Uzytkownicy
                         (Login, HasloHash, Imie, Nazwisko, Miejscowosc, KodPocztowy, Ulica, NumerPosesji, NumerLokalu, PESEL, DataUrodzenia, Plec, Email, Telefon)
                         VALUES
-                        (@login, @haslo, @imie, @nazwisko, @miasto, @kod, @ulica, @nrPos, @nrLok, @pesel, @dataUr, @plec, @email, @telefon)";
+                        (@login, @haslo, @imie, @nazwisko, @miasto, @kod, @ulica, @nrPos, @nrLok, @pesel, @dataUr, @plec, @email, @telefon);
+                        SELECT SCOPE_IDENTITY();";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
@@ -194,13 +223,30 @@ namespace ProjektMagazyn
                             cmd.Parameters.AddWithValue("@plec", gender);
                             cmd.Parameters.AddWithValue("@email", email);
                             cmd.Parameters.AddWithValue("@telefon", phone);
+                            int newUserId = Convert.ToInt32(cmd.ExecuteScalar());
 
-                            cmd.ExecuteNonQuery();
+                            string insertPermQuery = @"
+                                INSERT INTO Uzytkownicy_Uprawnienia 
+                                (UzytkownikID, UprawnienieID)
+                                VALUES (@uid, @pid)";
+
+                            using (SqlCommand role_cmd = new SqlCommand(insertPermQuery, conn))
+                            {
+                                role_cmd.Parameters.Add("@uid", SqlDbType.Int).Value = newUserId;
+                                role_cmd.Parameters.Add("@pid", SqlDbType.Int);
+
+                                foreach (DataRowView item in clb_add_user_role.CheckedItems)
+                                {
+                                    role_cmd.Parameters["@pid"].Value = (int)item["UprawnienieID"];
+                                    role_cmd.ExecuteNonQuery();
+                                }
+                            }
                         }
                     }
-
                     MessageBox.Show("Dodano użytkownika do bazy");
                     WczytajUzytkownikowDoListy();
+
+                    ClearAddUserData(textboxes);
                 }
                 catch (Exception ex)
                 {
@@ -208,10 +254,43 @@ namespace ProjektMagazyn
                 }
             }
         }
+        private void ClearAddUserData(List<Control> textboxes)
+        {
+            foreach (var textbox in textboxes)
+            {
+                textbox.Text = "";
+            }
+            for (int i = 0; i < clb_add_user_role.Items.Count; i++)
+            {
+                clb_add_user_role.SetItemChecked(i, false);
+            }
+
+            clb_add_user_role.ClearSelected();
+            dtpckr_birthdate.Value = DateTime.Today;
+        }
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
             dotNetBarTabControl_main_view.SelectedTab = tabPage_overview;
+
+            List<Control> textboxes = new List<Control>
+                {
+                    msktbx_user_login,
+                    msktbx_password,
+                    msktbx_user_name,
+                    msktbx_user_surname,
+                    cmbx_gender,
+                    msktbx_pesel,
+                    msktbx_email,
+                    msktbx_phone,
+                    dtpckr_birthdate,
+                    msktbx_city,
+                    msktbx_street,
+                    msktbx_street_number,
+                    msktbx_locale_number
+                };
+
+            ClearAddUserData(textboxes);
         }
 
         private void btn_refresh_Click(object sender, EventArgs e)
@@ -425,16 +504,16 @@ namespace ProjektMagazyn
 
         private void btn_test_Click(object sender, EventArgs e)
         {
-            msktbx_user_login.Text = "aaaaaaa";
-            msktbx_user_name.Text = "aaaaaaa";
-            msktbx_user_surname.Text = "aaaaaaa";
+            msktbx_user_login.Text = "langusta";
+            msktbx_user_name.Text = "Ola";
+            msktbx_user_surname.Text = "Nobel";
             cmbx_gender.Text = "kobieta";
             msktbx_pesel.Text = "00231900100";
             msktbx_email.Text = "aa@aaaa.a";
             msktbx_phone.Text = "222222222";
             dtpckr_birthdate.Value = new DateTime(2000, 3, 19);
-            msktbx_city.Text = "aaaaaaa";
-            msktbx_street.Text = "aaaaaaa";
+            msktbx_city.Text = "Chrząszczowice";
+            msktbx_street.Text = "Łęczna";
             msktbx_street_number.Text = "22";
             msktbx_locale_number.Text = "22";
         }
@@ -1057,18 +1136,18 @@ namespace ProjektMagazyn
                     cmd.Connection = conn;
 
                     string baseQuery = @"
-                SELECT 
-                    u.Imie, 
-                    u.Nazwisko, 
-                    u.Login, 
-                    u.Email, 
-                    u.PESEL, 
-                    uu.UprawnienieID,
-                    up.Nazwa AS NazwaUprawnienia
-                FROM Uzytkownicy u
-                LEFT JOIN Uzytkownicy_Uprawnienia uu ON u.UzytkownikID = uu.UzytkownikID
-                LEFT JOIN Uprawnienia up ON uu.UprawnienieID = up.UprawnienieID
-                WHERE ISNULL(u.CzyZapomniany, 0) = 0";
+                        SELECT 
+                            u.Imie, 
+                            u.Nazwisko, 
+                            u.Login, 
+                            u.Email, 
+                            u.PESEL, 
+                            uu.UprawnienieID,
+                            up.Nazwa AS NazwaUprawnienia
+                        FROM Uzytkownicy u
+                        LEFT JOIN Uzytkownicy_Uprawnienia uu ON u.UzytkownikID = uu.UzytkownikID
+                        LEFT JOIN Uprawnienia up ON uu.UprawnienieID = up.UprawnienieID
+                        WHERE ISNULL(u.CzyZapomniany, 0) = 0";
 
                     if (uprawnienieId.HasValue)
                     {
