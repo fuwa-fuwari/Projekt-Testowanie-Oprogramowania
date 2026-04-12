@@ -41,6 +41,8 @@ namespace ProjektMagazyn
             this.tabPage_users = new System.Windows.Forms.TabPage();
             this.dotNetBarTabControl_manage_users = new TabControls.DotNetBarTabControl();
             this.tabPage_add_user = new System.Windows.Forms.TabPage();
+            this.lbl_role = new System.Windows.Forms.Label();
+            this.clb_add_user_role = new System.Windows.Forms.CheckedListBox();
             this.msktbx_password = new System.Windows.Forms.MaskedTextBox();
             this.lbl_password = new System.Windows.Forms.Label();
             this.btn_test = new System.Windows.Forms.Button();
@@ -138,7 +140,7 @@ namespace ProjektMagazyn
             this.tabPage_roles_overview = new System.Windows.Forms.TabPage();
             this.btn_filter_perms = new System.Windows.Forms.Button();
             this.cmbx_permissions = new System.Windows.Forms.ComboBox();
-            this.dvg_users_perms = new System.Windows.Forms.DataGridView();
+            this.dgv_users_perms = new System.Windows.Forms.DataGridView();
             this.lbl_roles = new System.Windows.Forms.Label();
             this.dgv_roles = new System.Windows.Forms.DataGridView();
             this.tabPage_edit_roles = new System.Windows.Forms.TabPage();
@@ -148,8 +150,6 @@ namespace ProjektMagazyn
             this.btn_save_role_changes = new System.Windows.Forms.Button();
             this.lbl_choose_user = new System.Windows.Forms.Label();
             this.cmbx_select_user_role_edit = new System.Windows.Forms.ComboBox();
-            this.clb_add_user_role = new System.Windows.Forms.CheckedListBox();
-            this.lbl_role = new System.Windows.Forms.Label();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -164,7 +164,7 @@ namespace ProjektMagazyn
             this.tabPage_roles.SuspendLayout();
             this.dotNetBarTabControl_manage_roles.SuspendLayout();
             this.tabPage_roles_overview.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dvg_users_perms)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_users_perms)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).BeginInit();
             this.tabPage_edit_roles.SuspendLayout();
             this.SuspendLayout();
@@ -323,6 +323,23 @@ namespace ProjektMagazyn
             this.tabPage_add_user.TabIndex = 0;
             this.tabPage_add_user.Text = "Dodaj użytkownika";
             this.tabPage_add_user.UseVisualStyleBackColor = true;
+            // 
+            // lbl_role
+            // 
+            this.lbl_role.AutoSize = true;
+            this.lbl_role.Location = new System.Drawing.Point(307, 67);
+            this.lbl_role.Name = "lbl_role";
+            this.lbl_role.Size = new System.Drawing.Size(219, 13);
+            this.lbl_role.TabIndex = 45;
+            this.lbl_role.Text = "Uprawnienie* (przynajmniej jedno wymagane)";
+            // 
+            // clb_add_user_role
+            // 
+            this.clb_add_user_role.FormattingEnabled = true;
+            this.clb_add_user_role.Location = new System.Drawing.Point(310, 93);
+            this.clb_add_user_role.Name = "clb_add_user_role";
+            this.clb_add_user_role.Size = new System.Drawing.Size(212, 79);
+            this.clb_add_user_role.TabIndex = 44;
             // 
             // msktbx_password
             // 
@@ -1258,7 +1275,7 @@ namespace ProjektMagazyn
             // 
             this.tabPage_roles_overview.Controls.Add(this.btn_filter_perms);
             this.tabPage_roles_overview.Controls.Add(this.cmbx_permissions);
-            this.tabPage_roles_overview.Controls.Add(this.dvg_users_perms);
+            this.tabPage_roles_overview.Controls.Add(this.dgv_users_perms);
             this.tabPage_roles_overview.Controls.Add(this.lbl_roles);
             this.tabPage_roles_overview.Controls.Add(this.dgv_roles);
             this.tabPage_roles_overview.Location = new System.Drawing.Point(140, 4);
@@ -1288,16 +1305,16 @@ namespace ProjektMagazyn
             this.cmbx_permissions.Size = new System.Drawing.Size(208, 21);
             this.cmbx_permissions.TabIndex = 3;
             // 
-            // dvg_users_perms
+            // dgv_users_perms
             // 
-            this.dvg_users_perms.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dvg_users_perms.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dvg_users_perms.Location = new System.Drawing.Point(77, 279);
-            this.dvg_users_perms.Name = "dvg_users_perms";
-            this.dvg_users_perms.ReadOnly = true;
-            this.dvg_users_perms.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dvg_users_perms.Size = new System.Drawing.Size(438, 201);
-            this.dvg_users_perms.TabIndex = 2;
+            this.dgv_users_perms.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgv_users_perms.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_users_perms.Location = new System.Drawing.Point(77, 279);
+            this.dgv_users_perms.Name = "dgv_users_perms";
+            this.dgv_users_perms.ReadOnly = true;
+            this.dgv_users_perms.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgv_users_perms.Size = new System.Drawing.Size(438, 201);
+            this.dgv_users_perms.TabIndex = 2;
             // 
             // lbl_roles
             // 
@@ -1389,23 +1406,6 @@ namespace ProjektMagazyn
             this.cmbx_select_user_role_edit.TabIndex = 0;
             this.cmbx_select_user_role_edit.SelectedIndexChanged += new System.EventHandler(this.cmbx_select_user_role_edit_SelectedIndexChanged);
             // 
-            // clb_add_user_role
-            // 
-            this.clb_add_user_role.FormattingEnabled = true;
-            this.clb_add_user_role.Location = new System.Drawing.Point(310, 93);
-            this.clb_add_user_role.Name = "clb_add_user_role";
-            this.clb_add_user_role.Size = new System.Drawing.Size(212, 79);
-            this.clb_add_user_role.TabIndex = 44;
-            // 
-            // lbl_role
-            // 
-            this.lbl_role.AutoSize = true;
-            this.lbl_role.Location = new System.Drawing.Point(307, 67);
-            this.lbl_role.Name = "lbl_role";
-            this.lbl_role.Size = new System.Drawing.Size(219, 13);
-            this.lbl_role.TabIndex = 45;
-            this.lbl_role.Text = "Uprawnienie* (przynajmniej jedno wymagane)";
-            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1438,7 +1438,7 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_manage_roles.ResumeLayout(false);
             this.tabPage_roles_overview.ResumeLayout(false);
             this.tabPage_roles_overview.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dvg_users_perms)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_users_perms)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).EndInit();
             this.tabPage_edit_roles.ResumeLayout(false);
             this.tabPage_edit_roles.PerformLayout();
@@ -1563,7 +1563,7 @@ namespace ProjektMagazyn
         private Label lbl_roles;
         private CheckedListBox clb_roles;
         private Button btn_cancel_role;
-        private DataGridView dvg_users_perms;
+        private DataGridView dgv_users_perms;
         private Button btn_filter_perms;
         private ComboBox cmbx_permissions;
         private CheckedListBox clb_add_user_role;

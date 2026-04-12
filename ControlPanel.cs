@@ -26,6 +26,8 @@ namespace ProjektMagazyn
         private int currentViewUserId = -1;
         private bool isFiltered = false;
 
+        DatabaseConnection database = new DatabaseConnection();
+
         // Zmienne do sprawdzania, czy wprowadzono zmiany (można usnąć, ale będą wysyłane zapytania do bazy nawet, jeśli nic się nie zmieniło)
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
         private DateTime origBirthdate;
@@ -35,8 +37,8 @@ namespace ProjektMagazyn
             InitializeComponent();
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
-            OdswiezListeUprawnien();
-            ListaUprawnien();
+            database.ListaUprawnienDvg(dgv_roles);
+            database.ListaUprawnienClb(clb_add_user_role);
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
             tbx_search.GotFocus += tbx_search_GotFocus;
@@ -52,28 +54,7 @@ namespace ProjektMagazyn
         {
             tbx_search.Clear();
         }
-        private void ListaUprawnien()
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = "SELECT UprawnienieID, Nazwa FROM Uprawnienia";
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-
-                    clb_add_user_role.DataSource = dt;
-                    clb_add_user_role.DisplayMember = "Nazwa";
-                    clb_add_user_role.ValueMember = "UprawnienieID";
-                    clb_add_user_role.ClearSelected();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
-            }
-        }
+        
         private void btn_add_user_Click(object sender, EventArgs e)
         {
             Validation validation = new Validation();
@@ -259,20 +240,20 @@ namespace ProjektMagazyn
             foreach (var textbox in textboxes)
             {
                 textbox.Text = "";
+                textbox.BackColor = Color.White;
             }
             for (int i = 0; i < clb_add_user_role.Items.Count; i++)
             {
                 clb_add_user_role.SetItemChecked(i, false);
             }
-
             clb_add_user_role.ClearSelected();
+            clb_add_user_role.BackColor = Color.White;
+
             dtpckr_birthdate.Value = DateTime.Today;
         }
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-            dotNetBarTabControl_main_view.SelectedTab = tabPage_overview;
-
             List<Control> textboxes = new List<Control>
                 {
                     msktbx_user_login,
@@ -291,6 +272,7 @@ namespace ProjektMagazyn
                 };
 
             ClearAddUserData(textboxes);
+            dotNetBarTabControl_main_view.SelectedTab = tabPage_overview;
         }
 
         private void btn_refresh_Click(object sender, EventArgs e)
@@ -938,7 +920,7 @@ namespace ProjektMagazyn
         {
             if (dotNetBarTabControl_manage_roles.SelectedTab.Name == "tabPage_roles_overview")
             {
-                OdswiezListeUprawnien();
+                database.ListaUprawnienDvg(dgv_roles);
             }
         }
         private void tabPage_edit_roles_Enter(object sender, EventArgs e)
@@ -964,7 +946,7 @@ namespace ProjektMagazyn
 
                 WczytajUzytkownikowZUprawnieniami(wybraneUprawnienieId);
 
-                if (dvg_users_perms.DataSource != null)
+                if (dgv_users_perms.DataSource != null)
                 {
                     isFiltered = true;
                     btn_filter_perms.Text = "Odfiltruj";
@@ -985,33 +967,6 @@ namespace ProjektMagazyn
             }
         }
 
-        private void OdswiezListeUprawnien()
-        {
-            string query = @"
-                SELECT 
-                    u.UprawnienieID, 
-                    u.Nazwa, 
-                    COUNT(uu.UzytkownikID) AS PosiadaUprawnienie
-                FROM Uprawnienia u
-                LEFT JOIN Uzytkownicy_Uprawnienia uu ON u.UprawnienieID = uu.UprawnienieID
-                GROUP BY u.UprawnienieID, u.Nazwa";
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                    DataTable dt = new DataTable();
-                    adapter.Fill(dt);
-
-                    dgv_roles.DataSource = dt;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Błąd podczas pobierania danych: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         private void ZaladujListeUzytkownikow()
         {
             try
@@ -1165,12 +1120,12 @@ namespace ProjektMagazyn
                     if (uprawnienieId.HasValue && dt.Rows.Count == 0)
                     {
                         MessageBox.Show("Nie znaleziono użytkowników o wskazanym uprawnieniu", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        dvg_users_perms.DataSource = null;
+                        dgv_users_perms.DataSource = null;
                         return;
                     }
 
-                    dvg_users_perms.DataSource = dt;
-                    dvg_users_perms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                    dgv_users_perms.DataSource = dt;
+                    dgv_users_perms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 }
             }
             catch (Exception ex)

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace TabControls
 {
-    internal class DotNetBarTabControl : TabControl
+    public class DotNetBarTabControl : TabControl
     {
         public DotNetBarTabControl()
         {
