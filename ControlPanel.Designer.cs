@@ -75,6 +75,7 @@ namespace ProjektMagazyn
             this.msktbx_user_login = new System.Windows.Forms.MaskedTextBox();
             this.lbl_user_login = new System.Windows.Forms.Label();
             this.tabPage_edit_user = new System.Windows.Forms.TabPage();
+            this.clb_user_role_edit = new System.Windows.Forms.CheckedListBox();
             this.btn_unlock_edit = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
             this.cmbx_select_user_edit = new System.Windows.Forms.ComboBox();
@@ -150,6 +151,7 @@ namespace ProjektMagazyn
             this.btn_save_role_changes = new System.Windows.Forms.Button();
             this.lbl_choose_user = new System.Windows.Forms.Label();
             this.cmbx_select_user_role_edit = new System.Windows.Forms.ComboBox();
+            this.clb_user_role_view = new System.Windows.Forms.CheckedListBox();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -621,6 +623,7 @@ namespace ProjektMagazyn
             // 
             // tabPage_edit_user
             // 
+            this.tabPage_edit_user.Controls.Add(this.clb_user_role_edit);
             this.tabPage_edit_user.Controls.Add(this.btn_unlock_edit);
             this.tabPage_edit_user.Controls.Add(this.label17);
             this.tabPage_edit_user.Controls.Add(this.cmbx_select_user_edit);
@@ -651,6 +654,14 @@ namespace ProjektMagazyn
             this.tabPage_edit_user.TabIndex = 1;
             this.tabPage_edit_user.Text = "Edytuj";
             this.tabPage_edit_user.UseVisualStyleBackColor = true;
+            // 
+            // clb_user_role_edit
+            // 
+            this.clb_user_role_edit.FormattingEnabled = true;
+            this.clb_user_role_edit.Location = new System.Drawing.Point(25, 149);
+            this.clb_user_role_edit.Name = "clb_user_role_edit";
+            this.clb_user_role_edit.Size = new System.Drawing.Size(212, 79);
+            this.clb_user_role_edit.TabIndex = 63;
             // 
             // btn_unlock_edit
             // 
@@ -945,6 +956,7 @@ namespace ProjektMagazyn
             // 
             // tabPage_view_user
             // 
+            this.tabPage_view_user.Controls.Add(this.clb_user_role_view);
             this.tabPage_view_user.Controls.Add(this.btn_close_view);
             this.tabPage_view_user.Controls.Add(this.label1);
             this.tabPage_view_user.Controls.Add(this.cmbx_gender_view);
@@ -1406,6 +1418,14 @@ namespace ProjektMagazyn
             this.cmbx_select_user_role_edit.TabIndex = 0;
             this.cmbx_select_user_role_edit.SelectedIndexChanged += new System.EventHandler(this.cmbx_select_user_role_edit_SelectedIndexChanged);
             // 
+            // clb_user_role_view
+            // 
+            this.clb_user_role_view.FormattingEnabled = true;
+            this.clb_user_role_view.Location = new System.Drawing.Point(28, 90);
+            this.clb_user_role_view.Name = "clb_user_role_view";
+            this.clb_user_role_view.Size = new System.Drawing.Size(212, 79);
+            this.clb_user_role_view.TabIndex = 64;
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1568,5 +1588,7 @@ namespace ProjektMagazyn
         private ComboBox cmbx_permissions;
         private CheckedListBox clb_add_user_role;
         private Label lbl_role;
+        private CheckedListBox clb_user_role_edit;
+        private CheckedListBox clb_user_role_view;
     }
 }
