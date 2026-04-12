@@ -39,6 +39,8 @@ namespace ProjektMagazyn
             ZablokujPolaEdycji();
             database.ListaUprawnienDvg(dgv_roles);
             database.ListaUprawnienClb(clb_add_user_role);
+            database.ListaUprawnienClb(clb_user_role_edit);
+            database.ListaUprawnienClb(clb_user_role_view);
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
             tbx_search.GotFocus += tbx_search_GotFocus;
@@ -74,7 +76,7 @@ namespace ProjektMagazyn
             int invalids = 0;
 
             List<Control> textboxes = new List<Control>
-                {
+            {
                     msktbx_user_login,
                     msktbx_password,
                     msktbx_user_name,
@@ -88,12 +90,7 @@ namespace ProjektMagazyn
                     msktbx_street,
                     msktbx_street_number,
                     msktbx_locale_number
-                };
-            foreach (var textbox in textboxes)
-            {
-                textbox.BackColor = Color.White;
-            }
-            clb_add_user_role.BackColor = Color.White;
+            };
 
             if (!validation.valid_login(login))
             {
@@ -255,7 +252,7 @@ namespace ProjektMagazyn
         private void btn_cancel_Click(object sender, EventArgs e)
         {
             List<Control> textboxes = new List<Control>
-                {
+            {
                     msktbx_user_login,
                     msktbx_password,
                     msktbx_user_name,
@@ -269,7 +266,7 @@ namespace ProjektMagazyn
                     msktbx_street,
                     msktbx_street_number,
                     msktbx_locale_number
-                };
+            };
 
             ClearAddUserData(textboxes);
             dotNetBarTabControl_main_view.SelectedTab = tabPage_overview;
@@ -543,9 +540,24 @@ namespace ProjektMagazyn
 
         private void ZablokujPolaEdycji()
         {
-            var controls = new List<Control> { msktbx_user_name_edit, msktbx_user_surname_edit, cmbx_gender_edit, msktbx_pesel_edit, msktbx_email_edit, msktbx_phone_edit, dtpckr_birthdate_edit, msktbx_city_edit, msktbx_street_edit, msktbx_street_number_edit, msktbx_locale_number_edit };
+            var controls = new List<Control> 
+            {
+                msktbx_user_login_edit,
+                msktbx_user_name_edit, 
+                msktbx_user_surname_edit, 
+                cmbx_gender_edit, 
+                msktbx_pesel_edit, 
+                msktbx_email_edit, 
+                msktbx_phone_edit, 
+                dtpckr_birthdate_edit, 
+                msktbx_city_edit, 
+                msktbx_street_edit, 
+                msktbx_street_number_edit, 
+                msktbx_locale_number_edit,
+                clb_user_role_edit,
+                clb_user_role_view
+            };
             foreach (var ctrl in controls) ctrl.Enabled = false;
-            msktbx_user_login_edit.Enabled = false;
         }
 
         private void cmbx_select_user_edit_SelectedIndexChanged(object sender, EventArgs e)
@@ -622,7 +634,21 @@ namespace ProjektMagazyn
                 return;
             }
 
-            var controls = new List<Control> { msktbx_user_name_edit, msktbx_user_surname_edit, cmbx_gender_edit, msktbx_pesel_edit, msktbx_email_edit, msktbx_phone_edit, dtpckr_birthdate_edit, msktbx_city_edit, msktbx_street_edit, msktbx_street_number_edit, msktbx_locale_number_edit };
+            var controls = new List<Control> 
+            { 
+                    msktbx_user_name_edit,
+                    msktbx_user_surname_edit, 
+                    cmbx_gender_edit, 
+                    msktbx_pesel_edit, 
+                    msktbx_email_edit, 
+                    msktbx_phone_edit, 
+                    dtpckr_birthdate_edit, 
+                    msktbx_city_edit, 
+                    msktbx_street_edit, 
+                    msktbx_street_number_edit, 
+                    msktbx_locale_number_edit,
+                    clb_user_role_edit
+            };
             foreach (var ctrl in controls) ctrl.Enabled = true;
 
             MessageBox.Show("Pola zostały odblokowane. Możesz wprowadzić zmiany.");
