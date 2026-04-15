@@ -35,22 +35,34 @@ namespace ProjektMagazyn
         public ControlPanel()
         {
             InitializeComponent();
+            this.Load += ControlPanel_Load;
+        }
+        private void ControlPanel_Load(object sender, EventArgs e)
+        {
+            LoadData();
+        }
+        private void LoadData()
+        {
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
+
             database.ListaUprawnienDvg(dgv_roles);
             database.ListaUprawnienClb(clb_add_user_role);
             database.ListaUprawnienClb(clb_user_role_edit);
             database.ListaUprawnienClb(clb_user_role_view);
+            database.ListaUprawnienClb(clb_roles_group_edit);
+            database.ListaUzytkownikowClb(clb_users_group_edit);
+
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
+
             tbx_search.GotFocus += tbx_search_GotFocus;
-            
+
             //Ukrywanie zakładki z podglądem
             if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
             {
                 dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
             }
-
         }
         private void tbx_search_GotFocus(object sender, EventArgs e)
         {
@@ -949,6 +961,20 @@ namespace ProjektMagazyn
                 database.ListaUprawnienDvg(dgv_roles);
             }
         }
+
+        private void btn_group_edit_save_Click(object sender, EventArgs e)
+        {
+            var users = database.GetSelectedIds(clb_users_group_edit, "UzytkownikId");
+            var roles = database.GetSelectedIds(clb_roles_group_edit, "UprawnienieId");
+
+            database.SynchronizujRole(users, roles);
+        }
+
+        private void btn_group_edit_cancel_Click(object sender, EventArgs e)
+        {
+            dotNetBarTabControl_manage_roles.SelectedTab = tabPage_roles_overview;
+        }
+
         private void tabPage_edit_roles_Enter(object sender, EventArgs e)
         {
             if (cmbx_select_user_role_edit.DataSource == null)
