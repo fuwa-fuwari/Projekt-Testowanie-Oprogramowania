@@ -67,6 +67,32 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
             }
         }
+        public void ListaUzytkownikowClb(CheckedListBox checkedListBox)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = @"
+                             SELECT UzytkownikId, Imie + ' ' + Nazwisko AS Uzytkownicy
+                             FROM Uzytkownicy
+                             WHERE CzyZapomniany = 0";
+
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    checkedListBox.DataSource = dt;
+                    checkedListBox.DisplayMember = "Uzytkownicy";
+                    checkedListBox.ValueMember = "UzytkownikId";
+                    checkedListBox.ClearSelected();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania listy użytkowników: " + ex.Message);
+            }
+        }
         public void ListaUprawnienDvg(DataGridView dataGridView)
         {
             string query = @"
@@ -92,6 +118,144 @@ namespace ProjektMagazyn
             catch (Exception ex)
             {
                 MessageBox.Show("Błąd podczas pobierania danych: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public List<int> GetSelectedIds(CheckedListBox clb, string valueMember)
+        {
+            List<int> ids = new List<int>();
+
+            foreach (var item in clb.CheckedItems)
+            {
+                if (item is DataRowView row)
+                {
+                    ids.Add((int)row[valueMember]);
+                }
+            }
+
+            return ids;
+        }
+        public void SynchronizujRole(List<int> userIds, List<int> roleIds)
+        {
+            if (!userIds.Any())
+            {
+                MessageBox.Show("Wybierz użytkowników.");
+                return;
+            }
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (SqlTransaction tran = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        int changes = 0;
+
+                        int adminRoleId;
+                        using (SqlCommand cmd = new SqlCommand(
+                            "SELECT UprawnienieId FROM Uprawnienia WHERE Nazwa = 'Administrator'",
+                            conn, tran))
+                        {
+                            adminRoleId = (int)cmd.ExecuteScalar();
+                        }
+                        
+                        int adminBefore;
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"SELECT COUNT(DISTINCT UzytkownikId)
+                            FROM Uzytkownicy_Uprawnienia
+                            WHERE UprawnienieId = @id",
+                            conn, tran))
+                        {
+                            cmd.Parameters.AddWithValue("@id", adminRoleId);
+                            adminBefore = (int)cmd.ExecuteScalar();
+                        }
+
+                        foreach (int userId in userIds)
+                        {
+                            List<int> currentRoles = new List<int>();
+
+                            using (SqlCommand cmd = new SqlCommand(
+                                @"SELECT UprawnienieId 
+                                FROM Uzytkownicy_Uprawnienia 
+                                WHERE UzytkownikId = @userId",
+                                conn, tran))
+                            {
+                                cmd.Parameters.AddWithValue("@userId", userId);
+
+                                using (SqlDataReader r = cmd.ExecuteReader())
+                                {
+                                    while (r.Read())
+                                        currentRoles.Add((int)r["UprawnienieId"]);
+                                }
+                            }
+
+                            var toAdd = roleIds.Except(currentRoles);
+
+                            foreach (var roleId in toAdd)
+                            {
+                                using (SqlCommand cmd = new SqlCommand(
+                                    @"INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikId, UprawnienieId)
+                                    VALUES (@u, @r)",
+                                    conn, tran))
+                                {
+                                    cmd.Parameters.AddWithValue("@u", userId);
+                                    cmd.Parameters.AddWithValue("@r", roleId);
+
+                                    changes += cmd.ExecuteNonQuery();
+                                }
+                            }
+
+                            var toRemove = currentRoles.Except(roleIds);
+
+                            foreach (var roleId in toRemove)
+                            {
+                                using (SqlCommand cmd = new SqlCommand(
+                                    @"DELETE FROM Uzytkownicy_Uprawnienia
+                                    WHERE UzytkownikId = @u AND UprawnienieId = @r",
+                                    conn, tran))
+                                {
+                                    cmd.Parameters.AddWithValue("@u", userId);
+                                    cmd.Parameters.AddWithValue("@r", roleId);
+
+                                    changes += cmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
+
+                        int adminAfter;
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"SELECT COUNT(DISTINCT UzytkownikId)
+                            FROM Uzytkownicy_Uprawnienia
+                            WHERE UprawnienieId = @id",
+                            conn, tran))
+                        {
+                            cmd.Parameters.AddWithValue("@id", adminRoleId);
+                            adminAfter = (int)cmd.ExecuteScalar();
+                        }
+
+                        if (adminAfter == 0)
+                        {
+                            tran.Rollback();
+                            MessageBox.Show("Musi pozostać przynajmniej jeden administrator.");
+                            return;
+                        }
+
+                        if (changes == 0)
+                        {
+                            tran.Rollback();
+                            MessageBox.Show("Brak zmian.");
+                            return;
+                        }
+
+                        tran.Commit();
+                        MessageBox.Show("Zapisano zmiany.");
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        MessageBox.Show("Błąd: " + ex.Message);
+                    }
+                }
             }
         }
     }

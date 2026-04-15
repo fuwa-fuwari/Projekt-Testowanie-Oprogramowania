@@ -108,6 +108,7 @@ namespace ProjektMagazyn
             this.msktbx_user_login_edit = new System.Windows.Forms.MaskedTextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.tabPage_view_user = new System.Windows.Forms.TabPage();
+            this.clb_user_role_view = new System.Windows.Forms.CheckedListBox();
             this.btn_close_view = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbx_gender_view = new System.Windows.Forms.ComboBox();
@@ -147,11 +148,14 @@ namespace ProjektMagazyn
             this.tabPage_edit_roles = new System.Windows.Forms.TabPage();
             this.btn_cancel_role = new System.Windows.Forms.Button();
             this.clb_roles = new System.Windows.Forms.CheckedListBox();
-            this.label30 = new System.Windows.Forms.Label();
             this.btn_save_role_changes = new System.Windows.Forms.Button();
             this.lbl_choose_user = new System.Windows.Forms.Label();
             this.cmbx_select_user_role_edit = new System.Windows.Forms.ComboBox();
-            this.clb_user_role_view = new System.Windows.Forms.CheckedListBox();
+            this.tabPage_group_edit = new System.Windows.Forms.TabPage();
+            this.btn_group_edit_cancel = new System.Windows.Forms.Button();
+            this.btn_group_edit_save = new System.Windows.Forms.Button();
+            this.clb_roles_group_edit = new System.Windows.Forms.CheckedListBox();
+            this.clb_users_group_edit = new System.Windows.Forms.CheckedListBox();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -169,6 +173,7 @@ namespace ProjektMagazyn
             ((System.ComponentModel.ISupportInitialize)(this.dgv_users_perms)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).BeginInit();
             this.tabPage_edit_roles.SuspendLayout();
+            this.tabPage_group_edit.SuspendLayout();
             this.SuspendLayout();
             // 
             // dotNetBarTabControl_main_view
@@ -985,6 +990,14 @@ namespace ProjektMagazyn
             this.tabPage_view_user.Text = "Podgląd użytkownika";
             this.tabPage_view_user.UseVisualStyleBackColor = true;
             // 
+            // clb_user_role_view
+            // 
+            this.clb_user_role_view.FormattingEnabled = true;
+            this.clb_user_role_view.Location = new System.Drawing.Point(28, 90);
+            this.clb_user_role_view.Name = "clb_user_role_view";
+            this.clb_user_role_view.Size = new System.Drawing.Size(212, 79);
+            this.clb_user_role_view.TabIndex = 64;
+            // 
             // btn_close_view
             // 
             this.btn_close_view.BackColor = System.Drawing.Color.White;
@@ -1274,6 +1287,7 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_manage_roles.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.dotNetBarTabControl_manage_roles.Controls.Add(this.tabPage_roles_overview);
             this.dotNetBarTabControl_manage_roles.Controls.Add(this.tabPage_edit_roles);
+            this.dotNetBarTabControl_manage_roles.Controls.Add(this.tabPage_group_edit);
             this.dotNetBarTabControl_manage_roles.ItemSize = new System.Drawing.Size(44, 136);
             this.dotNetBarTabControl_manage_roles.Location = new System.Drawing.Point(-2, -4);
             this.dotNetBarTabControl_manage_roles.Multiline = true;
@@ -1350,7 +1364,6 @@ namespace ProjektMagazyn
             // 
             this.tabPage_edit_roles.Controls.Add(this.btn_cancel_role);
             this.tabPage_edit_roles.Controls.Add(this.clb_roles);
-            this.tabPage_edit_roles.Controls.Add(this.label30);
             this.tabPage_edit_roles.Controls.Add(this.btn_save_role_changes);
             this.tabPage_edit_roles.Controls.Add(this.lbl_choose_user);
             this.tabPage_edit_roles.Controls.Add(this.cmbx_select_user_role_edit);
@@ -1381,15 +1394,6 @@ namespace ProjektMagazyn
             this.clb_roles.Size = new System.Drawing.Size(493, 94);
             this.clb_roles.TabIndex = 8;
             // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(48, 313);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(327, 13);
-            this.label30.TabIndex = 7;
-            this.label30.Text = "// jak user posiada uprawnienie to checkbox ładuje się zaznaczony";
-            // 
             // btn_save_role_changes
             // 
             this.btn_save_role_changes.Location = new System.Drawing.Point(175, 277);
@@ -1418,13 +1422,54 @@ namespace ProjektMagazyn
             this.cmbx_select_user_role_edit.TabIndex = 0;
             this.cmbx_select_user_role_edit.SelectedIndexChanged += new System.EventHandler(this.cmbx_select_user_role_edit_SelectedIndexChanged);
             // 
-            // clb_user_role_view
+            // tabPage_group_edit
             // 
-            this.clb_user_role_view.FormattingEnabled = true;
-            this.clb_user_role_view.Location = new System.Drawing.Point(28, 90);
-            this.clb_user_role_view.Name = "clb_user_role_view";
-            this.clb_user_role_view.Size = new System.Drawing.Size(212, 79);
-            this.clb_user_role_view.TabIndex = 64;
+            this.tabPage_group_edit.Controls.Add(this.btn_group_edit_cancel);
+            this.tabPage_group_edit.Controls.Add(this.btn_group_edit_save);
+            this.tabPage_group_edit.Controls.Add(this.clb_roles_group_edit);
+            this.tabPage_group_edit.Controls.Add(this.clb_users_group_edit);
+            this.tabPage_group_edit.Location = new System.Drawing.Point(140, 4);
+            this.tabPage_group_edit.Name = "tabPage_group_edit";
+            this.tabPage_group_edit.Size = new System.Drawing.Size(597, 527);
+            this.tabPage_group_edit.TabIndex = 2;
+            this.tabPage_group_edit.Text = "Edycja grupowa";
+            this.tabPage_group_edit.UseVisualStyleBackColor = true;
+            // 
+            // btn_group_edit_cancel
+            // 
+            this.btn_group_edit_cancel.Location = new System.Drawing.Point(23, 485);
+            this.btn_group_edit_cancel.Name = "btn_group_edit_cancel";
+            this.btn_group_edit_cancel.Size = new System.Drawing.Size(256, 26);
+            this.btn_group_edit_cancel.TabIndex = 3;
+            this.btn_group_edit_cancel.Text = "Anuluj";
+            this.btn_group_edit_cancel.UseVisualStyleBackColor = true;
+            this.btn_group_edit_cancel.Click += new System.EventHandler(this.btn_group_edit_cancel_Click);
+            // 
+            // btn_group_edit_save
+            // 
+            this.btn_group_edit_save.Location = new System.Drawing.Point(314, 486);
+            this.btn_group_edit_save.Name = "btn_group_edit_save";
+            this.btn_group_edit_save.Size = new System.Drawing.Size(256, 26);
+            this.btn_group_edit_save.TabIndex = 2;
+            this.btn_group_edit_save.Text = "Zapisz";
+            this.btn_group_edit_save.UseVisualStyleBackColor = true;
+            this.btn_group_edit_save.Click += new System.EventHandler(this.btn_group_edit_save_Click);
+            // 
+            // clb_roles_group_edit
+            // 
+            this.clb_roles_group_edit.FormattingEnabled = true;
+            this.clb_roles_group_edit.Location = new System.Drawing.Point(314, 85);
+            this.clb_roles_group_edit.Name = "clb_roles_group_edit";
+            this.clb_roles_group_edit.Size = new System.Drawing.Size(256, 394);
+            this.clb_roles_group_edit.TabIndex = 1;
+            // 
+            // clb_users_group_edit
+            // 
+            this.clb_users_group_edit.FormattingEnabled = true;
+            this.clb_users_group_edit.Location = new System.Drawing.Point(23, 85);
+            this.clb_users_group_edit.Name = "clb_users_group_edit";
+            this.clb_users_group_edit.Size = new System.Drawing.Size(256, 394);
+            this.clb_users_group_edit.TabIndex = 0;
             // 
             // ControlPanel
             // 
@@ -1462,6 +1507,7 @@ namespace ProjektMagazyn
             ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).EndInit();
             this.tabPage_edit_roles.ResumeLayout(false);
             this.tabPage_edit_roles.PerformLayout();
+            this.tabPage_group_edit.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1578,7 +1624,6 @@ namespace ProjektMagazyn
         private DataGridView dgv_roles;
         private Label lbl_choose_user;
         private ComboBox cmbx_select_user_role_edit;
-        private Label label30;
         private Button btn_save_role_changes;
         private Label lbl_roles;
         private CheckedListBox clb_roles;
@@ -1590,5 +1635,10 @@ namespace ProjektMagazyn
         private Label lbl_role;
         private CheckedListBox clb_user_role_edit;
         private CheckedListBox clb_user_role_view;
+        private TabPage tabPage_group_edit;
+        private Button btn_group_edit_save;
+        private CheckedListBox clb_roles_group_edit;
+        private CheckedListBox clb_users_group_edit;
+        private Button btn_group_edit_cancel;
     }
 }
