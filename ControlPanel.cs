@@ -341,21 +341,22 @@ namespace ProjektMagazyn
                             }
 
                             string anonimizacjaQuery = @"
-                                UPDATE Uzytkownicy SET
-                                    Imie = 'Zanonimizowano',
-                                    Nazwisko = 'Zanonimizowano',
-                                    Login = @fakeLogin,
-                                    Email = @fakeEmail,
-                                    PESEL = @fakePesel, 
-                                    DataUrodzenia = '1900-01-01',
-                                    Plec = 'zanonimizowano',
-                                    Miejscowosc = '***',
-                                    Ulica = '***',
-                                    Telefon = '000000000',
-                                    HasloHash = 'ZABLOKOWANE',
-                                    CzyZapomniany = 1,
-                                    DataZapomnienia = GETDATE()
-                                WHERE UzytkownikID = @id";
+                        UPDATE Uzytkownicy SET
+                            Imie = 'Zanonimizowano',
+                            Nazwisko = 'Zanonimizowano',
+                            Login = @fakeLogin,
+                            Email = @fakeEmail,
+                            PESEL = @fakePesel, 
+                            DataUrodzenia = '1900-01-01',
+                            Plec = 'zanonimizowano',
+                            Miejscowosc = '***',
+                            Ulica = '***',
+                            Telefon = '000000000',
+                            HasloHash = 'ZABLOKOWANE',
+                            CzyZapomniany = 1,
+                            DataZapomnienia = GETDATE(),
+                            ZapomnianyPrzezID = 1
+                        WHERE UzytkownikID = @id";
 
                             using (SqlCommand cmdAnonimizacja = new SqlCommand(anonimizacjaQuery, conn, transaction))
                             {
@@ -470,14 +471,17 @@ namespace ProjektMagazyn
             DatabaseConnection databaseConnection = new DatabaseConnection();
             string query = @"
                 SELECT 
-                    UzytkownikID, 
-                    Login, 
-                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
-                    Email, 
-                    PESEL 
-                FROM Uzytkownicy 
-                WHERE CzyZapomniany = 1
-                ORDER BY Nazwisko";
+                    u1.UzytkownikID, 
+                    u1.Login, 
+                    u1.Imie + ' ' + u1.Nazwisko AS [Imię i Nazwisko], 
+                    u1.Email, 
+                    u1.PESEL,
+                    u1.DataZapomnienia AS [Data usunięcia],
+                    u2.Login AS [Usunięty przez]
+                FROM Uzytkownicy u1
+                LEFT JOIN Uzytkownicy u2 ON u1.ZapomnianyPrzezID = u2.UzytkownikID
+                WHERE u1.CzyZapomniany = 1
+                ORDER BY u1.Nazwisko";
             databaseConnection.display_table_users(dvg_user_list, query);
         }
 
