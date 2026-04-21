@@ -32,6 +32,7 @@ namespace ProjektMagazyn
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
             this.tabPage_overview = new System.Windows.Forms.TabPage();
+            this.btn_logout = new System.Windows.Forms.Button();
             this.btn_show_forgotten = new System.Windows.Forms.Button();
             this.tbx_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
@@ -187,7 +188,7 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_main_view.Multiline = true;
             this.dotNetBarTabControl_main_view.Name = "dotNetBarTabControl_main_view";
             this.dotNetBarTabControl_main_view.SelectedIndex = 0;
-            this.dotNetBarTabControl_main_view.Size = new System.Drawing.Size(887, 535);
+            this.dotNetBarTabControl_main_view.Size = new System.Drawing.Size(887, 511);
             this.dotNetBarTabControl_main_view.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.dotNetBarTabControl_main_view.TabIndex = 2;
             // 
@@ -202,10 +203,21 @@ namespace ProjektMagazyn
             this.tabPage_overview.Location = new System.Drawing.Point(146, 4);
             this.tabPage_overview.Name = "tabPage_overview";
             this.tabPage_overview.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_overview.Size = new System.Drawing.Size(737, 527);
+            this.tabPage_overview.Size = new System.Drawing.Size(737, 503);
             this.tabPage_overview.TabIndex = 1;
             this.tabPage_overview.Text = "Przegląd";
             this.tabPage_overview.UseVisualStyleBackColor = true;
+            // 
+            // btn_logout
+            // 
+            this.btn_logout.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_logout.Location = new System.Drawing.Point(12, 525);
+            this.btn_logout.Name = "btn_logout";
+            this.btn_logout.Size = new System.Drawing.Size(146, 27);
+            this.btn_logout.TabIndex = 10;
+            this.btn_logout.Text = "Wyloguj";
+            this.btn_logout.UseVisualStyleBackColor = true;
+            this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
             // btn_show_forgotten
             // 
@@ -1477,6 +1489,7 @@ namespace ProjektMagazyn
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(911, 559);
+            this.Controls.Add(this.btn_logout);
             this.Controls.Add(this.dotNetBarTabControl_main_view);
             this.Name = "ControlPanel";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1640,5 +1653,6 @@ namespace ProjektMagazyn
         private CheckedListBox clb_roles_group_edit;
         private CheckedListBox clb_users_group_edit;
         private Button btn_group_edit_cancel;
+        private Button btn_logout;
     }
 }

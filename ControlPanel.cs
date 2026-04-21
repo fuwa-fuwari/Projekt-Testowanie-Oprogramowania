@@ -975,6 +975,11 @@ namespace ProjektMagazyn
             dotNetBarTabControl_manage_roles.SelectedTab = tabPage_roles_overview;
         }
 
+        private void btn_logout_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
         private void tabPage_edit_roles_Enter(object sender, EventArgs e)
         {
             if (cmbx_select_user_role_edit.DataSource == null)

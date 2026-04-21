@@ -24,14 +24,14 @@ namespace ProjektMagazyn
 
             if (tbx_login.Text == "admin1" && SecurePasswordHasher.Verify(tbx_password.Text, hash))
             {
-                ControlPanel administrator = new ControlPanel();
-                administrator.Location = this.Location;
-                administrator.FormClosed += new FormClosedEventHandler(otherForm_FormClosed);
+                ControlPanel controlPanel = new ControlPanel();
+                controlPanel.Location = this.Location;
+                controlPanel.FormClosed += new FormClosedEventHandler(otherForm_FormClosed);
                 clear_field(tbx_login);
                 clear_field(tbx_password);
                 tbx_login.Focus();
                 this.Hide();
-                administrator.Show();
+                controlPanel.Show();
             }
             else if (tbx_login.Text != "admin1" && SecurePasswordHasher.Verify(tbx_password.Text, hash))
             {
