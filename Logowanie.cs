@@ -36,39 +36,41 @@ namespace ProjektMagazyn
                 {
                     conn.Open();
 
-                    string query = "SELECT HasloHash FROM Uzytkownicy WHERE Login = @login AND CzyZapomniany = 0";
+                    string query = "SELECT UzytkownikID, HasloHash FROM Uzytkownicy WHERE Login = @login AND CzyZapomniany = 0";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@login", login);
 
-                        var result = cmd.ExecuteScalar();
-
-                        if (result == null)
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            MessageBox.Show("Niepoprawny login");
-                            return;
-                        }
+                            if (!reader.Read())
+                            {
+                                MessageBox.Show("Niepoprawny login");
+                                return;
+                            }
 
-                        string hash = result.ToString();
+                            int userId = Convert.ToInt32(reader["UzytkownikID"]);
+                            string hash = reader["HasloHash"].ToString();
 
-                        if (SecurePasswordHasher.Verify(password, hash))
-                        {
-                            ControlPanel controlPanel = new ControlPanel();
-                            controlPanel.Location = this.Location;
-                            controlPanel.FormClosed += otherForm_FormClosed;
+                            if (SecurePasswordHasher.Verify(password, hash))
+                            {
+                                ControlPanel controlPanel = new ControlPanel(userId);
+                                controlPanel.Location = this.Location;
+                                controlPanel.FormClosed += otherForm_FormClosed;
 
-                            clear_field(tbx_login);
-                            clear_field(tbx_password);
+                                clear_field(tbx_login);
+                                clear_field(tbx_password);
 
-                            this.Hide();
-                            controlPanel.Show();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Niepoprawne hasło");
-                            clear_field(tbx_password);
-                            tbx_password.Focus();
+                                this.Hide();
+                                controlPanel.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Niepoprawne hasło");
+                                clear_field(tbx_password);
+                                tbx_password.Focus();
+                            }
                         }
                     }
                 }

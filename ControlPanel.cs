@@ -32,9 +32,11 @@ namespace ProjektMagazyn
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
         private DateTime origBirthdate;
         private string origCity, origStreet, origStreetNumber, origLocaleNumber;
-        public ControlPanel()
+        private int loggedUserId;
+        public ControlPanel(int userId)
         {
             InitializeComponent();
+            loggedUserId = userId;
             this.Load += ControlPanel_Load;
         }
         private void ControlPanel_Load(object sender, EventArgs e)
@@ -55,6 +57,7 @@ namespace ProjektMagazyn
 
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
+            LoadMyProfile();
 
             tbx_search.GotFocus += tbx_search_GotFocus;
 
@@ -821,6 +824,10 @@ namespace ProjektMagazyn
             {
                 WczytajUzytkownikowDoListy();
             }
+            if (dotNetBarTabControl_manage_users.SelectedTab == tabPage_my_profile)
+            {
+                LoadMyProfile();
+            }
         }
 
         private void ZaladujPodgladUzytkownika(int id)
@@ -985,6 +992,65 @@ namespace ProjektMagazyn
 
             if (clb_roles.DataSource == null)
                 ZaladujListeUprawnien();
+        }
+
+        private void btn_change_password_Click(object sender, EventArgs e)
+        {
+            string oldPass = tbx_profile_old_password.Text;
+            string newPass = tbx_profile_new_password.Text;
+            string repeat = tbx_profile_repeat_password.Text;
+
+            if (string.IsNullOrWhiteSpace(oldPass) ||
+                string.IsNullOrWhiteSpace(newPass) ||
+                string.IsNullOrWhiteSpace(repeat))
+            {
+                MessageBox.Show("Wszystkie pola hasła muszą być wypełnione.");
+                return;
+            }
+
+            if (newPass != repeat)
+            {
+                MessageBox.Show("Nowe hasła nie są takie same.");
+                return;
+            }
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string getHashQuery = "SELECT HasloHash FROM Uzytkownicy WHERE UzytkownikID = @id";
+
+                string currentHash = "";
+
+                using (SqlCommand cmd = new SqlCommand(getHashQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", loggedUserId);
+                    currentHash = cmd.ExecuteScalar()?.ToString();
+                }
+
+                if (!SecurePasswordHasher.Verify(oldPass, currentHash))
+                {
+                    MessageBox.Show("Stare hasło jest niepoprawne.");
+                    return;
+                }
+
+                string newHash = SecurePasswordHasher.Hash(newPass);
+
+                string updateQuery = "UPDATE Uzytkownicy SET HasloHash = @pass WHERE UzytkownikID = @id";
+
+                using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@pass", newHash);
+                    cmd.Parameters.AddWithValue("@id", loggedUserId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            MessageBox.Show("Hasło zostało zmienione.");
+
+            tbx_profile_old_password.Clear();
+            tbx_profile_new_password.Clear();
+            tbx_profile_repeat_password.Clear();
         }
 
         private void btn_filter_perms_Click(object sender, EventArgs e)
@@ -1196,5 +1262,36 @@ namespace ProjektMagazyn
             if (clb_roles.DataSource != null)
                 ZaladujUprawnieniaUzytkownika(userId);
         }
+        private void LoadMyProfile()
+        {
+            if (loggedUserId == -1) return;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = @"
+            SELECT Login, Imie, Nazwisko, Email
+            FROM Uzytkownicy
+            WHERE UzytkownikID = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", loggedUserId);
+
+                    using (SqlDataReader r = cmd.ExecuteReader())
+                    {
+                        if (r.Read())
+                        {
+                            tbx_profile_login.Text = r["Login"].ToString();
+                            tbx_profile_name.Text = r["Imie"].ToString();
+                            tbx_profile_surname.Text = r["Nazwisko"].ToString();
+                            tbx_profile_email.Text = r["Email"].ToString();
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

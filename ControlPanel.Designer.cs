@@ -155,6 +155,22 @@ namespace ProjektMagazyn
             this.clb_roles_group_edit = new System.Windows.Forms.CheckedListBox();
             this.clb_users_group_edit = new System.Windows.Forms.CheckedListBox();
             this.btn_logout = new System.Windows.Forms.Button();
+            this.tabPage_my_profile = new System.Windows.Forms.TabPage();
+            this.label31 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
+            this.tbx_profile_login = new System.Windows.Forms.TextBox();
+            this.tbx_profile_name = new System.Windows.Forms.TextBox();
+            this.tbx_profile_surname = new System.Windows.Forms.TextBox();
+            this.tbx_profile_email = new System.Windows.Forms.TextBox();
+            this.tbx_profile_old_password = new System.Windows.Forms.TextBox();
+            this.tbx_profile_new_password = new System.Windows.Forms.TextBox();
+            this.tbx_profile_repeat_password = new System.Windows.Forms.TextBox();
+            this.btn_change_password = new System.Windows.Forms.Button();
+            this.lbl_old_password = new System.Windows.Forms.Label();
+            this.lbl_new_password = new System.Windows.Forms.Label();
+            this.lbl_repeat_password = new System.Windows.Forms.Label();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -173,11 +189,13 @@ namespace ProjektMagazyn
             ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).BeginInit();
             this.tabPage_edit_roles.SuspendLayout();
             this.tabPage_group_edit.SuspendLayout();
+            this.tabPage_my_profile.SuspendLayout();
             this.SuspendLayout();
             // 
             // dotNetBarTabControl_main_view
             // 
             this.dotNetBarTabControl_main_view.Alignment = System.Windows.Forms.TabAlignment.Left;
+            this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_my_profile);
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_overview);
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_users);
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_roles);
@@ -201,7 +219,7 @@ namespace ProjektMagazyn
             this.tabPage_overview.Location = new System.Drawing.Point(146, 4);
             this.tabPage_overview.Name = "tabPage_overview";
             this.tabPage_overview.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_overview.Size = new System.Drawing.Size(737, 503);
+            this.tabPage_overview.Size = new System.Drawing.Size(763, 541);
             this.tabPage_overview.TabIndex = 1;
             this.tabPage_overview.Text = "Przegląd";
             this.tabPage_overview.UseVisualStyleBackColor = true;
@@ -635,7 +653,7 @@ namespace ProjektMagazyn
             this.tabPage_edit_user.Location = new System.Drawing.Point(140, 4);
             this.tabPage_edit_user.Name = "tabPage_edit_user";
             this.tabPage_edit_user.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_edit_user.Size = new System.Drawing.Size(597, 527);
+            this.tabPage_edit_user.Size = new System.Drawing.Size(623, 541);
             this.tabPage_edit_user.TabIndex = 1;
             this.tabPage_edit_user.Text = "Edytuj";
             this.tabPage_edit_user.UseVisualStyleBackColor = true;
@@ -965,7 +983,7 @@ namespace ProjektMagazyn
             this.tabPage_view_user.Location = new System.Drawing.Point(140, 4);
             this.tabPage_view_user.Name = "tabPage_view_user";
             this.tabPage_view_user.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_view_user.Size = new System.Drawing.Size(597, 527);
+            this.tabPage_view_user.Size = new System.Drawing.Size(623, 541);
             this.tabPage_view_user.TabIndex = 2;
             this.tabPage_view_user.Text = "Podgląd użytkownika";
             this.tabPage_view_user.UseVisualStyleBackColor = true;
@@ -1257,7 +1275,7 @@ namespace ProjektMagazyn
             this.tabPage_roles.Location = new System.Drawing.Point(146, 4);
             this.tabPage_roles.Name = "tabPage_roles";
             this.tabPage_roles.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_roles.Size = new System.Drawing.Size(737, 503);
+            this.tabPage_roles.Size = new System.Drawing.Size(763, 541);
             this.tabPage_roles.TabIndex = 2;
             this.tabPage_roles.Text = "Zarządzaj uprawnieniami";
             this.tabPage_roles.UseVisualStyleBackColor = true;
@@ -1462,6 +1480,156 @@ namespace ProjektMagazyn
             this.btn_logout.UseVisualStyleBackColor = true;
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
+            // tabPage_my_profile
+            // 
+            this.tabPage_my_profile.Controls.Add(this.lbl_repeat_password);
+            this.tabPage_my_profile.Controls.Add(this.lbl_new_password);
+            this.tabPage_my_profile.Controls.Add(this.lbl_old_password);
+            this.tabPage_my_profile.Controls.Add(this.btn_change_password);
+            this.tabPage_my_profile.Controls.Add(this.tbx_profile_repeat_password);
+            this.tabPage_my_profile.Controls.Add(this.tbx_profile_new_password);
+            this.tabPage_my_profile.Controls.Add(this.tbx_profile_old_password);
+            this.tabPage_my_profile.Controls.Add(this.tbx_profile_email);
+            this.tabPage_my_profile.Controls.Add(this.tbx_profile_surname);
+            this.tabPage_my_profile.Controls.Add(this.tbx_profile_name);
+            this.tabPage_my_profile.Controls.Add(this.tbx_profile_login);
+            this.tabPage_my_profile.Controls.Add(this.label31);
+            this.tabPage_my_profile.Controls.Add(this.label33);
+            this.tabPage_my_profile.Controls.Add(this.label34);
+            this.tabPage_my_profile.Controls.Add(this.label35);
+            this.tabPage_my_profile.Location = new System.Drawing.Point(146, 4);
+            this.tabPage_my_profile.Name = "tabPage_my_profile";
+            this.tabPage_my_profile.Size = new System.Drawing.Size(763, 541);
+            this.tabPage_my_profile.TabIndex = 3;
+            this.tabPage_my_profile.Text = "Mój profil";
+            this.tabPage_my_profile.UseVisualStyleBackColor = true;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(269, 146);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(68, 13);
+            this.label31.TabIndex = 47;
+            this.label31.Text = "Adres e-mail*";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(280, 117);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(57, 13);
+            this.label33.TabIndex = 44;
+            this.label33.Text = "Nazwisko*";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(307, 84);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(30, 13);
+            this.label34.TabIndex = 41;
+            this.label34.Text = "Imię*";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(175, 51);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(162, 13);
+            this.label35.TabIndex = 39;
+            this.label35.Text = "Identyfikator użytkownika - login*";
+            // 
+            // tbx_profile_login
+            // 
+            this.tbx_profile_login.Location = new System.Drawing.Point(344, 48);
+            this.tbx_profile_login.Name = "tbx_profile_login";
+            this.tbx_profile_login.ReadOnly = true;
+            this.tbx_profile_login.Size = new System.Drawing.Size(195, 20);
+            this.tbx_profile_login.TabIndex = 48;
+            // 
+            // tbx_profile_name
+            // 
+            this.tbx_profile_name.Location = new System.Drawing.Point(344, 81);
+            this.tbx_profile_name.Name = "tbx_profile_name";
+            this.tbx_profile_name.ReadOnly = true;
+            this.tbx_profile_name.Size = new System.Drawing.Size(195, 20);
+            this.tbx_profile_name.TabIndex = 49;
+            // 
+            // tbx_profile_surname
+            // 
+            this.tbx_profile_surname.Location = new System.Drawing.Point(344, 114);
+            this.tbx_profile_surname.Name = "tbx_profile_surname";
+            this.tbx_profile_surname.ReadOnly = true;
+            this.tbx_profile_surname.Size = new System.Drawing.Size(195, 20);
+            this.tbx_profile_surname.TabIndex = 50;
+            // 
+            // tbx_profile_email
+            // 
+            this.tbx_profile_email.Location = new System.Drawing.Point(344, 143);
+            this.tbx_profile_email.Name = "tbx_profile_email";
+            this.tbx_profile_email.ReadOnly = true;
+            this.tbx_profile_email.Size = new System.Drawing.Size(195, 20);
+            this.tbx_profile_email.TabIndex = 51;
+            // 
+            // tbx_profile_old_password
+            // 
+            this.tbx_profile_old_password.Location = new System.Drawing.Point(344, 217);
+            this.tbx_profile_old_password.Name = "tbx_profile_old_password";
+            this.tbx_profile_old_password.Size = new System.Drawing.Size(194, 20);
+            this.tbx_profile_old_password.TabIndex = 52;
+            // 
+            // tbx_profile_new_password
+            // 
+            this.tbx_profile_new_password.Location = new System.Drawing.Point(344, 255);
+            this.tbx_profile_new_password.Name = "tbx_profile_new_password";
+            this.tbx_profile_new_password.Size = new System.Drawing.Size(194, 20);
+            this.tbx_profile_new_password.TabIndex = 53;
+            // 
+            // tbx_profile_repeat_password
+            // 
+            this.tbx_profile_repeat_password.Location = new System.Drawing.Point(345, 295);
+            this.tbx_profile_repeat_password.Name = "tbx_profile_repeat_password";
+            this.tbx_profile_repeat_password.Size = new System.Drawing.Size(194, 20);
+            this.tbx_profile_repeat_password.TabIndex = 54;
+            // 
+            // btn_change_password
+            // 
+            this.btn_change_password.Location = new System.Drawing.Point(344, 334);
+            this.btn_change_password.Name = "btn_change_password";
+            this.btn_change_password.Size = new System.Drawing.Size(195, 23);
+            this.btn_change_password.TabIndex = 55;
+            this.btn_change_password.Text = "Zmień hasło";
+            this.btn_change_password.UseVisualStyleBackColor = true;
+            this.btn_change_password.Click += new System.EventHandler(this.btn_change_password_Click);
+            // 
+            // lbl_old_password
+            // 
+            this.lbl_old_password.AutoSize = true;
+            this.lbl_old_password.Location = new System.Drawing.Point(277, 220);
+            this.lbl_old_password.Name = "lbl_old_password";
+            this.lbl_old_password.Size = new System.Drawing.Size(60, 13);
+            this.lbl_old_password.TabIndex = 56;
+            this.lbl_old_password.Text = "stare hasło";
+            // 
+            // lbl_new_password
+            // 
+            this.lbl_new_password.AutoSize = true;
+            this.lbl_new_password.Location = new System.Drawing.Point(274, 258);
+            this.lbl_new_password.Name = "lbl_new_password";
+            this.lbl_new_password.Size = new System.Drawing.Size(63, 13);
+            this.lbl_new_password.TabIndex = 57;
+            this.lbl_new_password.Text = "nowe hasło";
+            // 
+            // lbl_repeat_password
+            // 
+            this.lbl_repeat_password.AutoSize = true;
+            this.lbl_repeat_password.Location = new System.Drawing.Point(268, 298);
+            this.lbl_repeat_password.Name = "lbl_repeat_password";
+            this.lbl_repeat_password.Size = new System.Drawing.Size(69, 13);
+            this.lbl_repeat_password.TabIndex = 58;
+            this.lbl_repeat_password.Text = "ponów hasło";
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1500,6 +1668,8 @@ namespace ProjektMagazyn
             this.tabPage_edit_roles.ResumeLayout(false);
             this.tabPage_edit_roles.PerformLayout();
             this.tabPage_group_edit.ResumeLayout(false);
+            this.tabPage_my_profile.ResumeLayout(false);
+            this.tabPage_my_profile.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1631,5 +1801,21 @@ namespace ProjektMagazyn
         private CheckedListBox clb_users_group_edit;
         private Button btn_group_edit_cancel;
         private Button btn_logout;
+        private TabPage tabPage_my_profile;
+        private TextBox tbx_profile_email;
+        private TextBox tbx_profile_surname;
+        private TextBox tbx_profile_name;
+        private TextBox tbx_profile_login;
+        private Label label31;
+        private Label label33;
+        private Label label34;
+        private Label label35;
+        private Label lbl_repeat_password;
+        private Label lbl_new_password;
+        private Label lbl_old_password;
+        private Button btn_change_password;
+        private TextBox tbx_profile_repeat_password;
+        private TextBox tbx_profile_new_password;
+        private TextBox tbx_profile_old_password;
     }
 }
