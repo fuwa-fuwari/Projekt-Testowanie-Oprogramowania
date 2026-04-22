@@ -32,7 +32,6 @@ namespace ProjektMagazyn
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
             this.tabPage_overview = new System.Windows.Forms.TabPage();
-            this.btn_logout = new System.Windows.Forms.Button();
             this.btn_show_forgotten = new System.Windows.Forms.Button();
             this.tbx_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
@@ -44,8 +43,6 @@ namespace ProjektMagazyn
             this.tabPage_add_user = new System.Windows.Forms.TabPage();
             this.lbl_role = new System.Windows.Forms.Label();
             this.clb_add_user_role = new System.Windows.Forms.CheckedListBox();
-            this.msktbx_password = new System.Windows.Forms.MaskedTextBox();
-            this.lbl_password = new System.Windows.Forms.Label();
             this.btn_test = new System.Windows.Forms.Button();
             this.lbl_gender = new System.Windows.Forms.Label();
             this.cmbx_gender = new System.Windows.Forms.ComboBox();
@@ -157,6 +154,7 @@ namespace ProjektMagazyn
             this.btn_group_edit_save = new System.Windows.Forms.Button();
             this.clb_roles_group_edit = new System.Windows.Forms.CheckedListBox();
             this.clb_users_group_edit = new System.Windows.Forms.CheckedListBox();
+            this.btn_logout = new System.Windows.Forms.Button();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
@@ -188,7 +186,7 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_main_view.Multiline = true;
             this.dotNetBarTabControl_main_view.Name = "dotNetBarTabControl_main_view";
             this.dotNetBarTabControl_main_view.SelectedIndex = 0;
-            this.dotNetBarTabControl_main_view.Size = new System.Drawing.Size(887, 511);
+            this.dotNetBarTabControl_main_view.Size = new System.Drawing.Size(913, 549);
             this.dotNetBarTabControl_main_view.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.dotNetBarTabControl_main_view.TabIndex = 2;
             // 
@@ -207,17 +205,6 @@ namespace ProjektMagazyn
             this.tabPage_overview.TabIndex = 1;
             this.tabPage_overview.Text = "Przegląd";
             this.tabPage_overview.UseVisualStyleBackColor = true;
-            // 
-            // btn_logout
-            // 
-            this.btn_logout.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_logout.Location = new System.Drawing.Point(12, 525);
-            this.btn_logout.Name = "btn_logout";
-            this.btn_logout.Size = new System.Drawing.Size(146, 27);
-            this.btn_logout.TabIndex = 10;
-            this.btn_logout.Text = "Wyloguj";
-            this.btn_logout.UseVisualStyleBackColor = true;
-            this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
             // btn_show_forgotten
             // 
@@ -287,7 +274,7 @@ namespace ProjektMagazyn
             this.tabPage_users.Location = new System.Drawing.Point(146, 4);
             this.tabPage_users.Name = "tabPage_users";
             this.tabPage_users.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_users.Size = new System.Drawing.Size(737, 527);
+            this.tabPage_users.Size = new System.Drawing.Size(763, 541);
             this.tabPage_users.TabIndex = 0;
             this.tabPage_users.Text = "Zarządzaj użytkownikami";
             this.tabPage_users.UseVisualStyleBackColor = true;
@@ -303,7 +290,7 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_manage_users.Multiline = true;
             this.dotNetBarTabControl_manage_users.Name = "dotNetBarTabControl_manage_users";
             this.dotNetBarTabControl_manage_users.SelectedIndex = 0;
-            this.dotNetBarTabControl_manage_users.Size = new System.Drawing.Size(741, 535);
+            this.dotNetBarTabControl_manage_users.Size = new System.Drawing.Size(767, 549);
             this.dotNetBarTabControl_manage_users.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.dotNetBarTabControl_manage_users.TabIndex = 0;
             this.dotNetBarTabControl_manage_users.SelectedIndexChanged += new System.EventHandler(this.dotNetBarTabControl_manage_users_SelectedIndexChanged);
@@ -312,8 +299,6 @@ namespace ProjektMagazyn
             // 
             this.tabPage_add_user.Controls.Add(this.lbl_role);
             this.tabPage_add_user.Controls.Add(this.clb_add_user_role);
-            this.tabPage_add_user.Controls.Add(this.msktbx_password);
-            this.tabPage_add_user.Controls.Add(this.lbl_password);
             this.tabPage_add_user.Controls.Add(this.btn_test);
             this.tabPage_add_user.Controls.Add(this.lbl_gender);
             this.tabPage_add_user.Controls.Add(this.cmbx_gender);
@@ -338,7 +323,7 @@ namespace ProjektMagazyn
             this.tabPage_add_user.Location = new System.Drawing.Point(140, 4);
             this.tabPage_add_user.Name = "tabPage_add_user";
             this.tabPage_add_user.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_add_user.Size = new System.Drawing.Size(597, 527);
+            this.tabPage_add_user.Size = new System.Drawing.Size(623, 541);
             this.tabPage_add_user.TabIndex = 0;
             this.tabPage_add_user.Text = "Dodaj użytkownika";
             this.tabPage_add_user.UseVisualStyleBackColor = true;
@@ -359,23 +344,6 @@ namespace ProjektMagazyn
             this.clb_add_user_role.Name = "clb_add_user_role";
             this.clb_add_user_role.Size = new System.Drawing.Size(212, 79);
             this.clb_add_user_role.TabIndex = 44;
-            // 
-            // msktbx_password
-            // 
-            this.msktbx_password.BackColor = System.Drawing.Color.White;
-            this.msktbx_password.Location = new System.Drawing.Point(366, 27);
-            this.msktbx_password.Name = "msktbx_password";
-            this.msktbx_password.Size = new System.Drawing.Size(131, 20);
-            this.msktbx_password.TabIndex = 43;
-            // 
-            // lbl_password
-            // 
-            this.lbl_password.AutoSize = true;
-            this.lbl_password.Location = new System.Drawing.Point(307, 30);
-            this.lbl_password.Name = "lbl_password";
-            this.lbl_password.Size = new System.Drawing.Size(53, 13);
-            this.lbl_password.TabIndex = 42;
-            this.lbl_password.Text = "Password";
             // 
             // btn_test
             // 
@@ -1289,7 +1257,7 @@ namespace ProjektMagazyn
             this.tabPage_roles.Location = new System.Drawing.Point(146, 4);
             this.tabPage_roles.Name = "tabPage_roles";
             this.tabPage_roles.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_roles.Size = new System.Drawing.Size(737, 527);
+            this.tabPage_roles.Size = new System.Drawing.Size(737, 503);
             this.tabPage_roles.TabIndex = 2;
             this.tabPage_roles.Text = "Zarządzaj uprawnieniami";
             this.tabPage_roles.UseVisualStyleBackColor = true;
@@ -1483,12 +1451,23 @@ namespace ProjektMagazyn
             this.clb_users_group_edit.Size = new System.Drawing.Size(256, 394);
             this.clb_users_group_edit.TabIndex = 0;
             // 
+            // btn_logout
+            // 
+            this.btn_logout.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_logout.Location = new System.Drawing.Point(12, 567);
+            this.btn_logout.Name = "btn_logout";
+            this.btn_logout.Size = new System.Drawing.Size(146, 27);
+            this.btn_logout.TabIndex = 10;
+            this.btn_logout.Text = "Wyloguj";
+            this.btn_logout.UseVisualStyleBackColor = true;
+            this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(911, 559);
+            this.ClientSize = new System.Drawing.Size(968, 606);
             this.Controls.Add(this.btn_logout);
             this.Controls.Add(this.dotNetBarTabControl_main_view);
             this.Name = "ControlPanel";
@@ -1628,8 +1607,6 @@ namespace ProjektMagazyn
         private MaskedTextBox msktbx_user_login_view;
         private Label label29;
         private Button btn_close_view;
-        private MaskedTextBox msktbx_password;
-        private Label lbl_password;
         private TabPage tabPage_roles;
         private TabControls.DotNetBarTabControl dotNetBarTabControl_manage_roles;
         private TabPage tabPage_roles_overview;

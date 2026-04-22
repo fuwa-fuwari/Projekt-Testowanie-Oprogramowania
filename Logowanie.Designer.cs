@@ -98,7 +98,7 @@
             this.grpbx_login.Controls.Add(this.lbl_password);
             this.grpbx_login.Controls.Add(this.tbx_password);
             this.grpbx_login.Controls.Add(this.tbx_login);
-            this.grpbx_login.Location = new System.Drawing.Point(234, 158);
+            this.grpbx_login.Location = new System.Drawing.Point(268, 179);
             this.grpbx_login.Name = "grpbx_login";
             this.grpbx_login.Size = new System.Drawing.Size(424, 251);
             this.grpbx_login.TabIndex = 5;
@@ -121,7 +121,7 @@
             this.AcceptButton = this.btn_zaloguj;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(911, 559);
+            this.ClientSize = new System.Drawing.Size(951, 600);
             this.Controls.Add(this.grpbx_login);
             this.KeyPreview = true;
             this.Name = "Logowanie";

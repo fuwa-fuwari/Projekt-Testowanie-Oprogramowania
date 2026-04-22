@@ -135,7 +135,7 @@ namespace ProjektMagazyn
                 }
 
                 await recoveryMail.SendResetPassword("sandbox.smtp@mailtrap.io", newPassword, secretsauceFilename);
-                //TODO: zdiagnozuj dlaczego czasem nie dziala mailtrap
+
                 MessageBox.Show("Nowe hasło zostało wygenerowane i wysłane (Mailtrap).");
                 //MessageBox.Show($"Nowe hasło zostało wygenerowane: {newPassword}");
             }

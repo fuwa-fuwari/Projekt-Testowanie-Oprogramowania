@@ -73,7 +73,6 @@ namespace ProjektMagazyn
         {
             Validation validation = new Validation();
             var login = msktbx_user_login.Text;
-            var password = msktbx_password.Text;
             var name = msktbx_user_name.Text;
             var surname = msktbx_user_surname.Text;
             var gender = cmbx_gender.Text;
@@ -90,7 +89,6 @@ namespace ProjektMagazyn
             List<Control> textboxes = new List<Control>
             {
                     msktbx_user_login,
-                    msktbx_password,
                     msktbx_user_name,
                     msktbx_user_surname,
                     cmbx_gender,
@@ -109,11 +107,6 @@ namespace ProjektMagazyn
 
                 invalids++;
                 msktbx_user_login.BackColor = Color.Red;
-            }
-            if (!validation.valid_password(password))
-            {
-                invalids++;
-                msktbx_password.BackColor = Color.Red;
             }
             if(clb_add_user_role.SelectedIndex == -1)
             {
@@ -183,7 +176,9 @@ namespace ProjektMagazyn
             {
                 try
                 {
-                    var hashed_password = SecurePasswordHasher.Hash(password);
+                    RecoveryMail recoveryMail = new RecoveryMail();
+                    string newPassword = recoveryMail.GeneratePassword();
+                    string hashed_password = SecurePasswordHasher.Hash(newPassword);
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
@@ -266,7 +261,6 @@ namespace ProjektMagazyn
             List<Control> textboxes = new List<Control>
             {
                     msktbx_user_login,
-                    msktbx_password,
                     msktbx_user_name,
                     msktbx_user_surname,
                     cmbx_gender,
@@ -706,7 +700,7 @@ namespace ProjektMagazyn
             {
                 MessageBox.Show("Nie wprowadzono żadnych zmian.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ZablokujPolaEdycji();
-                return; // Nie będzie wysyłane zapytanie do bazy
+                return;
             }
 
             var textboxes = new List<Control> { msktbx_user_name_edit, msktbx_user_surname_edit, cmbx_gender_edit, msktbx_pesel_edit, msktbx_email_edit, msktbx_phone_edit, dtpckr_birthdate_edit, msktbx_city_edit, msktbx_street_number_edit };

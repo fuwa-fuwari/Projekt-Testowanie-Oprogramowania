@@ -78,7 +78,6 @@ namespace ProjektMagazyn
         }
         public bool valid_city(string city)
         {
-            // Miejscowości mogą mieć spacje i myślniki
             if (!Regex.IsMatch(city, @"^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s\-]+$"))
             {
                 return false;
@@ -148,7 +147,6 @@ namespace ProjektMagazyn
         {
             if (string.IsNullOrEmpty(pesel) || string.IsNullOrEmpty(gender)) return false;
 
-            // Normalizacja danych
             pesel = pesel.Replace(" ", "").Trim();
             gender = gender.Trim().ToLower();
 
@@ -204,14 +202,10 @@ namespace ProjektMagazyn
         }
         public bool valid_email(string email)
         {
-            // Odrzuca puste wartości
             if (string.IsNullOrWhiteSpace(email)) return false;
 
-            // Sprawdzenie maksymalnej długości 255 znaków
             if (email.Length > 255) return false;
 
-            // Wzorzec: wymusza poprawną strukturę (coś przed @, dokładnie jeden znak @, coś po @, kropka i domena), 
-            // jednocześnie wykluczając spacje
             if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 return false;
 
