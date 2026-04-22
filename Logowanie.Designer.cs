@@ -34,7 +34,7 @@
             this.tbx_password = new System.Windows.Forms.TextBox();
             this.btn_zaloguj = new System.Windows.Forms.Button();
             this.grpbx_login = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btn_reset_password = new System.Windows.Forms.Button();
             this.grpbx_login.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -92,7 +92,7 @@
             // 
             // grpbx_login
             // 
-            this.grpbx_login.Controls.Add(this.button1);
+            this.grpbx_login.Controls.Add(this.btn_reset_password);
             this.grpbx_login.Controls.Add(this.lbl_login);
             this.grpbx_login.Controls.Add(this.btn_zaloguj);
             this.grpbx_login.Controls.Add(this.lbl_password);
@@ -105,15 +105,16 @@
             this.grpbx_login.TabStop = false;
             this.grpbx_login.Text = "logowanie";
             // 
-            // button1
+            // btn_reset_password
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(38, 195);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(160, 31);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Odzyskaj hasło";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btn_reset_password.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_reset_password.Location = new System.Drawing.Point(38, 195);
+            this.btn_reset_password.Name = "btn_reset_password";
+            this.btn_reset_password.Size = new System.Drawing.Size(160, 31);
+            this.btn_reset_password.TabIndex = 5;
+            this.btn_reset_password.Text = "Odzyskaj hasło";
+            this.btn_reset_password.UseVisualStyleBackColor = true;
+            this.btn_reset_password.Click += new System.EventHandler(this.btn_reset_password_Click);
             // 
             // Logowanie
             // 
@@ -141,7 +142,7 @@
         private System.Windows.Forms.TextBox tbx_password;
         private System.Windows.Forms.Button btn_zaloguj;
         private System.Windows.Forms.GroupBox grpbx_login;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btn_reset_password;
     }
 }
 

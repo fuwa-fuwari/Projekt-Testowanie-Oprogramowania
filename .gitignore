@@ -3,6 +3,9 @@
 *.user
 *.suo
 
+# Credentials
+secretsauce.json
+
 # Build
 bin/
 obj/
