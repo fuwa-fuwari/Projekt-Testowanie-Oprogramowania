@@ -27,6 +27,7 @@ namespace ProjektMagazyn
         private bool isFiltered = false;
 
         DatabaseConnection database = new DatabaseConnection();
+        private ErrorProvider errorProvider = new ErrorProvider();
 
         // Zmienne do sprawdzania, czy wprowadzono zmiany (można usnąć, ale będą wysyłane zapytania do bazy nawet, jeśli nic się nie zmieniło)
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
@@ -71,179 +72,190 @@ namespace ProjektMagazyn
         {
             tbx_search.Clear();
         }
-        
+
         private void btn_add_user_Click(object sender, EventArgs e)
         {
             Validation validation = new Validation();
-            var login = msktbx_user_login.Text;
-            var name = msktbx_user_name.Text;
-            var surname = msktbx_user_surname.Text;
-            var gender = cmbx_gender.Text;
-            var pesel = msktbx_pesel.Text;
-            var email = msktbx_email.Text;
-            var phone = msktbx_phone.Text;
+            errorProvider.Clear(); 
+
+            var login = msktbx_user_login.Text.Trim();
+            var name = msktbx_user_name.Text.Trim();
+            var surname = msktbx_user_surname.Text.Trim();
+            var gender = cmbx_gender.Text.Trim();
+            var pesel = msktbx_pesel.Text.Replace(" ", "").Trim();
+            var email = msktbx_email.Text.Trim();
+            var phone = msktbx_phone.Text.Replace(" ", "").Trim();
             var birthdate = dtpckr_birthdate.Value.Date;
-            var city = msktbx_city.Text;
-            var street = msktbx_street.Text;
-            var street_number = msktbx_street_number.Text;
-            var locale_number = msktbx_locale_number.Text;
+            var city = msktbx_city.Text.Trim();
+            var street = msktbx_street.Text.Trim();
+            var street_number = msktbx_street_number.Text.Trim();
+            var locale_number = msktbx_locale_number.Text.Trim();
             int invalids = 0;
 
             List<Control> textboxes = new List<Control>
             {
-                    msktbx_user_login,
-                    msktbx_user_name,
-                    msktbx_user_surname,
-                    cmbx_gender,
-                    msktbx_pesel,
-                    msktbx_email,
-                    msktbx_phone,
-                    dtpckr_birthdate,
-                    msktbx_city,
-                    msktbx_street,
-                    msktbx_street_number,
-                    msktbx_locale_number
+                msktbx_user_login, msktbx_user_name, msktbx_user_surname, cmbx_gender,
+                msktbx_pesel, msktbx_email, msktbx_phone, dtpckr_birthdate,
+                msktbx_city, msktbx_street, msktbx_street_number, msktbx_locale_number
             };
+
+            foreach (var textbox in textboxes) textbox.BackColor = Color.White;
+            clb_add_user_role.BackColor = Color.White;
 
             if (!validation.valid_login(login))
             {
-
-                invalids++;
-                msktbx_user_login.BackColor = Color.Red;
+                invalids++; msktbx_user_login.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_user_login, "Brak wymaganych pól");
             }
-            if(clb_add_user_role.SelectedIndex == -1)
+            if (clb_add_user_role.CheckedItems.Count == 0)
             {
-                invalids++;
-                clb_add_user_role.BackColor = Color.Red;
+                invalids++; clb_add_user_role.BackColor = Color.Red;
+                errorProvider.SetError(clb_add_user_role, "Brak wymaganych pól");
             }
             if (!validation.valid_name(name))
             {
-                
-                invalids++;
-                 msktbx_user_name.BackColor = Color.Red; 
+                invalids++; msktbx_user_name.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_user_name, "Brak wymaganych pól");
             }
             if (!validation.valid_surname(surname))
             {
-                
-                invalids++;
-                msktbx_user_surname.BackColor = Color.Red; 
+                invalids++; msktbx_user_surname.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_user_surname, "Brak wymaganych pól");
             }
             if (!validation.valid_gender(gender, pesel))
             {
-                
-                invalids++;
-                cmbx_gender.BackColor = Color.Red; 
+                invalids++; cmbx_gender.BackColor = Color.Red;
+                errorProvider.SetError(cmbx_gender, "Brak wymaganych pól");
             }
             if (!validation.valid_birthdate(birthdate.Date, pesel))
             {
-                
-                invalids++;
-                dtpckr_birthdate.BackColor = Color.Red; 
-                msktbx_pesel.BackColor = Color.Red;
+                invalids++; dtpckr_birthdate.BackColor = Color.Red; msktbx_pesel.BackColor = Color.Red;
+                errorProvider.SetError(dtpckr_birthdate, "Wiek użytkownika musi być większy bądź równy 18 lat");
             }
             if (!validation.valid_pesel(pesel, birthdate.Date, gender))
             {
-                
-                invalids++;
-                msktbx_pesel.BackColor = Color.Red; 
+                invalids++; msktbx_pesel.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_pesel, "Wprowadzono błędny numer pesel\nWymagania numeru pesel:\n- Pierwsze sześć cyfr odpowiada dacie urodzenia: RRMMDD\n- Przedostatnia cyfra odpowiada płci:\n  Nieparzyste – mężczyźni\n  Parzyste i zero – kobiety\n- Cyfra kontrolna, zgodnie z: https://www.gov.pl/web/gov/czym-jest-numer-pesel");
             }
             if (!validation.valid_email(email))
             {
-                
-                invalids++;
-                msktbx_email.BackColor = Color.Red; 
+                invalids++; msktbx_email.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_email, "Wprowadzono błędny adres email.\nWymagania Adresu e-mail:\n- Zawiera dokładnie jeden znak: @\n- Zawiera składnię, zgodnie z: nazwa_użytkownika@nazwa_domeny_serwera_poczty\n- Domena_serwera_poczty = domena_wyższego_poziomu.domena_najwyższego_poziomu\n- Liczba znaków: max 255");
             }
             if (!validation.valid_phone(phone))
             {
-                
-                invalids++;
-                msktbx_phone.BackColor = Color.Red; 
+                invalids++; msktbx_phone.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_phone, "Wprowadzono błędny numer telefonu\nWymagania numeru telefonu:\n- 9 cyfr");
             }
             if (!validation.valid_city(city))
             {
-                
-                invalids++;
-                msktbx_city.BackColor = Color.Red;
+                invalids++; msktbx_city.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_city, "Brak wymaganych pól");
             }
             if (!validation.valid_street_number(street_number))
             {
-                
-                invalids++;
-                msktbx_street_number.BackColor = Color.Red;
+                invalids++; msktbx_street_number.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_street_number, "Brak wymaganych pól");
             }
-            if(invalids != 0)
+
+            if (invalids != 0)
             {
                 validation.incorrect_input();
+                return;
             }
-            else
+
+            bool emailExists = false, peselExists = false, loginExists = false;
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                try
+                conn.Open();
+                string checkQuery = "SELECT Email, PESEL, Login FROM Uzytkownicy WHERE Email = @email OR PESEL = @pesel OR Login = @login";
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                 {
-                    RecoveryMail recoveryMail = new RecoveryMail();
-                    string newPassword = recoveryMail.GeneratePassword();
-                    string hashed_password = SecurePasswordHasher.Hash(newPassword);
-
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    checkCmd.Parameters.AddWithValue("@email", email);
+                    checkCmd.Parameters.AddWithValue("@pesel", pesel);
+                    checkCmd.Parameters.AddWithValue("@login", login);
+                    using (SqlDataReader reader = checkCmd.ExecuteReader())
                     {
-                        conn.Open();
+                        while (reader.Read())
+                        {
+                            if (reader["Email"].ToString() == email) emailExists = true;
+                            if (reader["PESEL"].ToString() == pesel) peselExists = true;
+                            if (reader["Login"].ToString() == login) loginExists = true;
+                        }
+                    }
+                }
+            }
 
-                        string query = @"
+            if (emailExists || peselExists || loginExists)
+            {
+                if (loginExists) { msktbx_user_login.BackColor = Color.Red; errorProvider.SetError(msktbx_user_login, "Ten login już istnieje w bazie"); }
+                if (peselExists) { msktbx_pesel.BackColor = Color.Red; errorProvider.SetError(msktbx_pesel, "Ten numer pesel już istnieje w bazie"); }
+                if (emailExists) { msktbx_email.BackColor = Color.Red; errorProvider.SetError(msktbx_email, "Ten adres email już istnieje w bazie"); }
+                validation.incorrect_input();
+                return;
+            }
+
+            try
+            {
+                RecoveryMail recoveryMail = new RecoveryMail();
+                string newPassword = recoveryMail.GeneratePassword();
+                string hashed_password = SecurePasswordHasher.Hash(newPassword);
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
                         INSERT INTO Uzytkownicy
                         (Login, HasloHash, Imie, Nazwisko, Miejscowosc, KodPocztowy, Ulica, NumerPosesji, NumerLokalu, PESEL, DataUrodzenia, Plec, Email, Telefon)
                         VALUES
                         (@login, @haslo, @imie, @nazwisko, @miasto, @kod, @ulica, @nrPos, @nrLok, @pesel, @dataUr, @plec, @email, @telefon);
                         SELECT SCOPE_IDENTITY();";
 
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@login", login);
+                        cmd.Parameters.AddWithValue("@haslo", hashed_password);
+                        cmd.Parameters.AddWithValue("@imie", name);
+                        cmd.Parameters.AddWithValue("@nazwisko", surname);
+                        cmd.Parameters.AddWithValue("@miasto", city);
+                        cmd.Parameters.AddWithValue("@kod", "00-000");
+                        cmd.Parameters.AddWithValue("@ulica", street ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@nrPos", street_number);
+                        cmd.Parameters.AddWithValue("@nrLok", string.IsNullOrEmpty(locale_number) ? (object)DBNull.Value : locale_number);
+                        cmd.Parameters.AddWithValue("@pesel", pesel);
+                        cmd.Parameters.AddWithValue("@dataUr", birthdate);
+                        cmd.Parameters.AddWithValue("@plec", gender);
+                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Parameters.AddWithValue("@telefon", phone);
+                        int newUserId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        string insertPermQuery = "INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikID, UprawnienieID) VALUES (@uid, @pid)";
+                        using (SqlCommand role_cmd = new SqlCommand(insertPermQuery, conn))
                         {
+                            role_cmd.Parameters.Add("@uid", SqlDbType.Int).Value = newUserId;
+                            role_cmd.Parameters.Add("@pid", SqlDbType.Int);
 
-                            cmd.Parameters.AddWithValue("@login", login);
-                            cmd.Parameters.AddWithValue("@haslo", hashed_password);
-                            cmd.Parameters.AddWithValue("@imie", name);
-                            cmd.Parameters.AddWithValue("@nazwisko", surname);
-                            cmd.Parameters.AddWithValue("@miasto", city);
-                            cmd.Parameters.AddWithValue("@kod", "00-000"); 
-                            cmd.Parameters.AddWithValue("@ulica", street ?? (object)DBNull.Value);
-                            cmd.Parameters.AddWithValue("@nrPos", street_number);
-                            cmd.Parameters.AddWithValue("@nrLok", string.IsNullOrEmpty(locale_number) ? (object)DBNull.Value : locale_number);
-                            cmd.Parameters.AddWithValue("@pesel", pesel);
-                            cmd.Parameters.AddWithValue("@dataUr", birthdate);
-                            cmd.Parameters.AddWithValue("@plec", gender);
-                            cmd.Parameters.AddWithValue("@email", email);
-                            cmd.Parameters.AddWithValue("@telefon", phone);
-                            int newUserId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                            string insertPermQuery = @"
-                                INSERT INTO Uzytkownicy_Uprawnienia 
-                                (UzytkownikID, UprawnienieID)
-                                VALUES (@uid, @pid)";
-
-                            using (SqlCommand role_cmd = new SqlCommand(insertPermQuery, conn))
+                            foreach (DataRowView item in clb_add_user_role.CheckedItems)
                             {
-                                role_cmd.Parameters.Add("@uid", SqlDbType.Int).Value = newUserId;
-                                role_cmd.Parameters.Add("@pid", SqlDbType.Int);
-
-                                foreach (DataRowView item in clb_add_user_role.CheckedItems)
-                                {
-                                    role_cmd.Parameters["@pid"].Value = (int)item["UprawnienieID"];
-                                    role_cmd.ExecuteNonQuery();
-                                }
+                                role_cmd.Parameters["@pid"].Value = (int)item["UprawnienieID"];
+                                role_cmd.ExecuteNonQuery();
                             }
                         }
                     }
-                    MessageBox.Show("Dodano użytkownika do bazy");
-                    WczytajUzytkownikowDoListy();
-
-                    ClearAddUserData(textboxes);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Błąd: " + ex.Message);
-                }
+                MessageBox.Show("Dodano użytkownika do bazy");
+                WczytajUzytkownikowDoListy();
+                ClearAddUserData(textboxes);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd: " + ex.Message);
             }
         }
+
         private void ClearAddUserData(List<Control> textboxes)
         {
+            errorProvider.Clear(); 
             foreach (var textbox in textboxes)
             {
                 textbox.Text = "";
@@ -672,6 +684,7 @@ namespace ProjektMagazyn
             if (selectedUserId == -1) return;
 
             Validation validation = new Validation();
+            errorProvider.Clear(); 
             int invalids = 0;
 
             var name = msktbx_user_name_edit.Text.Trim();
@@ -687,17 +700,10 @@ namespace ProjektMagazyn
             var locale_number = msktbx_locale_number_edit.Text.Trim();
 
             bool hasChanges =
-                name != origName ||
-                surname != origSurname ||
-                gender != origGender ||
-                pesel != origPesel ||
-                email != origEmail ||
-                phone != origPhone ||
-                birthdate != origBirthdate ||
-                city != origCity ||
-                street != origStreet ||
-                street_number != origStreetNumber ||
-                locale_number != origLocaleNumber;
+                name != origName || surname != origSurname || gender != origGender ||
+                pesel != origPesel || email != origEmail || phone != origPhone ||
+                birthdate != origBirthdate || city != origCity || street != origStreet ||
+                street_number != origStreetNumber || locale_number != origLocaleNumber;
 
             if (!hasChanges)
             {
@@ -709,15 +715,15 @@ namespace ProjektMagazyn
             var textboxes = new List<Control> { msktbx_user_name_edit, msktbx_user_surname_edit, cmbx_gender_edit, msktbx_pesel_edit, msktbx_email_edit, msktbx_phone_edit, dtpckr_birthdate_edit, msktbx_city_edit, msktbx_street_number_edit };
             foreach (var textbox in textboxes) textbox.BackColor = Color.White;
 
-            if (!validation.valid_name(name)) { invalids++; msktbx_user_name_edit.BackColor = Color.Red; }
-            if (!validation.valid_surname(surname)) { invalids++; msktbx_user_surname_edit.BackColor = Color.Red; }
-            if (!validation.valid_gender(gender, pesel)) { invalids++; cmbx_gender_edit.BackColor = Color.Red; }
-            if (!validation.valid_birthdate(birthdate.Date, pesel)) { invalids++; dtpckr_birthdate_edit.BackColor = Color.Red; msktbx_pesel_edit.BackColor = Color.Red; }
-            if (!validation.valid_pesel(pesel, birthdate.Date, gender)) { invalids++; msktbx_pesel_edit.BackColor = Color.Red; }
-            if (!validation.valid_email(email)) { invalids++; msktbx_email_edit.BackColor = Color.Red; }
-            if (!validation.valid_phone(phone)) { invalids++; msktbx_phone_edit.BackColor = Color.Red; }
-            if (!validation.valid_city(city)) { invalids++; msktbx_city_edit.BackColor = Color.Red; }
-            if (!validation.valid_street_number(street_number)) { invalids++; msktbx_street_number_edit.BackColor = Color.Red; }
+            if (!validation.valid_name(name)) { invalids++; msktbx_user_name_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_user_name_edit, "Brak wymaganych pól"); }
+            if (!validation.valid_surname(surname)) { invalids++; msktbx_user_surname_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_user_surname_edit, "Brak wymaganych pól"); }
+            if (!validation.valid_gender(gender, pesel)) { invalids++; cmbx_gender_edit.BackColor = Color.Red; errorProvider.SetError(cmbx_gender_edit, "Brak wymaganych pól"); }
+            if (!validation.valid_birthdate(birthdate.Date, pesel)) { invalids++; dtpckr_birthdate_edit.BackColor = Color.Red; msktbx_pesel_edit.BackColor = Color.Red; errorProvider.SetError(dtpckr_birthdate_edit, "Wiek użytkownika musi być większy bądź równy 18 lat"); }
+            if (!validation.valid_pesel(pesel, birthdate.Date, gender)) { invalids++; msktbx_pesel_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_pesel_edit, "Wprowadzono błędny numer pesel\nWymagania numeru pesel:\n- Pierwsze sześć cyfr odpowiada dacie urodzenia: RRMMDD\n- Przedostatnia cyfra odpowiada płci:\n  Nieparzyste – mężczyźni\n  Parzyste i zero – kobiety\n- Cyfra kontrolna, zgodnie z: https://www.gov.pl/web/gov/czym-jest-numer-pesel"); }
+            if (!validation.valid_email(email)) { invalids++; msktbx_email_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_email_edit, "Wprowadzono błędny adres email.\nWymagania Adresu e-mail:\n- Zawiera dokładnie jeden znak: @\n- Zawiera składnię, zgodnie z: nazwa_użytkownika@nazwa_domeny_serwera_poczty\n- Domena_serwera_poczty = domena_wyższego_poziomu.domena_najwyższego_poziomu\n- Liczba znaków: max 255"); }
+            if (!validation.valid_phone(phone)) { invalids++; msktbx_phone_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_phone_edit, "Wprowadzono błędny numer telefonu\nWymagania numeru telefonu:\n- 9 cyfr"); }
+            if (!validation.valid_city(city)) { invalids++; msktbx_city_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_city_edit, "Brak wymaganych pól"); }
+            if (!validation.valid_street_number(street_number)) { invalids++; msktbx_street_number_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_street_number_edit, "Brak wymaganych pól"); }
 
             if (invalids != 0)
             {
@@ -726,7 +732,7 @@ namespace ProjektMagazyn
             }
 
             bool emailExists = false, peselExists = false, loginExists = false;
-            var login = msktbx_user_login_edit.Text.Trim(); 
+            var login = msktbx_user_login_edit.Text.Trim();
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -755,15 +761,15 @@ namespace ProjektMagazyn
                     }
                 }
             }
-
             // Jeżeli znaleziono jakikolwiek duplikat, przerywamy zapis i kolorujemy odpowiednie pola na czerwono
+
             if (emailExists || peselExists || loginExists)
             {
                 string msg = "Poniższe dane są już przypisane do innego konta w systemie:\n\n";
 
-                if (loginExists) { msktbx_user_login_edit.BackColor = Color.Red; msg += "- Login\n"; }
-                if (peselExists) { msktbx_pesel_edit.BackColor = Color.Red; msg += "- Numer PESEL\n"; }
-                if (emailExists) { msktbx_email_edit.BackColor = Color.Red; msg += "- Adres e-mail\n"; }
+                if (loginExists) { msktbx_user_login_edit.BackColor = Color.Red; msg += "- Login\n"; errorProvider.SetError(msktbx_user_login_edit, "Poniższe dane są już przypisane do innego konta w systemie: - Login"); }
+                if (peselExists) { msktbx_pesel_edit.BackColor = Color.Red; msg += "- Numer PESEL\n"; errorProvider.SetError(msktbx_pesel_edit, "Poniższe dane są już przypisane do innego konta w systemie: - numer pesel"); }
+                if (emailExists) { msktbx_email_edit.BackColor = Color.Red; msg += "- Adres e-mail\n"; errorProvider.SetError(msktbx_email_edit, "Poniższe dane są już przypisane do innego konta w systemie: - Adres e-mail"); }
 
                 MessageBox.Show(msg, "Konflikt unikalności", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -781,7 +787,7 @@ namespace ProjektMagazyn
                         PESEL = @pesel, DataUrodzenia = @dataUr, Plec = @plec, 
                         Email = @email, Telefon = @telefon
                         WHERE UzytkownikID = @id";
-
+                        
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@imie", name);
@@ -813,6 +819,7 @@ namespace ProjektMagazyn
 
         private void btn_cancel_edit_Click(object sender, EventArgs e)
         {
+            errorProvider.Clear();
             ZablokujPolaEdycji();
             cmbx_select_user_edit_SelectedIndexChanged(null, null);
             dotNetBarTabControl_manage_users.SelectedTab = tabPage_add_user; 

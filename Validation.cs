@@ -51,7 +51,11 @@ namespace ProjektMagazyn
         }
         public bool valid_birthdate(DateTime birthdate, string pesel)
         {
-            if (birthdate.Date > DateTime.Now.Date)
+            // obliczanie wieku tak jak z analizy >= 18
+            int age = DateTime.Today.Year - birthdate.Year;
+            if (birthdate.Date > DateTime.Today.AddYears(-age)) age--;
+
+            if (age < 18)
                 return false;
 
             if (!string.IsNullOrEmpty(pesel) && pesel.Length == 11)
