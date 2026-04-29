@@ -22,7 +22,7 @@ namespace ProjektMagazyn
         private void btn_zaloguj_Click(object sender, EventArgs e)
         {
             string login = tbx_login.Text.Trim();
-            string password = tbx_password.Text;
+            string password = tbx_password.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
@@ -30,55 +30,30 @@ namespace ProjektMagazyn
                 return;
             }
 
-            try
+            DatabaseConnection database = new DatabaseConnection();
+
+            int? userId;
+            string hash;
+
+            database.VerifyLogin(login, password, out userId, out hash);
+
+            if (userId == null || hash == null || !SecurePasswordHasher.Verify(password, hash))
             {
-                using (SqlConnection conn = new SqlConnection(@"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True"))
-                {
-                    conn.Open();
-
-                    string query = "SELECT UzytkownikID, HasloHash FROM Uzytkownicy WHERE Login = @login AND CzyZapomniany = 0";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@login", login);
-
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (!reader.Read())
-                            {
-                                MessageBox.Show("Niepoprawny login");
-                                return;
-                            }
-
-                            int userId = Convert.ToInt32(reader["UzytkownikID"]);
-                            string hash = reader["HasloHash"].ToString();
-
-                            if (SecurePasswordHasher.Verify(password, hash))
-                            {
-                                ControlPanel controlPanel = new ControlPanel(userId);
-                                controlPanel.Location = this.Location;
-                                controlPanel.FormClosed += otherForm_FormClosed;
-
-                                clear_field(tbx_login);
-                                clear_field(tbx_password);
-
-                                this.Hide();
-                                controlPanel.Show();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Niepoprawne hasło");
-                                clear_field(tbx_password);
-                                tbx_password.Focus();
-                            }
-                        }
-                    }
-                }
+                MessageBox.Show("Niepoprawne dane logowania.");
+                clear_field(tbx_password);
+                tbx_password.Focus();
+                return;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Błąd logowania: " + ex.Message);
-            }
+
+            ControlPanel controlPanel = new ControlPanel(userId.Value);
+            controlPanel.Location = this.Location;
+            controlPanel.FormClosed += otherForm_FormClosed;
+
+            clear_field(tbx_login);
+            clear_field(tbx_password);
+
+            this.Hide();
+            controlPanel.Show();
         }
         void otherForm_FormClosed(object sender, FormClosedEventArgs e)
         {

@@ -49,12 +49,12 @@ namespace ProjektMagazyn
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
 
-            database.ListaUprawnienDvg(dgv_roles);
-            database.ListaUprawnienClb(clb_add_user_role);
-            database.ListaUprawnienClb(clb_user_role_edit);
-            database.ListaUprawnienClb(clb_user_role_view);
-            database.ListaUprawnienClb(clb_roles_group_edit);
-            database.ListaUzytkownikowClb(clb_users_group_edit);
+            database.RoleListDvg(dgv_roles);
+            database.RoleListClb(clb_add_user_role);
+            database.RoleListClb(clb_user_role_edit);
+            database.RoleListClb(clb_user_role_view);
+            database.RoleListClb(clb_roles_group_edit);
+            database.UserListClb(clb_users_group_edit);
 
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
@@ -306,7 +306,7 @@ namespace ProjektMagazyn
                 FROM Uzytkownicy 
                 WHERE CzyZapomniany = 0
                 ORDER BY Nazwisko";
-            databaseConnection.display_table_users(dvg_user_list, query);
+            databaseConnection.DisplayTableUsers(dvg_user_list, query);
         }
 
         private void btn_forget_Click(object sender, EventArgs e)
@@ -491,7 +491,7 @@ namespace ProjektMagazyn
                 LEFT JOIN Uzytkownicy u2 ON u1.ZapomnianyPrzezID = u2.UzytkownikID
                 WHERE u1.CzyZapomniany = 1
                 ORDER BY u1.Nazwisko";
-            databaseConnection.display_table_users(dvg_user_list, query);
+            databaseConnection.DisplayTableUsers(dvg_user_list, query);
         }
 
         private void dvg_user_list_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -975,7 +975,7 @@ namespace ProjektMagazyn
         {
             if (dotNetBarTabControl_manage_roles.SelectedTab.Name == "tabPage_roles_overview")
             {
-                database.ListaUprawnienDvg(dgv_roles);
+                database.RoleListDvg(dgv_roles);
             }
         }
 
@@ -984,7 +984,7 @@ namespace ProjektMagazyn
             var users = database.GetSelectedIds(clb_users_group_edit, "UzytkownikId");
             var roles = database.GetSelectedIds(clb_roles_group_edit, "UprawnienieId");
 
-            database.SynchronizujRole(users, roles);
+            database.SynchronizeRoles(users, roles);
         }
 
         private void btn_group_edit_cancel_Click(object sender, EventArgs e)

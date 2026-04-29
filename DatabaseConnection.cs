@@ -12,7 +12,39 @@ namespace ProjektMagazyn
     public class DatabaseConnection
     {
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
-        public void display_table_users(DataGridView dvg_user_list, string query)
+        public void VerifyLogin(string login, string password, out int? userId, out string hash)
+        {
+            userId = null;
+            hash = null;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT UzytkownikID, HasloHash FROM Uzytkownicy WHERE Login = @login AND CzyZapomniany = 0";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@login", login);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                userId = Convert.ToInt32(reader["UzytkownikID"]);
+                                hash = reader["HasloHash"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd logowania: " + ex.Message);
+            }
+        }
+        public void DisplayTableUsers(DataGridView dvg_user_list, string query)
         {
             try
             {
@@ -45,7 +77,7 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd połączenia z bazą: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public void ListaUprawnienClb(CheckedListBox checkedListBox)
+        public void RoleListClb(CheckedListBox checkedListBox)
         {
             try
             {
@@ -67,7 +99,7 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
             }
         }
-        public void ListaUzytkownikowClb(CheckedListBox checkedListBox)
+        public void UserListClb(CheckedListBox checkedListBox)
         {
             try
             {
@@ -93,7 +125,7 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd ładowania listy użytkowników: " + ex.Message);
             }
         }
-        public void ListaUprawnienDvg(DataGridView dataGridView)
+        public void RoleListDvg(DataGridView dataGridView)
         {
             string query = @"
                     SELECT 
@@ -134,7 +166,7 @@ namespace ProjektMagazyn
 
             return ids;
         }
-        public void SynchronizujRole(List<int> userIds, List<int> roleIds)
+        public void SynchronizeRoles(List<int> userIds, List<int> roleIds)
         {
             if (!userIds.Any())
             {
