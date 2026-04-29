@@ -895,6 +895,11 @@ namespace ProjektMagazyn
                 MessageBox.Show("Wybierz użytkownika przed zapisaniem zmian.", "Uwaga", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            if (clb_roles.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Wybierz uprawnienia przed zapisania zmian.");
+                return;
+            }
 
             int userId = Convert.ToInt32(cmbx_select_user_role_edit.SelectedValue);
 
@@ -1007,6 +1012,8 @@ namespace ProjektMagazyn
             string newPass = tbx_profile_new_password.Text;
             string repeat = tbx_profile_repeat_password.Text;
 
+            Validation validation = new Validation();
+
             if (string.IsNullOrWhiteSpace(oldPass) ||
                 string.IsNullOrWhiteSpace(newPass) ||
                 string.IsNullOrWhiteSpace(repeat))
@@ -1018,6 +1025,15 @@ namespace ProjektMagazyn
             if (newPass != repeat)
             {
                 MessageBox.Show("Nowe hasła nie są takie same.");
+                return;
+            }
+            if (!validation.valid_password(newPass))
+            {
+                MessageBox.Show(@"Hasło nie spełnia wymaganych kryteriów:
+                - długość od 8 do 15 znaków
+                - co najmniej jedna wielka litera
+                - co najmniej jedna mała litera
+                - co najmniej jedna cyfra oraz znak specjalny");
                 return;
             }
 

@@ -141,6 +141,11 @@ namespace ProjektMagazyn
                 MessageBox.Show("Wybierz użytkowników.");
                 return;
             }
+            if (!roleIds.Any())
+            {
+                MessageBox.Show("Wybierz uprawnienie do dodania.");
+                return;
+            }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,7 +28,14 @@ namespace ProjektMagazyn
         }
         internal bool valid_password(string password)
         {
-            //TODO: implement validation that will appear in analysis
+            if (string.IsNullOrEmpty(password))
+            { 
+                return false; 
+            }
+            if(!Regex.IsMatch(password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,15}$"))
+            {
+                return false;
+            }
             return true;
         }
         public bool valid_name(string name)
