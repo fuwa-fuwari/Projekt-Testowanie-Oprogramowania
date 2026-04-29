@@ -275,6 +275,7 @@ namespace ProjektMagazyn
             // 
             this.tbx_profile_repeat_password.Location = new System.Drawing.Point(345, 295);
             this.tbx_profile_repeat_password.Name = "tbx_profile_repeat_password";
+            this.tbx_profile_repeat_password.PasswordChar = '*';
             this.tbx_profile_repeat_password.Size = new System.Drawing.Size(194, 20);
             this.tbx_profile_repeat_password.TabIndex = 54;
             // 
@@ -282,6 +283,7 @@ namespace ProjektMagazyn
             // 
             this.tbx_profile_new_password.Location = new System.Drawing.Point(344, 255);
             this.tbx_profile_new_password.Name = "tbx_profile_new_password";
+            this.tbx_profile_new_password.PasswordChar = '*';
             this.tbx_profile_new_password.Size = new System.Drawing.Size(194, 20);
             this.tbx_profile_new_password.TabIndex = 53;
             // 
@@ -289,6 +291,7 @@ namespace ProjektMagazyn
             // 
             this.tbx_profile_old_password.Location = new System.Drawing.Point(344, 217);
             this.tbx_profile_old_password.Name = "tbx_profile_old_password";
+            this.tbx_profile_old_password.PasswordChar = '*';
             this.tbx_profile_old_password.Size = new System.Drawing.Size(194, 20);
             this.tbx_profile_old_password.TabIndex = 52;
             // 
