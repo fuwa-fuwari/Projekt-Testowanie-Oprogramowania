@@ -23,6 +23,7 @@ namespace ProjektMagazyn
     {
         private int selectedUserId = -1;
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
+        private List<int> currentUserPermissions = new List<int>();
         private int currentViewUserId = -1;
         private bool isFiltered = false;
 
@@ -46,8 +47,10 @@ namespace ProjektMagazyn
         }
         private void LoadData()
         {
-            WczytajUzytkownikowDoListy();
-            ZablokujPolaEdycji();
+            LoadUserPermissions(loggedUserId);
+            LoadMyProfile();
+            LoadProfileRoles(loggedUserId);
+            EnablePermittedTabs();
 
             database.RoleListDvg(dgv_roles);
             database.RoleListClb(clb_add_user_role);
@@ -55,9 +58,10 @@ namespace ProjektMagazyn
             database.UserListClb(clb_users_group_edit);
 
             btn_refresh_Click(null, null);
+            WczytajUzytkownikowDoListy();
+            ZablokujPolaEdycji();
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
-            LoadMyProfile();
 
             tbx_search.GotFocus += tbx_search_GotFocus;
 
@@ -66,6 +70,58 @@ namespace ProjektMagazyn
             {
                 dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
             }
+        }
+        private void LoadUserPermissions(int userId)
+        {
+            currentUserPermissions.Clear();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = @"
+                        SELECT UprawnienieID 
+                        FROM Uzytkownicy_Uprawnienia 
+                        WHERE UzytkownikID = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", userId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            currentUserPermissions.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+            }
+        }
+        private void EnablePermittedTabs()
+        {
+            //1 - Administrator
+            //2 - Kierownik magazynu
+            //3 - Pracownik magazynu
+            //4 - Kierownik sprzedazy
+            //5 - Sprzedawca
+
+            if (!currentUserPermissions.Contains(1))
+            {
+                dotNetBarTabControl_main_view.TabPages.Remove(tabPage_users);
+                dotNetBarTabControl_main_view.TabPages.Remove(tabPage_roles);
+            }
+
+            if (!currentUserPermissions.Contains(2) && !currentUserPermissions.Contains(3))
+            {
+                dotNetBarTabControl_main_view.TabPages.Remove(tabPage_manage_warehouse);
+            }
+
+            if (!currentUserPermissions.Contains(4) && !currentUserPermissions.Contains(5))
+            {
+                dotNetBarTabControl_main_view.TabPages.Remove(tabPage_manage_sales);
+            }
+
         }
         private void tbx_search_GotFocus(object sender, EventArgs e)
         {
@@ -1309,6 +1365,57 @@ namespace ProjektMagazyn
                         }
                     }
                 }
+            }
+        }
+        private void LoadProfileRoles(int userId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = @"
+                    SELECT UprawnienieID, Nazwa
+                    FROM Uprawnienia";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            clb_profile_roles.Items.Clear();
+
+                            while (reader.Read())
+                            {
+                                var uprawnienieID = reader.GetInt32(0);
+                                var nazwa = reader.GetString(1);
+
+                                clb_profile_roles.Items.Add(new { UprawnienieID = uprawnienieID, Nazwa = nazwa });
+                            }
+                        }
+                    }
+
+                    clb_profile_roles.DisplayMember = "Nazwa";
+
+                    clb_profile_roles.Enabled = false;
+
+                    foreach (var permissionId in currentUserPermissions)
+                    {
+                        for (int i = 0; i < clb_profile_roles.Items.Count; i++)
+                        {
+                            var item = (dynamic)clb_profile_roles.Items[i];
+                            if (item.UprawnienieID == permissionId)
+                            {
+                                clb_profile_roles.SetItemChecked(i, true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania ról: " + ex.Message);
             }
         }
 

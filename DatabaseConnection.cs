@@ -44,6 +44,7 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd logowania: " + ex.Message);
             }
         }
+
         public void DisplayTableUsers(DataGridView dvg_user_list, string query)
         {
             try
