@@ -110,6 +110,7 @@ namespace ProjektMagazyn
             {
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_users);
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_roles);
+                dotNetBarTabControl_main_view.TabPages.Remove(tabPage_overview);
             }
 
             if (!currentUserPermissions.Contains(2) && !currentUserPermissions.Contains(3))
