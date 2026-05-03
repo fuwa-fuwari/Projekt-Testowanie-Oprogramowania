@@ -32,6 +32,7 @@ namespace ProjektMagazyn
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
             this.tabPage_my_profile = new System.Windows.Forms.TabPage();
+            this.clb_profile_roles = new System.Windows.Forms.CheckedListBox();
             this.lbl_repeat_password = new System.Windows.Forms.Label();
             this.lbl_new_password = new System.Windows.Forms.Label();
             this.lbl_old_password = new System.Windows.Forms.Label();
@@ -171,9 +172,52 @@ namespace ProjektMagazyn
             this.clb_roles_group_edit = new System.Windows.Forms.CheckedListBox();
             this.clb_users_group_edit = new System.Windows.Forms.CheckedListBox();
             this.tabPage_manage_warehouse = new System.Windows.Forms.TabPage();
+            this.dotNetBarTabControl_Add_Item_Type = new TabControls.DotNetBarTabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btn_delete_item = new System.Windows.Forms.Button();
+            this.dgv_warehouse_items = new System.Windows.Forms.DataGridView();
+            this.btn_register_item_cancel = new System.Windows.Forms.Button();
+            this.btn_register_item_save = new System.Windows.Forms.Button();
+            this.label47 = new System.Windows.Forms.Label();
+            this.cmbx_item_vat = new System.Windows.Forms.ComboBox();
+            this.label46 = new System.Windows.Forms.Label();
+            this.label45 = new System.Windows.Forms.Label();
+            this.cmbx_item_unit = new System.Windows.Forms.ComboBox();
+            this.label44 = new System.Windows.Forms.Label();
+            this.cmbx_item_type = new System.Windows.Forms.ComboBox();
+            this.label43 = new System.Windows.Forms.Label();
+            this.label42 = new System.Windows.Forms.Label();
+            this.label41 = new System.Windows.Forms.Label();
+            this.label40 = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
+            this.tbx_item_description = new System.Windows.Forms.TextBox();
+            this.tbx_item_supplier = new System.Windows.Forms.TextBox();
+            this.tbx_item_price = new System.Windows.Forms.TextBox();
+            this.tbx_item_quantity = new System.Windows.Forms.TextBox();
+            this.tbx_item_name = new System.Windows.Forms.TextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btn_delete_item_type = new System.Windows.Forms.Button();
+            this.tbx_item_type_name = new System.Windows.Forms.TextBox();
+            this.btn_cancel_item_type = new System.Windows.Forms.Button();
+            this.btn_add_item_type = new System.Windows.Forms.Button();
+            this.dgv_item_types = new System.Windows.Forms.DataGridView();
             this.tabPage_manage_sales = new System.Windows.Forms.TabPage();
+            this.btn_register_sale = new System.Windows.Forms.Button();
+            this.dtp_sale_date = new System.Windows.Forms.DateTimePicker();
+            this.cmbx_sale_product = new System.Windows.Forms.ComboBox();
+            this.tbx_sale_quantity = new System.Windows.Forms.TextBox();
+            this.tbx_sale_client_address = new System.Windows.Forms.TextBox();
+            this.tbx_sale_client_name = new System.Windows.Forms.TextBox();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.label36 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
             this.btn_logout = new System.Windows.Forms.Button();
-            this.clb_profile_roles = new System.Windows.Forms.CheckedListBox();
+            this.tbx_item_search = new System.Windows.Forms.TextBox();
+            this.chk_use_history_date = new System.Windows.Forms.CheckBox();
+            this.dtp_history_date = new System.Windows.Forms.DateTimePicker();
+            this.btn_search_items = new System.Windows.Forms.Button();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_my_profile.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
@@ -193,6 +237,13 @@ namespace ProjektMagazyn
             ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).BeginInit();
             this.tabPage_edit_roles.SuspendLayout();
             this.tabPage_group_edit.SuspendLayout();
+            this.tabPage_manage_warehouse.SuspendLayout();
+            this.dotNetBarTabControl_Add_Item_Type.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_warehouse_items)).BeginInit();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_item_types)).BeginInit();
+            this.tabPage_manage_sales.SuspendLayout();
             this.SuspendLayout();
             // 
             // dotNetBarTabControl_main_view
@@ -237,6 +288,14 @@ namespace ProjektMagazyn
             this.tabPage_my_profile.TabIndex = 3;
             this.tabPage_my_profile.Text = "Mój profil";
             this.tabPage_my_profile.UseVisualStyleBackColor = true;
+            // 
+            // clb_profile_roles
+            // 
+            this.clb_profile_roles.FormattingEnabled = true;
+            this.clb_profile_roles.Location = new System.Drawing.Point(280, 204);
+            this.clb_profile_roles.Name = "clb_profile_roles";
+            this.clb_profile_roles.Size = new System.Drawing.Size(259, 94);
+            this.clb_profile_roles.TabIndex = 59;
             // 
             // lbl_repeat_password
             // 
@@ -1632,6 +1691,7 @@ namespace ProjektMagazyn
             // 
             // tabPage_manage_warehouse
             // 
+            this.tabPage_manage_warehouse.Controls.Add(this.dotNetBarTabControl_Add_Item_Type);
             this.tabPage_manage_warehouse.Location = new System.Drawing.Point(146, 4);
             this.tabPage_manage_warehouse.Name = "tabPage_manage_warehouse";
             this.tabPage_manage_warehouse.Size = new System.Drawing.Size(763, 541);
@@ -1639,14 +1699,421 @@ namespace ProjektMagazyn
             this.tabPage_manage_warehouse.Text = "Zarządzanie magazynem";
             this.tabPage_manage_warehouse.UseVisualStyleBackColor = true;
             // 
+            // dotNetBarTabControl_Add_Item_Type
+            // 
+            this.dotNetBarTabControl_Add_Item_Type.Alignment = System.Windows.Forms.TabAlignment.Left;
+            this.dotNetBarTabControl_Add_Item_Type.Controls.Add(this.tabPage1);
+            this.dotNetBarTabControl_Add_Item_Type.Controls.Add(this.tabPage2);
+            this.dotNetBarTabControl_Add_Item_Type.ItemSize = new System.Drawing.Size(44, 136);
+            this.dotNetBarTabControl_Add_Item_Type.Location = new System.Drawing.Point(0, 4);
+            this.dotNetBarTabControl_Add_Item_Type.Multiline = true;
+            this.dotNetBarTabControl_Add_Item_Type.Name = "dotNetBarTabControl_Add_Item_Type";
+            this.dotNetBarTabControl_Add_Item_Type.SelectedIndex = 0;
+            this.dotNetBarTabControl_Add_Item_Type.Size = new System.Drawing.Size(760, 537);
+            this.dotNetBarTabControl_Add_Item_Type.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.dotNetBarTabControl_Add_Item_Type.TabIndex = 0;
+            this.dotNetBarTabControl_Add_Item_Type.Click += new System.EventHandler(this.dotNetBarTabControl_Add_Item_Type_Click);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.btn_search_items);
+            this.tabPage1.Controls.Add(this.dtp_history_date);
+            this.tabPage1.Controls.Add(this.chk_use_history_date);
+            this.tabPage1.Controls.Add(this.tbx_item_search);
+            this.tabPage1.Controls.Add(this.btn_delete_item);
+            this.tabPage1.Controls.Add(this.dgv_warehouse_items);
+            this.tabPage1.Controls.Add(this.btn_register_item_cancel);
+            this.tabPage1.Controls.Add(this.btn_register_item_save);
+            this.tabPage1.Controls.Add(this.label47);
+            this.tabPage1.Controls.Add(this.cmbx_item_vat);
+            this.tabPage1.Controls.Add(this.label46);
+            this.tabPage1.Controls.Add(this.label45);
+            this.tabPage1.Controls.Add(this.cmbx_item_unit);
+            this.tabPage1.Controls.Add(this.label44);
+            this.tabPage1.Controls.Add(this.cmbx_item_type);
+            this.tabPage1.Controls.Add(this.label43);
+            this.tabPage1.Controls.Add(this.label42);
+            this.tabPage1.Controls.Add(this.label41);
+            this.tabPage1.Controls.Add(this.label40);
+            this.tabPage1.Controls.Add(this.label39);
+            this.tabPage1.Controls.Add(this.tbx_item_description);
+            this.tabPage1.Controls.Add(this.tbx_item_supplier);
+            this.tabPage1.Controls.Add(this.tbx_item_price);
+            this.tabPage1.Controls.Add(this.tbx_item_quantity);
+            this.tabPage1.Controls.Add(this.tbx_item_name);
+            this.tabPage1.Location = new System.Drawing.Point(140, 4);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(616, 529);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Towary";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // btn_delete_item
+            // 
+            this.btn_delete_item.Location = new System.Drawing.Point(253, 254);
+            this.btn_delete_item.Name = "btn_delete_item";
+            this.btn_delete_item.Size = new System.Drawing.Size(112, 23);
+            this.btn_delete_item.TabIndex = 42;
+            this.btn_delete_item.Text = "Usuń ";
+            this.btn_delete_item.UseVisualStyleBackColor = true;
+            this.btn_delete_item.Click += new System.EventHandler(this.btn_delete_item_Click);
+            // 
+            // dgv_warehouse_items
+            // 
+            this.dgv_warehouse_items.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_warehouse_items.Location = new System.Drawing.Point(6, 39);
+            this.dgv_warehouse_items.Name = "dgv_warehouse_items";
+            this.dgv_warehouse_items.Size = new System.Drawing.Size(603, 209);
+            this.dgv_warehouse_items.TabIndex = 41;
+            // 
+            // btn_register_item_cancel
+            // 
+            this.btn_register_item_cancel.Location = new System.Drawing.Point(453, 496);
+            this.btn_register_item_cancel.Name = "btn_register_item_cancel";
+            this.btn_register_item_cancel.Size = new System.Drawing.Size(75, 23);
+            this.btn_register_item_cancel.TabIndex = 40;
+            this.btn_register_item_cancel.Text = "Anuluj";
+            this.btn_register_item_cancel.UseVisualStyleBackColor = true;
+            this.btn_register_item_cancel.Click += new System.EventHandler(this.btn_register_item_cancel_Click);
+            // 
+            // btn_register_item_save
+            // 
+            this.btn_register_item_save.Location = new System.Drawing.Point(88, 500);
+            this.btn_register_item_save.Name = "btn_register_item_save";
+            this.btn_register_item_save.Size = new System.Drawing.Size(75, 23);
+            this.btn_register_item_save.TabIndex = 39;
+            this.btn_register_item_save.Text = "Zapisz";
+            this.btn_register_item_save.UseVisualStyleBackColor = true;
+            this.btn_register_item_save.Click += new System.EventHandler(this.btn_register_item_save_Click);
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(184, 506);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(0, 13);
+            this.label47.TabIndex = 38;
+            // 
+            // cmbx_item_vat
+            // 
+            this.cmbx_item_vat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbx_item_vat.FormattingEnabled = true;
+            this.cmbx_item_vat.Items.AddRange(new object[] {
+            "23",
+            "8",
+            "5",
+            "0",
+            "zw"});
+            this.cmbx_item_vat.Location = new System.Drawing.Point(172, 419);
+            this.cmbx_item_vat.Name = "cmbx_item_vat";
+            this.cmbx_item_vat.Size = new System.Drawing.Size(356, 21);
+            this.cmbx_item_vat.TabIndex = 36;
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(88, 422);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(67, 13);
+            this.label46.TabIndex = 35;
+            this.label46.Text = "Stawka VAT";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(88, 340);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(83, 13);
+            this.label45.TabIndex = 34;
+            this.label45.Text = "Jednostka miary";
+            // 
+            // cmbx_item_unit
+            // 
+            this.cmbx_item_unit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbx_item_unit.FormattingEnabled = true;
+            this.cmbx_item_unit.Items.AddRange(new object[] {
+            "Sztuki",
+            "Kilogramy",
+            "Litry",
+            "Palety"});
+            this.cmbx_item_unit.Location = new System.Drawing.Point(172, 337);
+            this.cmbx_item_unit.Name = "cmbx_item_unit";
+            this.cmbx_item_unit.Size = new System.Drawing.Size(356, 21);
+            this.cmbx_item_unit.TabIndex = 33;
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(88, 313);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(75, 13);
+            this.label44.TabIndex = 32;
+            this.label44.Text = "Rodzaj towaru";
+            // 
+            // cmbx_item_type
+            // 
+            this.cmbx_item_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbx_item_type.FormattingEnabled = true;
+            this.cmbx_item_type.Location = new System.Drawing.Point(172, 310);
+            this.cmbx_item_type.Name = "cmbx_item_type";
+            this.cmbx_item_type.Size = new System.Drawing.Size(356, 21);
+            this.cmbx_item_type.TabIndex = 31;
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(88, 449);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(63, 13);
+            this.label43.TabIndex = 30;
+            this.label43.Text = "Opis towaru";
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(88, 475);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(55, 13);
+            this.label42.TabIndex = 29;
+            this.label42.Text = "Dostawca";
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(88, 367);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(29, 13);
+            this.label41.TabIndex = 28;
+            this.label41.Text = "Ilość";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(88, 393);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(59, 13);
+            this.label40.TabIndex = 27;
+            this.label40.Text = "Cena netto";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(88, 286);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(75, 13);
+            this.label39.TabIndex = 26;
+            this.label39.Text = "Nazwa towaru";
+            // 
+            // tbx_item_description
+            // 
+            this.tbx_item_description.Location = new System.Drawing.Point(172, 446);
+            this.tbx_item_description.Name = "tbx_item_description";
+            this.tbx_item_description.Size = new System.Drawing.Size(356, 20);
+            this.tbx_item_description.TabIndex = 25;
+            // 
+            // tbx_item_supplier
+            // 
+            this.tbx_item_supplier.Location = new System.Drawing.Point(172, 472);
+            this.tbx_item_supplier.Name = "tbx_item_supplier";
+            this.tbx_item_supplier.Size = new System.Drawing.Size(356, 20);
+            this.tbx_item_supplier.TabIndex = 24;
+            // 
+            // tbx_item_price
+            // 
+            this.tbx_item_price.Location = new System.Drawing.Point(172, 390);
+            this.tbx_item_price.Name = "tbx_item_price";
+            this.tbx_item_price.Size = new System.Drawing.Size(356, 20);
+            this.tbx_item_price.TabIndex = 23;
+            // 
+            // tbx_item_quantity
+            // 
+            this.tbx_item_quantity.Location = new System.Drawing.Point(172, 364);
+            this.tbx_item_quantity.Name = "tbx_item_quantity";
+            this.tbx_item_quantity.Size = new System.Drawing.Size(356, 20);
+            this.tbx_item_quantity.TabIndex = 22;
+            // 
+            // tbx_item_name
+            // 
+            this.tbx_item_name.Location = new System.Drawing.Point(172, 283);
+            this.tbx_item_name.Name = "tbx_item_name";
+            this.tbx_item_name.Size = new System.Drawing.Size(356, 20);
+            this.tbx_item_name.TabIndex = 21;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.btn_delete_item_type);
+            this.tabPage2.Controls.Add(this.tbx_item_type_name);
+            this.tabPage2.Controls.Add(this.btn_cancel_item_type);
+            this.tabPage2.Controls.Add(this.btn_add_item_type);
+            this.tabPage2.Controls.Add(this.dgv_item_types);
+            this.tabPage2.Location = new System.Drawing.Point(140, 4);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(616, 529);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Rodzaje Towarów";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btn_delete_item_type
+            // 
+            this.btn_delete_item_type.Location = new System.Drawing.Point(459, 201);
+            this.btn_delete_item_type.Name = "btn_delete_item_type";
+            this.btn_delete_item_type.Size = new System.Drawing.Size(151, 23);
+            this.btn_delete_item_type.TabIndex = 4;
+            this.btn_delete_item_type.Text = "Usuń";
+            this.btn_delete_item_type.UseVisualStyleBackColor = true;
+            this.btn_delete_item_type.Click += new System.EventHandler(this.btn_delete_item_type_Click);
+            // 
+            // tbx_item_type_name
+            // 
+            this.tbx_item_type_name.Location = new System.Drawing.Point(6, 165);
+            this.tbx_item_type_name.Name = "tbx_item_type_name";
+            this.tbx_item_type_name.Size = new System.Drawing.Size(156, 20);
+            this.tbx_item_type_name.TabIndex = 3;
+            // 
+            // btn_cancel_item_type
+            // 
+            this.btn_cancel_item_type.Location = new System.Drawing.Point(87, 201);
+            this.btn_cancel_item_type.Name = "btn_cancel_item_type";
+            this.btn_cancel_item_type.Size = new System.Drawing.Size(75, 23);
+            this.btn_cancel_item_type.TabIndex = 2;
+            this.btn_cancel_item_type.Text = "Anuluj";
+            this.btn_cancel_item_type.UseVisualStyleBackColor = true;
+            this.btn_cancel_item_type.Click += new System.EventHandler(this.btn_cancel_item_type_Click);
+            // 
+            // btn_add_item_type
+            // 
+            this.btn_add_item_type.Location = new System.Drawing.Point(6, 201);
+            this.btn_add_item_type.Name = "btn_add_item_type";
+            this.btn_add_item_type.Size = new System.Drawing.Size(75, 23);
+            this.btn_add_item_type.TabIndex = 1;
+            this.btn_add_item_type.Text = "Dodaj";
+            this.btn_add_item_type.UseVisualStyleBackColor = true;
+            this.btn_add_item_type.Click += new System.EventHandler(this.btn_add_item_type_Click);
+            // 
+            // dgv_item_types
+            // 
+            this.dgv_item_types.AllowUserToAddRows = false;
+            this.dgv_item_types.AllowUserToDeleteRows = false;
+            this.dgv_item_types.AllowUserToResizeRows = false;
+            this.dgv_item_types.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_item_types.Location = new System.Drawing.Point(6, 6);
+            this.dgv_item_types.Name = "dgv_item_types";
+            this.dgv_item_types.ReadOnly = true;
+            this.dgv_item_types.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgv_item_types.Size = new System.Drawing.Size(604, 149);
+            this.dgv_item_types.TabIndex = 0;
+            // 
             // tabPage_manage_sales
             // 
+            this.tabPage_manage_sales.Controls.Add(this.btn_register_sale);
+            this.tabPage_manage_sales.Controls.Add(this.dtp_sale_date);
+            this.tabPage_manage_sales.Controls.Add(this.cmbx_sale_product);
+            this.tabPage_manage_sales.Controls.Add(this.tbx_sale_quantity);
+            this.tabPage_manage_sales.Controls.Add(this.tbx_sale_client_address);
+            this.tabPage_manage_sales.Controls.Add(this.tbx_sale_client_name);
+            this.tabPage_manage_sales.Controls.Add(this.label38);
+            this.tabPage_manage_sales.Controls.Add(this.label37);
+            this.tabPage_manage_sales.Controls.Add(this.label36);
+            this.tabPage_manage_sales.Controls.Add(this.label32);
+            this.tabPage_manage_sales.Controls.Add(this.label30);
             this.tabPage_manage_sales.Location = new System.Drawing.Point(146, 4);
             this.tabPage_manage_sales.Name = "tabPage_manage_sales";
             this.tabPage_manage_sales.Size = new System.Drawing.Size(763, 541);
             this.tabPage_manage_sales.TabIndex = 5;
             this.tabPage_manage_sales.Text = "Zarządzanie sprzedażą";
             this.tabPage_manage_sales.UseVisualStyleBackColor = true;
+            // 
+            // btn_register_sale
+            // 
+            this.btn_register_sale.Location = new System.Drawing.Point(143, 246);
+            this.btn_register_sale.Name = "btn_register_sale";
+            this.btn_register_sale.Size = new System.Drawing.Size(118, 23);
+            this.btn_register_sale.TabIndex = 10;
+            this.btn_register_sale.Text = "Zarejestruj sprzedaż";
+            this.btn_register_sale.UseVisualStyleBackColor = true;
+            this.btn_register_sale.Click += new System.EventHandler(this.btn_register_sale_Click);
+            // 
+            // dtp_sale_date
+            // 
+            this.dtp_sale_date.Location = new System.Drawing.Point(143, 117);
+            this.dtp_sale_date.Name = "dtp_sale_date";
+            this.dtp_sale_date.Size = new System.Drawing.Size(200, 20);
+            this.dtp_sale_date.TabIndex = 9;
+            // 
+            // cmbx_sale_product
+            // 
+            this.cmbx_sale_product.FormattingEnabled = true;
+            this.cmbx_sale_product.Location = new System.Drawing.Point(143, 164);
+            this.cmbx_sale_product.Name = "cmbx_sale_product";
+            this.cmbx_sale_product.Size = new System.Drawing.Size(200, 21);
+            this.cmbx_sale_product.TabIndex = 8;
+            // 
+            // tbx_sale_quantity
+            // 
+            this.tbx_sale_quantity.Location = new System.Drawing.Point(143, 203);
+            this.tbx_sale_quantity.Name = "tbx_sale_quantity";
+            this.tbx_sale_quantity.Size = new System.Drawing.Size(62, 20);
+            this.tbx_sale_quantity.TabIndex = 7;
+            // 
+            // tbx_sale_client_address
+            // 
+            this.tbx_sale_client_address.Location = new System.Drawing.Point(143, 73);
+            this.tbx_sale_client_address.Name = "tbx_sale_client_address";
+            this.tbx_sale_client_address.Size = new System.Drawing.Size(121, 20);
+            this.tbx_sale_client_address.TabIndex = 11;
+            // 
+            // tbx_sale_client_name
+            // 
+            this.tbx_sale_client_name.Location = new System.Drawing.Point(143, 32);
+            this.tbx_sale_client_name.Name = "tbx_sale_client_name";
+            this.tbx_sale_client_name.Size = new System.Drawing.Size(118, 20);
+            this.tbx_sale_client_name.TabIndex = 5;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(30, 206);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(29, 13);
+            this.label38.TabIndex = 4;
+            this.label38.Text = "Ilość";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(30, 167);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(37, 13);
+            this.label37.TabIndex = 3;
+            this.label37.Text = "Towar";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(26, 124);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(80, 13);
+            this.label36.TabIndex = 2;
+            this.label36.Text = "Data sprzedaży";
+            // 
+            // label32
+            // 
+            this.label32.Location = new System.Drawing.Point(26, 76);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(100, 23);
+            this.label32.TabIndex = 11;
+            this.label32.Text = "Adres klienta";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(26, 35);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(74, 13);
+            this.label30.TabIndex = 0;
+            this.label30.Text = "Nazwa klienta";
             // 
             // btn_logout
             // 
@@ -1659,13 +2126,41 @@ namespace ProjektMagazyn
             this.btn_logout.UseVisualStyleBackColor = true;
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
-            // clb_profile_roles
+            // tbx_item_search
             // 
-            this.clb_profile_roles.FormattingEnabled = true;
-            this.clb_profile_roles.Location = new System.Drawing.Point(280, 204);
-            this.clb_profile_roles.Name = "clb_profile_roles";
-            this.clb_profile_roles.Size = new System.Drawing.Size(259, 94);
-            this.clb_profile_roles.TabIndex = 59;
+            this.tbx_item_search.Location = new System.Drawing.Point(123, 9);
+            this.tbx_item_search.Name = "tbx_item_search";
+            this.tbx_item_search.Size = new System.Drawing.Size(100, 20);
+            this.tbx_item_search.TabIndex = 43;
+            // 
+            // chk_use_history_date
+            // 
+            this.chk_use_history_date.AutoSize = true;
+            this.chk_use_history_date.Location = new System.Drawing.Point(235, 12);
+            this.chk_use_history_date.Name = "chk_use_history_date";
+            this.chk_use_history_date.Size = new System.Drawing.Size(168, 17);
+            this.chk_use_history_date.TabIndex = 44;
+            this.chk_use_history_date.Text = "Pokaż stan historyczny z dnia:";
+            this.chk_use_history_date.UseVisualStyleBackColor = true;
+            this.chk_use_history_date.CheckedChanged += new System.EventHandler(this.chk_use_history_date_CheckedChanged);
+            // 
+            // dtp_history_date
+            // 
+            this.dtp_history_date.Enabled = false;
+            this.dtp_history_date.Location = new System.Drawing.Point(409, 10);
+            this.dtp_history_date.Name = "dtp_history_date";
+            this.dtp_history_date.Size = new System.Drawing.Size(200, 20);
+            this.dtp_history_date.TabIndex = 45;
+            // 
+            // btn_search_items
+            // 
+            this.btn_search_items.Location = new System.Drawing.Point(6, 8);
+            this.btn_search_items.Name = "btn_search_items";
+            this.btn_search_items.Size = new System.Drawing.Size(111, 23);
+            this.btn_search_items.TabIndex = 46;
+            this.btn_search_items.Text = "Wyszukaj";
+            this.btn_search_items.UseVisualStyleBackColor = true;
+            this.btn_search_items.Click += new System.EventHandler(this.btn_search_items_Click);
             // 
             // ControlPanel
             // 
@@ -1673,8 +2168,8 @@ namespace ProjektMagazyn
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(968, 606);
-            this.Controls.Add(this.btn_logout);
             this.Controls.Add(this.dotNetBarTabControl_main_view);
+            this.Controls.Add(this.btn_logout);
             this.Name = "ControlPanel";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "System magazynowy";
@@ -1708,6 +2203,16 @@ namespace ProjektMagazyn
             this.tabPage_edit_roles.PerformLayout();
             this.tabPage_group_edit.ResumeLayout(false);
             this.tabPage_group_edit.PerformLayout();
+            this.tabPage_manage_warehouse.ResumeLayout(false);
+            this.dotNetBarTabControl_Add_Item_Type.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_warehouse_items)).EndInit();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_item_types)).EndInit();
+            this.tabPage_manage_sales.ResumeLayout(false);
+            this.tabPage_manage_sales.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1858,5 +2363,49 @@ namespace ProjektMagazyn
         private TabPage tabPage_manage_warehouse;
         private TabPage tabPage_manage_sales;
         private CheckedListBox clb_profile_roles;
+        private Button btn_register_sale;
+        private DateTimePicker dtp_sale_date;
+        private ComboBox cmbx_sale_product;
+        private TextBox tbx_sale_quantity;
+        private TextBox tbx_sale_client_address;
+        private TextBox tbx_sale_client_name;
+        private Label label38;
+        private Label label37;
+        private Label label36;
+        private Label label32;
+        private Label label30;
+        private TabControls.DotNetBarTabControl dotNetBarTabControl_Add_Item_Type;
+        private TabPage tabPage1;
+        private Button btn_register_item_cancel;
+        private Button btn_register_item_save;
+        private Label label47;
+        private ComboBox cmbx_item_vat;
+        private Label label46;
+        private Label label45;
+        private ComboBox cmbx_item_unit;
+        private Label label44;
+        private ComboBox cmbx_item_type;
+        private Label label43;
+        private Label label42;
+        private Label label41;
+        private Label label40;
+        private Label label39;
+        private TextBox tbx_item_description;
+        private TextBox tbx_item_supplier;
+        private TextBox tbx_item_price;
+        private TextBox tbx_item_quantity;
+        private TextBox tbx_item_name;
+        private TabPage tabPage2;
+        private TextBox tbx_item_type_name;
+        private Button btn_cancel_item_type;
+        private Button btn_add_item_type;
+        private DataGridView dgv_item_types;
+        private Button btn_delete_item_type;
+        private DataGridView dgv_warehouse_items;
+        private Button btn_delete_item;
+        private CheckBox chk_use_history_date;
+        private TextBox tbx_item_search;
+        private Button btn_search_items;
+        private DateTimePicker dtp_history_date;
     }
 }

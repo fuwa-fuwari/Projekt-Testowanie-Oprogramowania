@@ -196,7 +196,7 @@ namespace ProjektMagazyn
                         {
                             adminRoleId = (int)cmd.ExecuteScalar();
                         }
-                        
+
                         int adminBefore;
                         using (SqlCommand cmd = new SqlCommand(
                             @"SELECT COUNT(DISTINCT UzytkownikId)
@@ -327,6 +327,384 @@ namespace ProjektMagazyn
                 }
 
                 return true;
+            }
+        }
+        public DataTable GetItemTypes()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT RodzajID, Nazwa FROM RodzajeTowarow ORDER BY Nazwa";
+                    using (SqlDataAdapter da = new SqlDataAdapter(query, conn))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd pobierania rodzajów towarów: " + ex.Message, "Błąd bazy danych", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return dt;
+        }
+
+        public bool RegisterNewItem(string name, int typeId, string unit, string description, decimal netPrice, decimal quantity, decimal vatRate, string supplier, DateTime deliveryDate, int userId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            string insertItemQuery = "INSERT INTO Towary (Nazwa, RodzajID, JednostkaMiary, Opis) VALUES (@name, @typeId, @unit, @description); SELECT SCOPE_IDENTITY();";
+                            int itemId;
+                            using (SqlCommand cmd = new SqlCommand(insertItemQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@name", name);
+                                cmd.Parameters.AddWithValue("@typeId", typeId);
+                                cmd.Parameters.AddWithValue("@unit", unit);
+                                cmd.Parameters.AddWithValue("@description", string.IsNullOrWhiteSpace(description) ? (object)DBNull.Value : description);
+                                itemId = Convert.ToInt32(cmd.ExecuteScalar());
+                            }
+
+                            string insertVatQuery = "INSERT INTO StawkiVAT (TowarID, WartoscVAT, ObowiazujeOd) VALUES (@itemId, @vatRate, @date)";
+                            using (SqlCommand cmd = new SqlCommand(insertVatQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.Parameters.AddWithValue("@vatRate", vatRate);
+                                cmd.Parameters.AddWithValue("@date", DateTime.Today);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            string insertStockQuery = "INSERT INTO StanyMagazynowe (TowarID, IloscDostepna) VALUES (@itemId, @quantity)";
+                            using (SqlCommand cmd = new SqlCommand(insertStockQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.Parameters.AddWithValue("@quantity", quantity);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            string insertDeliveryQuery = @"INSERT INTO RejestracjaDostaw 
+                                             (TowarID, Ilosc, CenaNetto, ZastosowanyVAT, Dostawca, DataDostawy, RejestrujacyUzytkownikID) 
+                                             VALUES (@itemId, @quantity, @netPrice, @vatRate, @supplier, @deliveryDate, @userId)";
+                            using (SqlCommand cmd = new SqlCommand(insertDeliveryQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.Parameters.AddWithValue("@quantity", quantity);
+                                cmd.Parameters.AddWithValue("@netPrice", netPrice);
+                                cmd.Parameters.AddWithValue("@vatRate", vatRate);
+                                cmd.Parameters.AddWithValue("@supplier", supplier);
+                                cmd.Parameters.AddWithValue("@deliveryDate", deliveryDate);
+                                cmd.Parameters.AddWithValue("@userId", userId);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            transaction.Commit();
+                            return true;
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Wystąpił błąd podczas zapisu w bazie danych:\n" + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public void DisplayItemTypes(DataGridView dgv)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT RodzajID, Nazwa FROM RodzajeTowarow ORDER BY Nazwa";
+                    using (SqlDataAdapter da = new SqlDataAdapter(query, conn))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        // --- WYJĄTEK E3: Brak rodzajów towarów ---
+                        if (dt.Rows.Count == 0)
+                        {
+                            MessageBox.Show("Brak rodzajów towarów.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            dgv.DataSource = null;
+                        }
+                        else
+                        {
+                            dgv.DataSource = dt;
+                            if (dgv.Columns["RodzajID"] != null)
+                            {
+                                dgv.Columns["RodzajID"].Visible = false;
+                            }
+                            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd pobierania listy rodzajów towarów: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public bool CheckIfItemTypeExists(string typeName)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT COUNT(1) FROM RodzajeTowarow WHERE Nazwa = @name";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@name", typeName);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd sprawdzania unikalności: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;
+            }
+        }
+
+        public bool AddNewItemType(string typeName)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "INSERT INTO RodzajeTowarow (Nazwa) VALUES (@name)";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@name", typeName);
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd dodawania rodzaju towaru: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool CheckIfItemTypeInUse(int typeId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT COUNT(1) FROM Towary WHERE RodzajID = @typeId";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@typeId", typeId);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd sprawdzania przypisania rodzaju towaru: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;
+            }
+        }
+
+        public bool DeleteItemType(int typeId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "DELETE FROM RodzajeTowarow WHERE RodzajID = @typeId";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@typeId", typeId);
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd usuwania rodzaju towaru: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool CheckIfItemHasHistory(int itemId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT 
+                    (SELECT COUNT(1) FROM RejestracjaDostaw WHERE TowarID = @itemId) +
+                    (SELECT COUNT(1) FROM PozycjeSprzedazy WHERE TowarID = @itemId) AS TotalHistory";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@itemId", itemId);
+                        int historyCount = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        return historyCount > 0; // True oznacza, że towar był używany i nie można go usunąć
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd weryfikacji historii towaru: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return true;
+            }
+        }
+
+        public bool DeleteItem(int itemId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            string deleteVatQuery = "DELETE FROM StawkiVAT WHERE TowarID = @itemId";
+                            using (SqlCommand cmd = new SqlCommand(deleteVatQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.ExecuteNonQuery();
+                            }
+                            string deleteStockQuery = "DELETE FROM StanyMagazynowe WHERE TowarID = @itemId";
+                            using (SqlCommand cmd = new SqlCommand(deleteStockQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.ExecuteNonQuery();
+                            }
+                            string deleteItemQuery = "DELETE FROM Towary WHERE TowarID = @itemId";
+                            using (SqlCommand cmd = new SqlCommand(deleteItemQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            transaction.Commit();
+                            return true;
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd podczas usuwania towaru: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool SearchWarehouseItems(DataGridView dgv, string searchPhrase, DateTime? historyDate)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = @"
+                    SELECT 
+                        t.TowarID,
+                        t.Nazwa AS [Nazwa towaru],
+                        rt.Nazwa AS [Rodzaj towaru],
+                        CASE 
+                            WHEN @historyDate IS NULL THEN sm.IloscDostepna
+                            ELSE (
+                                SELECT CASE WHEN ObliczonyStan < 0 THEN 0 ELSE ObliczonyStan END
+                                FROM (
+                                    SELECT (
+                                        ISNULL((SELECT SUM(Ilosc) FROM RejestracjaDostaw WHERE TowarID = t.TowarID AND DataDostawy <= @historyDate), 0)
+                                        - 
+                                        ISNULL((SELECT SUM(ps.Ilosc) FROM PozycjeSprzedazy ps JOIN Sprzedaz s ON ps.SprzedazID = s.SprzedazID WHERE ps.TowarID = t.TowarID AND CAST(s.DataSprzedazy AS DATE) <= @historyDate), 0)
+                                    ) AS ObliczonyStan
+                                ) AS Temp
+                            )
+                        END AS [Wielkość stanu magazynowego],
+                        ISNULL(CAST(CAST(@historyDate AS DATE) AS NVARCHAR), CAST(CAST(GETDATE() AS DATE) AS NVARCHAR)) AS [Data stanu]
+                    FROM Towary t
+                    JOIN RodzajeTowarow rt ON t.RodzajID = rt.RodzajID
+                    LEFT JOIN StanyMagazynowe sm ON t.TowarID = sm.TowarID
+                    WHERE 
+                        (@phrase IS NULL OR @phrase = '' OR
+                         t.Nazwa LIKE '%' + @phrase + '%' OR
+                         rt.Nazwa LIKE '%' + @phrase + '%' OR
+                         EXISTS (
+                             SELECT 1 FROM RejestracjaDostaw rd 
+                             JOIN Uzytkownicy u ON rd.RejestrujacyUzytkownikID = u.UzytkownikID 
+                             WHERE rd.TowarID = t.TowarID AND 
+                             (u.Imie + ' ' + u.Nazwisko LIKE '%' + @phrase + '%' OR u.Nazwisko + ' ' + u.Imie LIKE '%' + @phrase + '%')
+                         )
+                        )";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@phrase", string.IsNullOrWhiteSpace(searchPhrase) ? (object)DBNull.Value : searchPhrase);
+                        cmd.Parameters.AddWithValue("@historyDate", historyDate.HasValue ? (object)historyDate.Value.Date : DBNull.Value);
+
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+
+                            // --- Wyjątek E2: Brak towarów w bazie ---
+                            if (dt.Rows.Count == 0)
+                            {
+                                MessageBox.Show("Brak towarów spełniających podane kryteria.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return false;
+                            }
+                            else
+                            {
+                                dgv.DataSource = dt;
+                                if (dgv.Columns["TowarID"] != null)
+                                {
+                                    dgv.Columns["TowarID"].Visible = false;
+                                }
+                                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd podczas wyszukiwania towarów: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
     }
