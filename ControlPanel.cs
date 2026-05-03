@@ -48,6 +48,7 @@ namespace ProjektMagazyn
         private void LoadData()
         {
             LoadUserPermissions(loggedUserId);
+            WczytajTowaryDoSprzedazy();
             LoadMyProfile();
             LoadProfileRoles(loggedUserId);
             EnablePermittedTabs();
@@ -1161,6 +1162,164 @@ namespace ProjektMagazyn
                 btn_filter_perms.BackColor = SystemColors.Control;
                 cmbx_permissions.Enabled = true;
                 cmbx_permissions.SelectedIndex = 0; 
+            }
+        }
+
+        private void btn_register_sale_Click(object sender, EventArgs e)
+        {
+            errorProvider.Clear();
+            int invalids = 0;
+
+            string clientName = tbx_sale_client_name.Text.Trim();
+            string clientAddress = tbx_sale_client_address.Text.Trim();
+            DateTime saleDate = dtp_sale_date.Value.Date;
+
+            if (saleDate < DateTime.Today)
+            {
+                errorProvider.SetError(dtp_sale_date, "Data sprzedaży nie może być datą wsteczną");
+                invalids++;
+            }
+
+            if (string.IsNullOrEmpty(clientName))
+            {
+                errorProvider.SetError(tbx_sale_client_name, "Brak wymaganych pól");
+                invalids++;
+            }
+
+            if (string.IsNullOrEmpty(clientAddress))
+            {
+                errorProvider.SetError(tbx_sale_client_address, "Brak wymaganych pól");
+                invalids++;
+            }
+
+            if (cmbx_sale_product.SelectedIndex == -1)
+            {
+                errorProvider.SetError(cmbx_sale_product, "Brak wymaganych pól");
+                invalids++;
+            }
+
+            decimal quantity = 0;
+            if (!decimal.TryParse(tbx_sale_quantity.Text, out quantity) || quantity <= 0)
+            {
+                errorProvider.SetError(tbx_sale_quantity, "Wprowadź poprawną ilość (większą od zera).");
+                invalids++;
+            }
+
+            if (invalids > 0)
+            {
+                MessageBox.Show("Brak wymaganych pól lub wprowadzono błędne dane.");
+                return;
+            }
+
+            int towarId = (int)cmbx_sale_product.SelectedValue;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlTransaction tran = conn.BeginTransaction();
+
+                try
+                {
+                    decimal dostepnaIlosc = 0;
+                    string checkStockQuery = "SELECT IloscDostepna FROM StanyMagazynowe WHERE TowarID = @towarId";
+                    using (SqlCommand cmd = new SqlCommand(checkStockQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@towarId", towarId);
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) dostepnaIlosc = Convert.ToDecimal(result);
+                    }
+
+                    if (quantity > dostepnaIlosc)
+                    {
+                        errorProvider.SetError(tbx_sale_quantity, $"Błąd: Niewystarczająca ilość towaru w magazynie (Dostępna: {dostepnaIlosc})");
+                        MessageBox.Show($"Błąd: Niewystarczająca ilość towaru w magazynie (Dostępna: {dostepnaIlosc})");
+                        tran.Rollback();
+                        return;
+                    }
+
+                    int sprzedazId = 0;
+                    string insertSprzedazQuery = @"
+                        INSERT INTO Sprzedaz (NazwaKlienta, AdresKlienta, DataSprzedazy, SprzedawcaID) 
+                        VALUES (@klient, @adres, @data, @sprzedawcaId);
+                        SELECT SCOPE_IDENTITY();";
+
+                    using (SqlCommand cmd = new SqlCommand(insertSprzedazQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@klient", clientName);
+                        cmd.Parameters.AddWithValue("@adres", clientAddress);
+                        cmd.Parameters.AddWithValue("@data", saleDate);
+                        cmd.Parameters.AddWithValue("@sprzedawcaId", loggedUserId);
+                        sprzedazId = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+
+                    string insertPozycjaQuery = @"
+                        INSERT INTO PozycjeSprzedazy (SprzedazID, TowarID, Ilosc) 
+                        VALUES (@sprzedazId, @towarId, @ilosc)";
+                    using (SqlCommand cmd = new SqlCommand(insertPozycjaQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@sprzedazId", sprzedazId);
+                        cmd.Parameters.AddWithValue("@towarId", towarId);
+                        cmd.Parameters.AddWithValue("@ilosc", quantity);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    string updateStanQuery = @"
+                        UPDATE StanyMagazynowe 
+                        SET IloscDostepna = IloscDostepna - @ilosc 
+                        WHERE TowarID = @towarId";
+                    using (SqlCommand cmd = new SqlCommand(updateStanQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@ilosc", quantity);
+                        cmd.Parameters.AddWithValue("@towarId", towarId);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    tran.Commit();
+                    MessageBox.Show("Sprzedaż została zarejestrowana pomyślnie");
+
+                    tbx_sale_client_name.Clear();
+                    tbx_sale_client_address.Clear();
+                    tbx_sale_quantity.Clear();
+                    cmbx_sale_product.SelectedIndex = -1;
+                    dtp_sale_date.Value = DateTime.Today;
+
+                    WczytajTowaryDoSprzedazy();
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    MessageBox.Show("Błąd zapisu sprzedaży: " + ex.Message);
+                }
+            }
+        }
+
+        private void WczytajTowaryDoSprzedazy()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                        SELECT t.TowarID, 
+                               t.Nazwa + ' (Dostępne: ' + CAST(sm.IloscDostepna AS NVARCHAR) + ' ' + t.JednostkaMiary + ')' AS DisplayText
+                        FROM Towary t
+                        JOIN StanyMagazynowe sm ON t.TowarID = sm.TowarID
+                        WHERE sm.IloscDostepna > 0";
+
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    cmbx_sale_product.DataSource = dt;
+                    cmbx_sale_product.DisplayMember = "DisplayText";
+                    cmbx_sale_product.ValueMember = "TowarID";
+                    cmbx_sale_product.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd ładowania towarów: " + ex.Message);
             }
         }
 
