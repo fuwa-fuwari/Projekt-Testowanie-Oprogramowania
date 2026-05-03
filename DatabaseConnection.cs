@@ -295,5 +295,38 @@ namespace ProjektMagazyn
                 }
             }
         }
+        public bool ResetUserPassword(string login, string passwordHash)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string checkQuery = @"SELECT COUNT(*) 
+                                  FROM Uzytkownicy 
+                                  WHERE Login = @login AND CzyZapomniany = 0";
+
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@login", login);
+                    int exists = (int)checkCmd.ExecuteScalar();
+
+                    if (exists == 0)
+                        return false;
+                }
+
+                string updateQuery = @"UPDATE Uzytkownicy 
+                                   SET HasloHash = @hash 
+                                   WHERE Login = @login";
+
+                using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
+                {
+                    updateCmd.Parameters.AddWithValue("@hash", passwordHash);
+                    updateCmd.Parameters.AddWithValue("@login", login);
+                    updateCmd.ExecuteNonQuery();
+                }
+
+                return true;
+            }
+        }
     }
 }

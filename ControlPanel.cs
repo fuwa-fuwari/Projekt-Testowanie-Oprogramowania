@@ -51,11 +51,10 @@ namespace ProjektMagazyn
 
             database.RoleListDvg(dgv_roles);
             database.RoleListClb(clb_add_user_role);
-            database.RoleListClb(clb_user_role_edit);
-            database.RoleListClb(clb_user_role_view);
             database.RoleListClb(clb_roles_group_edit);
             database.UserListClb(clb_users_group_edit);
 
+            btn_refresh_Click(null, null);
             WczytajUprawnienia();
             WczytajUzytkownikowZUprawnieniami();
             LoadMyProfile();
@@ -578,9 +577,7 @@ namespace ProjektMagazyn
                 msktbx_city_edit, 
                 msktbx_street_edit, 
                 msktbx_street_number_edit, 
-                msktbx_locale_number_edit,
-                clb_user_role_edit,
-                clb_user_role_view
+                msktbx_locale_number_edit
             };
             foreach (var ctrl in controls) ctrl.Enabled = false;
         }
@@ -671,8 +668,7 @@ namespace ProjektMagazyn
                     msktbx_city_edit, 
                     msktbx_street_edit, 
                     msktbx_street_number_edit, 
-                    msktbx_locale_number_edit,
-                    clb_user_role_edit
+                    msktbx_locale_number_edit
             };
             foreach (var ctrl in controls) ctrl.Enabled = true;
 

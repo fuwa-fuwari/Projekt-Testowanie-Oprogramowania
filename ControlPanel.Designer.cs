@@ -89,7 +89,6 @@ namespace ProjektMagazyn
             this.msktbx_user_login = new System.Windows.Forms.MaskedTextBox();
             this.lbl_user_login = new System.Windows.Forms.Label();
             this.tabPage_edit_user = new System.Windows.Forms.TabPage();
-            this.clb_user_role_edit = new System.Windows.Forms.CheckedListBox();
             this.btn_unlock_edit = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
             this.cmbx_select_user_edit = new System.Windows.Forms.ComboBox();
@@ -122,7 +121,6 @@ namespace ProjektMagazyn
             this.msktbx_user_login_edit = new System.Windows.Forms.MaskedTextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.tabPage_view_user = new System.Windows.Forms.TabPage();
-            this.clb_user_role_view = new System.Windows.Forms.CheckedListBox();
             this.btn_close_view = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbx_gender_view = new System.Windows.Forms.ComboBox();
@@ -166,13 +164,13 @@ namespace ProjektMagazyn
             this.lbl_choose_user = new System.Windows.Forms.Label();
             this.cmbx_select_user_role_edit = new System.Windows.Forms.ComboBox();
             this.tabPage_group_edit = new System.Windows.Forms.TabPage();
+            this.lbl_roles_group_edit = new System.Windows.Forms.Label();
+            this.lbl_users_group_edit = new System.Windows.Forms.Label();
             this.btn_group_edit_cancel = new System.Windows.Forms.Button();
             this.btn_group_edit_save = new System.Windows.Forms.Button();
             this.clb_roles_group_edit = new System.Windows.Forms.CheckedListBox();
             this.clb_users_group_edit = new System.Windows.Forms.CheckedListBox();
             this.btn_logout = new System.Windows.Forms.Button();
-            this.lbl_users_group_edit = new System.Windows.Forms.Label();
-            this.lbl_roles_group_edit = new System.Windows.Forms.Label();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_my_profile.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
@@ -781,7 +779,6 @@ namespace ProjektMagazyn
             // 
             // tabPage_edit_user
             // 
-            this.tabPage_edit_user.Controls.Add(this.clb_user_role_edit);
             this.tabPage_edit_user.Controls.Add(this.btn_unlock_edit);
             this.tabPage_edit_user.Controls.Add(this.label17);
             this.tabPage_edit_user.Controls.Add(this.cmbx_select_user_edit);
@@ -812,14 +809,6 @@ namespace ProjektMagazyn
             this.tabPage_edit_user.TabIndex = 1;
             this.tabPage_edit_user.Text = "Edytuj";
             this.tabPage_edit_user.UseVisualStyleBackColor = true;
-            // 
-            // clb_user_role_edit
-            // 
-            this.clb_user_role_edit.FormattingEnabled = true;
-            this.clb_user_role_edit.Location = new System.Drawing.Point(25, 149);
-            this.clb_user_role_edit.Name = "clb_user_role_edit";
-            this.clb_user_role_edit.Size = new System.Drawing.Size(212, 79);
-            this.clb_user_role_edit.TabIndex = 63;
             // 
             // btn_unlock_edit
             // 
@@ -1114,7 +1103,6 @@ namespace ProjektMagazyn
             // 
             // tabPage_view_user
             // 
-            this.tabPage_view_user.Controls.Add(this.clb_user_role_view);
             this.tabPage_view_user.Controls.Add(this.btn_close_view);
             this.tabPage_view_user.Controls.Add(this.label1);
             this.tabPage_view_user.Controls.Add(this.cmbx_gender_view);
@@ -1142,14 +1130,6 @@ namespace ProjektMagazyn
             this.tabPage_view_user.TabIndex = 2;
             this.tabPage_view_user.Text = "Podgląd użytkownika";
             this.tabPage_view_user.UseVisualStyleBackColor = true;
-            // 
-            // clb_user_role_view
-            // 
-            this.clb_user_role_view.FormattingEnabled = true;
-            this.clb_user_role_view.Location = new System.Drawing.Point(28, 90);
-            this.clb_user_role_view.Name = "clb_user_role_view";
-            this.clb_user_role_view.Size = new System.Drawing.Size(212, 79);
-            this.clb_user_role_view.TabIndex = 64;
             // 
             // btn_close_view
             // 
@@ -1590,6 +1570,24 @@ namespace ProjektMagazyn
             this.tabPage_group_edit.Text = "Edycja grupowa";
             this.tabPage_group_edit.UseVisualStyleBackColor = true;
             // 
+            // lbl_roles_group_edit
+            // 
+            this.lbl_roles_group_edit.AutoSize = true;
+            this.lbl_roles_group_edit.Location = new System.Drawing.Point(311, 51);
+            this.lbl_roles_group_edit.Name = "lbl_roles_group_edit";
+            this.lbl_roles_group_edit.Size = new System.Drawing.Size(66, 13);
+            this.lbl_roles_group_edit.TabIndex = 5;
+            this.lbl_roles_group_edit.Text = "Uprawnienia";
+            // 
+            // lbl_users_group_edit
+            // 
+            this.lbl_users_group_edit.AutoSize = true;
+            this.lbl_users_group_edit.Location = new System.Drawing.Point(20, 51);
+            this.lbl_users_group_edit.Name = "lbl_users_group_edit";
+            this.lbl_users_group_edit.Size = new System.Drawing.Size(67, 13);
+            this.lbl_users_group_edit.TabIndex = 4;
+            this.lbl_users_group_edit.Text = "Użytkownicy";
+            // 
             // btn_group_edit_cancel
             // 
             this.btn_group_edit_cancel.Location = new System.Drawing.Point(23, 485);
@@ -1636,24 +1634,6 @@ namespace ProjektMagazyn
             this.btn_logout.Text = "Wyloguj";
             this.btn_logout.UseVisualStyleBackColor = true;
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
-            // 
-            // lbl_users_group_edit
-            // 
-            this.lbl_users_group_edit.AutoSize = true;
-            this.lbl_users_group_edit.Location = new System.Drawing.Point(20, 51);
-            this.lbl_users_group_edit.Name = "lbl_users_group_edit";
-            this.lbl_users_group_edit.Size = new System.Drawing.Size(67, 13);
-            this.lbl_users_group_edit.TabIndex = 4;
-            this.lbl_users_group_edit.Text = "Użytkownicy";
-            // 
-            // lbl_roles_group_edit
-            // 
-            this.lbl_roles_group_edit.AutoSize = true;
-            this.lbl_roles_group_edit.Location = new System.Drawing.Point(311, 51);
-            this.lbl_roles_group_edit.Name = "lbl_roles_group_edit";
-            this.lbl_roles_group_edit.Size = new System.Drawing.Size(66, 13);
-            this.lbl_roles_group_edit.TabIndex = 5;
-            this.lbl_roles_group_edit.Text = "Uprawnienia";
             // 
             // ControlPanel
             // 
@@ -1819,8 +1799,6 @@ namespace ProjektMagazyn
         private ComboBox cmbx_permissions;
         private CheckedListBox clb_add_user_role;
         private Label lbl_role;
-        private CheckedListBox clb_user_role_edit;
-        private CheckedListBox clb_user_role_view;
         private TabPage tabPage_group_edit;
         private Button btn_group_edit_save;
         private CheckedListBox clb_roles_group_edit;

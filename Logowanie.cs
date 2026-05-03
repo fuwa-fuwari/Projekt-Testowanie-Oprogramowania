@@ -81,40 +81,22 @@ namespace ProjektMagazyn
                 string newPassword = recoveryMail.GeneratePassword();
                 string hash = SecurePasswordHasher.Hash(newPassword);
 
-                using (SqlConnection conn = new SqlConnection(
-                    @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True"))
+                DatabaseConnection database = new DatabaseConnection();
+                bool success = database.ResetUserPassword(login, hash);
+
+                if (!success)
                 {
-                    conn.Open();
-
-                    string checkQuery = "SELECT COUNT(*) FROM Uzytkownicy WHERE Login = @login AND CzyZapomniany = 0";
-
-                    using (SqlCommand cmd = new SqlCommand(checkQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@login", login);
-
-                        int exists = (int)cmd.ExecuteScalar();
-
-                        if (exists == 0)
-                        {
-                            MessageBox.Show("Nie znaleziono użytkownika");
-                            return;
-                        }
-                    }
-
-                    string updateQuery = "UPDATE Uzytkownicy SET HasloHash = @hash WHERE Login = @login";
-
-                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@hash", hash);
-                        cmd.Parameters.AddWithValue("@login", login);
-                        cmd.ExecuteNonQuery();
-                    }
+                    MessageBox.Show("Nie znaleziono użytkownika");
+                    return;
                 }
 
-                await recoveryMail.SendResetPassword("sandbox.smtp@mailtrap.io", newPassword, secretsauceFilename);
+                await recoveryMail.SendResetPassword(
+                    "sandbox.smtp@mailtrap.io",
+                    newPassword,
+                    secretsauceFilename
+                );
 
                 MessageBox.Show("Nowe hasło zostało wygenerowane i wysłane (Mailtrap).");
-                //MessageBox.Show($"Nowe hasło zostało wygenerowane: {newPassword}");
             }
             catch (Exception ex)
             {
