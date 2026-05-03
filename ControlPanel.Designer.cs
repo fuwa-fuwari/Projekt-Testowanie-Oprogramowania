@@ -32,6 +32,7 @@ namespace ProjektMagazyn
         {
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
             this.tabPage_my_profile = new System.Windows.Forms.TabPage();
+            this.clb_profile_roles = new System.Windows.Forms.CheckedListBox();
             this.lbl_repeat_password = new System.Windows.Forms.Label();
             this.lbl_new_password = new System.Windows.Forms.Label();
             this.lbl_old_password = new System.Windows.Forms.Label();
@@ -172,8 +173,18 @@ namespace ProjektMagazyn
             this.clb_users_group_edit = new System.Windows.Forms.CheckedListBox();
             this.tabPage_manage_warehouse = new System.Windows.Forms.TabPage();
             this.tabPage_manage_sales = new System.Windows.Forms.TabPage();
+            this.btn_register_sale = new System.Windows.Forms.Button();
+            this.dtp_sale_date = new System.Windows.Forms.DateTimePicker();
+            this.cmbx_sale_product = new System.Windows.Forms.ComboBox();
+            this.tbx_sale_quantity = new System.Windows.Forms.TextBox();
+            this.tbx_sale_client_address = new System.Windows.Forms.TextBox();
+            this.tbx_sale_client_name = new System.Windows.Forms.TextBox();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.label36 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
             this.btn_logout = new System.Windows.Forms.Button();
-            this.clb_profile_roles = new System.Windows.Forms.CheckedListBox();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_my_profile.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
@@ -193,6 +204,7 @@ namespace ProjektMagazyn
             ((System.ComponentModel.ISupportInitialize)(this.dgv_roles)).BeginInit();
             this.tabPage_edit_roles.SuspendLayout();
             this.tabPage_group_edit.SuspendLayout();
+            this.tabPage_manage_sales.SuspendLayout();
             this.SuspendLayout();
             // 
             // dotNetBarTabControl_main_view
@@ -237,6 +249,14 @@ namespace ProjektMagazyn
             this.tabPage_my_profile.TabIndex = 3;
             this.tabPage_my_profile.Text = "Mój profil";
             this.tabPage_my_profile.UseVisualStyleBackColor = true;
+            // 
+            // clb_profile_roles
+            // 
+            this.clb_profile_roles.FormattingEnabled = true;
+            this.clb_profile_roles.Location = new System.Drawing.Point(280, 204);
+            this.clb_profile_roles.Name = "clb_profile_roles";
+            this.clb_profile_roles.Size = new System.Drawing.Size(259, 94);
+            this.clb_profile_roles.TabIndex = 59;
             // 
             // lbl_repeat_password
             // 
@@ -1641,12 +1661,113 @@ namespace ProjektMagazyn
             // 
             // tabPage_manage_sales
             // 
+            this.tabPage_manage_sales.Controls.Add(this.btn_register_sale);
+            this.tabPage_manage_sales.Controls.Add(this.dtp_sale_date);
+            this.tabPage_manage_sales.Controls.Add(this.cmbx_sale_product);
+            this.tabPage_manage_sales.Controls.Add(this.tbx_sale_quantity);
+            this.tabPage_manage_sales.Controls.Add(this.tbx_sale_client_address);
+            this.tabPage_manage_sales.Controls.Add(this.tbx_sale_client_name);
+            this.tabPage_manage_sales.Controls.Add(this.label38);
+            this.tabPage_manage_sales.Controls.Add(this.label37);
+            this.tabPage_manage_sales.Controls.Add(this.label36);
+            this.tabPage_manage_sales.Controls.Add(this.label32);
+            this.tabPage_manage_sales.Controls.Add(this.label30);
             this.tabPage_manage_sales.Location = new System.Drawing.Point(146, 4);
             this.tabPage_manage_sales.Name = "tabPage_manage_sales";
             this.tabPage_manage_sales.Size = new System.Drawing.Size(763, 541);
             this.tabPage_manage_sales.TabIndex = 5;
             this.tabPage_manage_sales.Text = "Zarządzanie sprzedażą";
             this.tabPage_manage_sales.UseVisualStyleBackColor = true;
+            // 
+            // btn_register_sale
+            // 
+            this.btn_register_sale.Location = new System.Drawing.Point(143, 246);
+            this.btn_register_sale.Name = "btn_register_sale";
+            this.btn_register_sale.Size = new System.Drawing.Size(118, 23);
+            this.btn_register_sale.TabIndex = 10;
+            this.btn_register_sale.Text = "Zarejestruj sprzedaż";
+            this.btn_register_sale.UseVisualStyleBackColor = true;
+            this.btn_register_sale.Click += new System.EventHandler(this.btn_register_sale_Click);
+            // 
+            // dtp_sale_date
+            // 
+            this.dtp_sale_date.Location = new System.Drawing.Point(143, 117);
+            this.dtp_sale_date.Name = "dtp_sale_date";
+            this.dtp_sale_date.Size = new System.Drawing.Size(200, 20);
+            this.dtp_sale_date.TabIndex = 9;
+            // 
+            // cmbx_sale_product
+            // 
+            this.cmbx_sale_product.FormattingEnabled = true;
+            this.cmbx_sale_product.Location = new System.Drawing.Point(143, 164);
+            this.cmbx_sale_product.Name = "cmbx_sale_product";
+            this.cmbx_sale_product.Size = new System.Drawing.Size(200, 21);
+            this.cmbx_sale_product.TabIndex = 8;
+            // 
+            // tbx_sale_quantity
+            // 
+            this.tbx_sale_quantity.Location = new System.Drawing.Point(143, 203);
+            this.tbx_sale_quantity.Name = "tbx_sale_quantity";
+            this.tbx_sale_quantity.Size = new System.Drawing.Size(62, 20);
+            this.tbx_sale_quantity.TabIndex = 7;
+            // 
+            // tbx_sale_client_address
+            // 
+            this.tbx_sale_client_address.Location = new System.Drawing.Point(143, 73);
+            this.tbx_sale_client_address.Name = "tbx_sale_client_address";
+            this.tbx_sale_client_address.Size = new System.Drawing.Size(121, 20);
+            this.tbx_sale_client_address.TabIndex = 11;
+            // 
+            // tbx_sale_client_name
+            // 
+            this.tbx_sale_client_name.Location = new System.Drawing.Point(143, 32);
+            this.tbx_sale_client_name.Name = "tbx_sale_client_name";
+            this.tbx_sale_client_name.Size = new System.Drawing.Size(118, 20);
+            this.tbx_sale_client_name.TabIndex = 5;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(30, 206);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(29, 13);
+            this.label38.TabIndex = 4;
+            this.label38.Text = "Ilość";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(30, 167);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(37, 13);
+            this.label37.TabIndex = 3;
+            this.label37.Text = "Towar";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(26, 124);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(80, 13);
+            this.label36.TabIndex = 2;
+            this.label36.Text = "Data sprzedaży";
+            // 
+            // label32
+            // 
+            this.label32.Location = new System.Drawing.Point(26, 76);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(100, 23);
+            this.label32.TabIndex = 11;
+            this.label32.Text = "Adres klienta";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(26, 35);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(74, 13);
+            this.label30.TabIndex = 0;
+            this.label30.Text = "Nazwa klienta";
             // 
             // btn_logout
             // 
@@ -1658,14 +1779,6 @@ namespace ProjektMagazyn
             this.btn_logout.Text = "Wyloguj";
             this.btn_logout.UseVisualStyleBackColor = true;
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
-            // 
-            // clb_profile_roles
-            // 
-            this.clb_profile_roles.FormattingEnabled = true;
-            this.clb_profile_roles.Location = new System.Drawing.Point(280, 204);
-            this.clb_profile_roles.Name = "clb_profile_roles";
-            this.clb_profile_roles.Size = new System.Drawing.Size(259, 94);
-            this.clb_profile_roles.TabIndex = 59;
             // 
             // ControlPanel
             // 
@@ -1708,6 +1821,8 @@ namespace ProjektMagazyn
             this.tabPage_edit_roles.PerformLayout();
             this.tabPage_group_edit.ResumeLayout(false);
             this.tabPage_group_edit.PerformLayout();
+            this.tabPage_manage_sales.ResumeLayout(false);
+            this.tabPage_manage_sales.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1858,5 +1973,16 @@ namespace ProjektMagazyn
         private TabPage tabPage_manage_warehouse;
         private TabPage tabPage_manage_sales;
         private CheckedListBox clb_profile_roles;
+        private Button btn_register_sale;
+        private DateTimePicker dtp_sale_date;
+        private ComboBox cmbx_sale_product;
+        private TextBox tbx_sale_quantity;
+        private TextBox tbx_sale_client_address;
+        private TextBox tbx_sale_client_name;
+        private Label label38;
+        private Label label37;
+        private Label label36;
+        private Label label32;
+        private Label label30;
     }
 }
