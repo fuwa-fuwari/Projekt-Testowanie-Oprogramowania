@@ -1725,43 +1725,55 @@ namespace ProjektMagazyn
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
+                    conn.Open();
+
+                    string query = @"
+                            SELECT 
+                                u.Imie,
+                                u.Nazwisko,
+                                STRING_AGG(CAST(uu.UprawnienieID AS VARCHAR(10)), ', ') AS Uprawnienia
+                            FROM Uzytkownicy u
+                            LEFT JOIN Uzytkownicy_Uprawnienia uu 
+                                ON u.UzytkownikID = uu.UzytkownikID
+                            WHERE ISNULL(u.CzyZapomniany, 0) = 0";
+
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = conn;
 
-                    string baseQuery = @"
-                        SELECT 
-                            u.Imie, 
-                            u.Nazwisko, 
-                            u.Login, 
-                            u.Email, 
-                            u.PESEL
-                        FROM Uzytkownicy u
-                        LEFT JOIN Uzytkownicy_Uprawnienia uu ON u.UzytkownikID = uu.UzytkownikID
-                        LEFT JOIN Uprawnienia up ON uu.UprawnienieID = up.UprawnienieID
-                        WHERE ISNULL(u.CzyZapomniany, 0) = 0";
-
+                    // filtr po uprawnieniu (opcjonalny)
                     if (uprawnienieId.HasValue)
                     {
-                        baseQuery += " AND uu.UprawnienieID = @permId";
+                        query += @"
+                            AND u.UzytkownikID IN (
+                            SELECT UzytkownikID 
+                            FROM Uzytkownicy_Uprawnienia 
+                            WHERE UprawnienieID = @permId)";
+
                         cmd.Parameters.AddWithValue("@permId", uprawnienieId.Value);
                     }
 
-                    baseQuery += " ORDER BY u.Nazwisko, u.Imie";
-                    cmd.CommandText = baseQuery;
+                    query += @"
+                            GROUP BY u.Imie, u.Nazwisko
+                            ORDER BY u.Nazwisko, u.Imie";
+
+                    cmd.CommandText = query;
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    if (uprawnienieId.HasValue && dt.Rows.Count == 0)
-                    {
-                        MessageBox.Show("Nie znaleziono użytkowników o wskazanym uprawnieniu", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        dgv_users_perms.DataSource = null;
-                        return;
-                    }
-
                     dgv_users_perms.DataSource = dt;
                     dgv_users_perms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                    if (uprawnienieId.HasValue && dt.Rows.Count == 0)
+                    {
+                        MessageBox.Show(
+                            "Nie znaleziono użytkowników o wskazanym uprawnieniu",
+                            "Brak wyników",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
                 }
             }
             catch (Exception ex)
