@@ -14,36 +14,89 @@ namespace ProjektMagazyn
     public partial class Logowanie : Form
     {
         string secretsauceFilename = "secretsauce.json";
+        Dictionary<string, LoginAttemptInfo> loginAttempts = new Dictionary<string, LoginAttemptInfo>();
+        Timer lockoutTimer = new Timer();
         public Logowanie()
         {
             InitializeComponent();
+
+            lockoutTimer.Interval = 1000;
+            lockoutTimer.Tick += LockoutTimer_Tick;
+        }
+        class LoginAttemptInfo
+        {
+            public int FailedAttempts { get; set; }
+            public DateTime? LockoutEnd { get; set; }
+        }
+        private void LockoutTimer_Tick(object sender, EventArgs e)
+        {
+            string login = tbx_login.Text;
+
+            if (!loginAttempts.ContainsKey(login))
+                return;
+
+            var info = loginAttempts[login];
+
+            if (info.LockoutEnd == null)
+                return;
+
+            var remaining = info.LockoutEnd.Value - DateTime.Now;
+
+            if (remaining.TotalSeconds <= 0)
+            {
+                info.LockoutEnd = null;
+                info.FailedAttempts = 0;
+                lbl_timeout_status.Text = "Możesz spróbować ponownie.";
+            }
+            else
+            {
+                lbl_timeout_status.Text = $"Blokada dla '{login}' ({(int)remaining.TotalSeconds}s)";
+            }
         }
 
         private void btn_zaloguj_Click(object sender, EventArgs e)
         {
-            string login = tbx_login.Text.Trim();
-            string password = tbx_password.Text.Trim();
+            string login = tbx_login.Text;
+            string password = tbx_password.Text;
 
-            if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
-            {
-                MessageBox.Show("Podaj login i hasło");
-                return;
-            }
+            if (!loginAttempts.ContainsKey(login))
+                loginAttempts[login] = new LoginAttemptInfo();
+
+            var info = loginAttempts[login];
 
             DatabaseConnection database = new DatabaseConnection();
 
-            int? userId;
-            string hash;
+            if (info.LockoutEnd != null && info.LockoutEnd > DateTime.Now)
+            {
+                MessageBox.Show($"Login '{login}' jest chwilowo zablokowany.");
+                return;
+            }
 
-            database.VerifyLogin(login, password, out userId, out hash);
+            database.VerifyLogin(login, password, out int? userId, out string hash);
 
             if (userId == null || hash == null || !SecurePasswordHasher.Verify(password, hash))
             {
-                MessageBox.Show("Niepoprawne dane logowania.");
-                clear_field(tbx_password);
-                tbx_password.Focus();
+                info.FailedAttempts++;
+
+                if (info.FailedAttempts >= 3)
+                {
+                    info.LockoutEnd = DateTime.Now.AddSeconds(60);
+                    info.FailedAttempts = 0;
+
+                    lockoutTimer.Start();
+                    lbl_timeout_status.Text = $"Login '{login}' zablokowany na 60s";
+                }
+                else
+                {
+                    lbl_timeout_status.Text = $"Błędne dane ({info.FailedAttempts}/3)";
+                }
+
                 return;
             }
+
+            info.FailedAttempts = 0;
+            info.LockoutEnd = null;
+            lbl_timeout_status.Text = null;
 
             ControlPanel controlPanel = new ControlPanel(userId.Value);
             controlPanel.Location = this.Location;

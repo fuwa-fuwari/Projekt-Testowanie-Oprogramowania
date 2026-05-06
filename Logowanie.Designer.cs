@@ -35,6 +35,7 @@
             this.btn_zaloguj = new System.Windows.Forms.Button();
             this.grpbx_login = new System.Windows.Forms.GroupBox();
             this.btn_reset_password = new System.Windows.Forms.Button();
+            this.lbl_timeout_status = new System.Windows.Forms.Label();
             this.grpbx_login.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -92,6 +93,7 @@
             // 
             // grpbx_login
             // 
+            this.grpbx_login.Controls.Add(this.lbl_timeout_status);
             this.grpbx_login.Controls.Add(this.btn_reset_password);
             this.grpbx_login.Controls.Add(this.lbl_login);
             this.grpbx_login.Controls.Add(this.btn_zaloguj);
@@ -115,6 +117,15 @@
             this.btn_reset_password.Text = "Odzyskaj hasło";
             this.btn_reset_password.UseVisualStyleBackColor = true;
             this.btn_reset_password.Click += new System.EventHandler(this.btn_reset_password_Click);
+            // 
+            // lbl_timeout_status
+            // 
+            this.lbl_timeout_status.AutoSize = true;
+            this.lbl_timeout_status.Location = new System.Drawing.Point(153, 148);
+            this.lbl_timeout_status.Name = "lbl_timeout_status";
+            this.lbl_timeout_status.Size = new System.Drawing.Size(10, 13);
+            this.lbl_timeout_status.TabIndex = 6;
+            this.lbl_timeout_status.Text = "-";
             // 
             // Logowanie
             // 
@@ -143,6 +154,7 @@
         private System.Windows.Forms.Button btn_zaloguj;
         private System.Windows.Forms.GroupBox grpbx_login;
         private System.Windows.Forms.Button btn_reset_password;
+        private System.Windows.Forms.Label lbl_timeout_status;
     }
 }
 
