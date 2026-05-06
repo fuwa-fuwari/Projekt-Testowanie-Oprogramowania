@@ -36,6 +36,7 @@
             this.grpbx_login = new System.Windows.Forms.GroupBox();
             this.btn_reset_password = new System.Windows.Forms.Button();
             this.lbl_timeout_status = new System.Windows.Forms.Label();
+            this.lbl_login_status = new System.Windows.Forms.Label();
             this.grpbx_login.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,6 +94,7 @@
             // 
             // grpbx_login
             // 
+            this.grpbx_login.Controls.Add(this.lbl_login_status);
             this.grpbx_login.Controls.Add(this.lbl_timeout_status);
             this.grpbx_login.Controls.Add(this.btn_reset_password);
             this.grpbx_login.Controls.Add(this.lbl_login);
@@ -123,9 +125,18 @@
             this.lbl_timeout_status.AutoSize = true;
             this.lbl_timeout_status.Location = new System.Drawing.Point(153, 148);
             this.lbl_timeout_status.Name = "lbl_timeout_status";
-            this.lbl_timeout_status.Size = new System.Drawing.Size(10, 13);
+            this.lbl_timeout_status.Size = new System.Drawing.Size(91, 13);
             this.lbl_timeout_status.TabIndex = 6;
-            this.lbl_timeout_status.Text = "-";
+            this.lbl_timeout_status.Text = "lbl_timeout_status";
+            // 
+            // lbl_login_status
+            // 
+            this.lbl_login_status.AutoSize = true;
+            this.lbl_login_status.Location = new System.Drawing.Point(153, 161);
+            this.lbl_login_status.Name = "lbl_login_status";
+            this.lbl_login_status.Size = new System.Drawing.Size(79, 13);
+            this.lbl_login_status.TabIndex = 7;
+            this.lbl_login_status.Text = "lbl_login_status";
             // 
             // Logowanie
             // 
@@ -155,6 +166,7 @@
         private System.Windows.Forms.GroupBox grpbx_login;
         private System.Windows.Forms.Button btn_reset_password;
         private System.Windows.Forms.Label lbl_timeout_status;
+        private System.Windows.Forms.Label lbl_login_status;
     }
 }
 

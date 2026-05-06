@@ -19,9 +19,16 @@ namespace ProjektMagazyn
         public Logowanie()
         {
             InitializeComponent();
+            lbl_timeout_status.Text = "";
+            lbl_login_status.Text = "";
 
             lockoutTimer.Interval = 1000;
             lockoutTimer.Tick += LockoutTimer_Tick;
+            tbx_login.TextChanged += (s, e) =>
+            {
+                lbl_login_status.Text = "";
+                UpdateLockoutUI();
+            };
         }
         class LoginAttemptInfo
         {
@@ -30,28 +37,7 @@ namespace ProjektMagazyn
         }
         private void LockoutTimer_Tick(object sender, EventArgs e)
         {
-            string login = tbx_login.Text;
-
-            if (!loginAttempts.ContainsKey(login))
-                return;
-
-            var info = loginAttempts[login];
-
-            if (info.LockoutEnd == null)
-                return;
-
-            var remaining = info.LockoutEnd.Value - DateTime.Now;
-
-            if (remaining.TotalSeconds <= 0)
-            {
-                info.LockoutEnd = null;
-                info.FailedAttempts = 0;
-                lbl_timeout_status.Text = "Możesz spróbować ponownie.";
-            }
-            else
-            {
-                lbl_timeout_status.Text = $"Blokada dla '{login}' ({(int)remaining.TotalSeconds}s)";
-            }
+            UpdateLockoutUI();
         }
 
         private void btn_zaloguj_Click(object sender, EventArgs e)
@@ -85,10 +71,11 @@ namespace ProjektMagazyn
 
                     lockoutTimer.Start();
                     lbl_timeout_status.Text = $"Login '{login}' zablokowany na 60s";
+                    lbl_login_status.Text = "";
                 }
                 else
                 {
-                    lbl_timeout_status.Text = $"Błędne dane ({info.FailedAttempts}/3)";
+                    lbl_login_status.Text = $"Błędne dane ({info.FailedAttempts}/3)";
                 }
 
                 return;
@@ -96,7 +83,8 @@ namespace ProjektMagazyn
 
             info.FailedAttempts = 0;
             info.LockoutEnd = null;
-            lbl_timeout_status.Text = null;
+            lbl_timeout_status.Text = "";
+            lbl_login_status.Text = "";
 
             ControlPanel controlPanel = new ControlPanel(userId.Value);
             controlPanel.Location = this.Location;
@@ -115,6 +103,28 @@ namespace ProjektMagazyn
         void clear_field(TextBox textBox)
         {
             textBox.Text = null;
+        }
+        private void UpdateLockoutUI()
+        {
+            string login = tbx_login.Text;
+
+            if (!loginAttempts.ContainsKey(login))
+            {
+                lbl_timeout_status.Text = "";
+                return;
+            }
+
+            var info = loginAttempts[login];
+
+            if (info.LockoutEnd == null || info.LockoutEnd <= DateTime.Now)
+            {
+                lbl_timeout_status.Text = "";
+                return;
+            }
+
+            var remaining = info.LockoutEnd.Value - DateTime.Now;
+
+            lbl_timeout_status.Text = $"Login '{login}' zablokowany ({(int)remaining.TotalSeconds}s)";
         }
 
         private async void btn_reset_password_Click(object sender, EventArgs e)
