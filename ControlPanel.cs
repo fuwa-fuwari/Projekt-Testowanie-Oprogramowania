@@ -1696,43 +1696,6 @@ namespace ProjektMagazyn
             }
         }
 
-        private void btn_search_sales_Click(object sender, EventArgs e)
-        {
-            database.SearchSalesHistory(
-                dgv_sales_history,
-                dtp_history_from.Value,
-                dtp_history_to.Value,
-                tbx_history_buyer.Text.Trim(),
-                tbx_history_seller.Text.Trim(),
-                tbx_history_item.Text.Trim()
-            );
-        }
-
-        private void dgv_sales_history_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                int sprzedazId = Convert.ToInt32(dgv_sales_history.Rows[e.RowIndex].Cells["SprzedazID"].Value);
-
-                string clientName, clientAddress, saleDate, sellerName;
-
-                DataTable itemsTable = database.GetSaleDetails(sprzedazId, out clientName, out clientAddress, out saleDate, out sellerName);
-
-                tbx_detail_buyer.Text = clientName;
-                tbx_detail_address.Text = clientAddress;
-                tbx_detail_date.Text = saleDate;
-                tbx_detail_seller.Text = sellerName;
-
-                dgv_sale_details.DataSource = itemsTable;
-                dgv_sale_details.ReadOnly = true;
-
-                tabControl_sales.SelectedTab = tabPage_sale_details;
-            }
-        }
-
-        private void btn_close_details_Click(object sender, EventArgs e)
-        {
-            tabControl_sales.SelectedTab = tabPage_sales_history;
         private void dgv_warehouse_items_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
