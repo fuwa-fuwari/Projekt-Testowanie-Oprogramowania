@@ -27,6 +27,10 @@ namespace ProjektMagazyn
         private int currentViewUserId = -1;
         private bool isFiltered = false;
         private bool isItemFiltered = false;
+        private int currentHistoryItemId = -1;
+        private bool isHistoryFiltered = false;
+        private int vatChangeMode = 0; // 1 = Pojedynczy towar, 2 = Rodzaj towaru
+        private int selectedVatItemId = -1;
 
         DatabaseConnection database = new DatabaseConnection();
         private ErrorProvider errorProvider = new ErrorProvider();
@@ -70,10 +74,21 @@ namespace ProjektMagazyn
 
             tbx_search.GotFocus += tbx_search_GotFocus;
 
-            //Ukrywanie zakładki z podglądem
             if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
             {
                 dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
+            }
+            if (tabPage_items.TabPages.Contains(tabPage_Item_History))
+            {
+                tabPage_items.TabPages.Remove(tabPage_Item_History);
+            }
+            if (tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
+            {
+                tabPage_items.TabPages.Remove(tabPage_Delivery_Details);
+            }
+            if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
+            {
+                tabPage_items.TabPages.Remove(tabPage_Vat_Change);
             }
         }
         private void LoadUserPermissions(int userId)
@@ -1603,7 +1618,39 @@ namespace ProjektMagazyn
                 SetWarehousePermissions();
             }
         }
+        private void dgv_item_history_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgv_item_history.Rows[e.RowIndex];
 
+                tbx_det_quantity.Text = row.Cells["Dodana Ilość"].Value.ToString();
+                tbx_det_netPrice.Text = row.Cells["Cena Netto"].Value.ToString();
+                tbx_det_vat.Text = row.Cells["VAT (%)"].Value.ToString();
+                tbx_det_supplier.Text = row.Cells["Dostawca"].Value.ToString();
+
+                tbx_det_deliveryDate.Text = Convert.ToDateTime(row.Cells["Data Dostawy"].Value).ToShortDateString();
+                tbx_det_sysDate.Text = Convert.ToDateTime(row.Cells["Data Wprowadzenia do Systemu"].Value).ToShortDateString();
+
+                tbx_det_employee.Text = row.Cells["Zarejestrował Pracownik"].Value.ToString();
+
+                var extraDetails = database.GetItemExtraDetails(currentHistoryItemId);
+                if (extraDetails.Count > 0)
+                {
+                    tbx_det_itemName.Text = extraDetails["Nazwa"];
+                    tbx_det_description.Text = extraDetails["Opis"];
+                    tbx_det_unit.Text = extraDetails["JednostkaMiary"];
+                    tbx_det_itemType.Text = extraDetails["Rodzaj"];
+                }
+
+                if (!tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
+                {
+                    tabPage_items.TabPages.Add(tabPage_Delivery_Details);
+                }
+
+                tabPage_items.SelectedTab = tabPage_Delivery_Details;
+            }
+        }
         private void ZaladujListeUzytkownikow()
         {
             try
@@ -1648,6 +1695,295 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
             }
         }
+
+        private void dgv_warehouse_items_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                if (!currentUserPermissions.Contains(2) && !currentUserPermissions.Contains(1))
+                {
+                    MessageBox.Show("Brak uprawnień. Tylko Kierownik magazynu może przeglądać historię uzupełnień.", "Brak dostępu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int itemId = Convert.ToInt32(dgv_warehouse_items.Rows[e.RowIndex].Cells["TowarID"].Value);
+
+                ShowItemHistoryTab(itemId);
+            }
+        }
+        private void chk_history_use_dates_CheckedChanged(object sender, EventArgs e)
+        {
+            dtp_history_from.Enabled = chk_history_use_dates.Checked;
+            dtp_history_to.Enabled = chk_history_use_dates.Checked;
+        }
+
+        private void btn_history_filter_Click(object sender, EventArgs e)
+        {
+            if (currentHistoryItemId == -1) return;
+
+            if (!isHistoryFiltered)
+            {
+                DateTime? dateFrom = null;
+                DateTime? dateTo = null;
+                string employee = tbx_history_employee.Text.Trim();
+
+                if (chk_history_use_dates.Checked)
+                {
+                    dateFrom = dtp_history_from.Value.Date;
+                    dateTo = dtp_history_to.Value.Date;
+
+                    if (dateFrom > dateTo)
+                    {
+                        MessageBox.Show("Data 'Od' nie może być późniejsza niż data 'Do'.", "Błąd daty", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+
+                if (!chk_history_use_dates.Checked && string.IsNullOrEmpty(employee))
+                {
+                    MessageBox.Show("Wprowadź imię i nazwisko pracownika lub włącz filtrowanie po datach.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                bool found = database.GetItemReplenishmentHistory(dgv_item_history, currentHistoryItemId, dateFrom, dateTo, employee);
+
+                if (found)
+                {
+                    isHistoryFiltered = true;
+                    btn_history_filter.Text = "Odfiltruj";
+                    btn_history_filter.BackColor = Color.LightCoral;
+
+                    chk_history_use_dates.Enabled = false;
+                    dtp_history_from.Enabled = false;
+                    dtp_history_to.Enabled = false;
+                    tbx_history_employee.Enabled = false;
+                }
+                else
+                {
+                    if (chk_history_use_dates.Checked && string.IsNullOrEmpty(employee))
+                    {
+                        MessageBox.Show("Brak wpisów w historii uzupełnień dla wybranego zakresu dat.", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (!string.IsNullOrEmpty(employee) && !chk_history_use_dates.Checked)
+                    {
+                        MessageBox.Show("Brak wpisów w historii uzupełnień dla wskazanego pracownika.", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Brak wyników spełniających połączone kryteria (data i pracownik).", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            else
+            {
+                database.GetItemReplenishmentHistory(dgv_item_history, currentHistoryItemId, null, null, null);
+
+                isHistoryFiltered = false;
+                btn_history_filter.Text = "Filtruj";
+                btn_history_filter.BackColor = SystemColors.Control;
+
+                chk_history_use_dates.Enabled = true;
+                dtp_history_from.Enabled = chk_history_use_dates.Checked; 
+                dtp_history_to.Enabled = chk_history_use_dates.Checked;
+                tbx_history_employee.Enabled = true;
+                tbx_history_employee.Clear();
+            }
+        }
+
+        private void btn_history_close_Click(object sender, EventArgs e)
+        {
+            if (tabPage_items.TabPages.Contains(tabPage_Item_History))
+            {
+ 
+                tabPage_items.SelectedTab = tabPage_Warehouse;
+
+                tabPage_items.TabPages.Remove(tabPage_Item_History);
+            }
+        }
+        private void ShowItemHistoryTab(int itemId)
+        {
+            currentHistoryItemId = itemId;
+            isHistoryFiltered = false;
+
+            dtp_history_from.Value = DateTime.Today.AddMonths(-1);
+            dtp_history_to.Value = DateTime.Today;
+            chk_history_use_dates.Checked = false;
+            dtp_history_from.Enabled = false;
+            dtp_history_to.Enabled = false;
+            tbx_history_employee.Clear();
+            tbx_history_employee.Enabled = true;
+
+            btn_history_filter.Text = "Filtruj";
+            btn_history_filter.BackColor = SystemColors.Control;
+
+            bool hasHistory = database.GetItemReplenishmentHistory(dgv_item_history, currentHistoryItemId, null, null, null);
+
+            if (!hasHistory)
+            {
+                MessageBox.Show("Wybrany towar nie posiada jeszcze żadnej historii uzupełnień.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dgv_item_history.DataSource = null;
+
+                if (tabPage_items.TabPages.Contains(tabPage_Item_History))
+                {
+                    tabPage_items.TabPages.Remove(tabPage_Item_History);
+                }
+
+                return;
+            }
+
+            if (!tabPage_items.TabPages.Contains(tabPage_Item_History))
+            {
+                tabPage_items.TabPages.Add(tabPage_Item_History);
+            }
+            tabPage_items.SelectedTab = tabPage_Item_History;
+        }
+
+        private void btn_det_close_Click(object sender, EventArgs e)
+        {
+            if (tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
+            {
+                tabPage_items.SelectedTab = tabPage_Item_History;
+                tabPage_items.TabPages.Remove(tabPage_Delivery_Details);
+
+                tbx_det_itemName.Clear();
+                tbx_det_quantity.Clear();
+                tbx_det_netPrice.Clear();
+                tbx_det_vat.Clear();
+                tbx_det_supplier.Clear();
+                tbx_det_deliveryDate.Clear();
+                tbx_det_sysDate.Clear();
+                tbx_det_employee.Clear();
+                tbx_det_description.Clear();
+                tbx_det_unit.Clear();
+                tbx_det_itemType.Clear();
+            }
+        }
+
+        private void btn_change_item_vat_Click(object sender, EventArgs e)
+        {
+            if (!currentUserPermissions.Contains(2) && !currentUserPermissions.Contains(1))
+            {
+                MessageBox.Show("Brak uprawnień. Tylko Kierownik magazynu może zmieniać stawki VAT.", "Brak dostępu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (dgv_warehouse_items.CurrentRow == null || dgv_warehouse_items.CurrentRow.Index < 0)
+            {
+                MessageBox.Show("Wybierz towar z listy.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            vatChangeMode = 1;
+            selectedVatItemId = Convert.ToInt32(dgv_warehouse_items.CurrentRow.Cells["TowarID"].Value);
+
+            lbl_vat_mode_title.Text = "Zmiana stawki VAT dla towaru";
+            tbx_vat_item_name.Visible = true;
+            tbx_vat_item_name.Text = dgv_warehouse_items.CurrentRow.Cells["Nazwa towaru"].Value.ToString();
+            cmb_vat_category.Visible = false;
+
+            cmb_vat_category.BackColor = SystemColors.Window;
+            dtp_vat_date.Value = DateTime.Today.AddDays(1); 
+
+            ShowVatChangeTab();
+        }
+
+        private void btn_change_category_vat_Click(object sender, EventArgs e)
+        {
+            if (!currentUserPermissions.Contains(2) && !currentUserPermissions.Contains(1))
+            {
+                MessageBox.Show("Brak uprawnień.", "Brak dostępu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            vatChangeMode = 2;
+
+            lbl_vat_mode_title.Text = "Masowa zmiana stawki VAT dla rodzaju towaru";
+            tbx_vat_item_name.Visible = false;
+            cmb_vat_category.Visible = true;
+            cmb_vat_category.BackColor = SystemColors.Window;
+
+            LoadItemTypesToComboBox(cmb_vat_category);
+            dtp_vat_date.Value = DateTime.Today.AddDays(1);
+
+            ShowVatChangeTab();
+        }
+        private void cmbx_select_user_role_edit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbx_select_user_role_edit.SelectedIndex == -1)
+                return;
+
+            int userId = Convert.ToInt32(cmbx_select_user_role_edit.SelectedValue);
+
+            if (clb_roles.DataSource != null)
+                ZaladujUprawnieniaUzytkownika(userId);
+        }
+
+        private void btn_vat_save_Click(object sender, EventArgs e)
+        {
+            // E7: Brak wymaganego wyboru rodzaju towaru (Tryb 2)
+            if (vatChangeMode == 2 && cmb_vat_category.SelectedValue == null)
+            {
+                cmb_vat_category.BackColor = Color.LightCoral;
+                MessageBox.Show("Brak wymaganych pól", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            cmb_vat_category.BackColor = SystemColors.Window; 
+
+            if (cmb_new_vat.SelectedItem == null)
+            {
+                MessageBox.Show("Wybierz nową stawkę VAT.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            decimal newVat = Convert.ToDecimal(cmb_new_vat.SelectedItem);
+            DateTime selectedDate = dtp_vat_date.Value.Date;
+            if (selectedDate <= DateTime.Today)
+            {
+                MessageBox.Show("Data obowiązywania nowej stawki musi być datą przyszłą", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            bool success = false;
+
+            if (vatChangeMode == 1) 
+            {
+                decimal currentVat = database.GetCurrentItemVat(selectedVatItemId);
+
+                // E1: Brak zmian stawki VAT towaru
+                if (currentVat == newVat)
+                {
+                    MessageBox.Show("Nie wprowadzono żadnych zmian", "Blokada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                success = database.SaveVatChangeForItem(selectedVatItemId, newVat, selectedDate);
+            }
+            else if (vatChangeMode == 2) 
+            {
+                int selectedCategoryId = Convert.ToInt32(cmb_vat_category.SelectedValue);
+
+                // E2: Brak zmian stawki VAT rodzaju towaru
+                if (!database.CheckIfCategoryNeedsVatChange(selectedCategoryId, newVat))
+                {
+                    MessageBox.Show("Nie wprowadzono żadnych zmian (wszystkie towary w tej kategorii mają już tę stawkę)", "Blokada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                success = database.SaveVatChangeForCategory(selectedCategoryId, newVat, selectedDate);
+            }
+
+            if (success)
+            {
+                MessageBox.Show("Zmiany zostały zapisane", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CloseVatChangeTab();
+            }
+        }
+
+        private void btn_vat_cancel_Click(object sender, EventArgs e)
+        {
+            CloseVatChangeTab();
+        }
+
         private void ZaladujUprawnieniaUzytkownika(int userId)
         {
             try
@@ -1725,43 +2061,55 @@ namespace ProjektMagazyn
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
+                    conn.Open();
+
+                    string query = @"
+                            SELECT 
+                                u.Imie,
+                                u.Nazwisko,
+                                STRING_AGG(CAST(uu.UprawnienieID AS VARCHAR(10)), ', ') AS Uprawnienia
+                            FROM Uzytkownicy u
+                            LEFT JOIN Uzytkownicy_Uprawnienia uu 
+                                ON u.UzytkownikID = uu.UzytkownikID
+                            WHERE ISNULL(u.CzyZapomniany, 0) = 0";
+
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = conn;
 
-                    string baseQuery = @"
-                        SELECT 
-                            u.Imie, 
-                            u.Nazwisko, 
-                            u.Login, 
-                            u.Email, 
-                            u.PESEL
-                        FROM Uzytkownicy u
-                        LEFT JOIN Uzytkownicy_Uprawnienia uu ON u.UzytkownikID = uu.UzytkownikID
-                        LEFT JOIN Uprawnienia up ON uu.UprawnienieID = up.UprawnienieID
-                        WHERE ISNULL(u.CzyZapomniany, 0) = 0";
-
+                    // filtr po uprawnieniu (opcjonalny)
                     if (uprawnienieId.HasValue)
                     {
-                        baseQuery += " AND uu.UprawnienieID = @permId";
+                        query += @"
+                            AND u.UzytkownikID IN (
+                            SELECT UzytkownikID 
+                            FROM Uzytkownicy_Uprawnienia 
+                            WHERE UprawnienieID = @permId)";
+
                         cmd.Parameters.AddWithValue("@permId", uprawnienieId.Value);
                     }
 
-                    baseQuery += " ORDER BY u.Nazwisko, u.Imie";
-                    cmd.CommandText = baseQuery;
+                    query += @"
+                            GROUP BY u.Imie, u.Nazwisko
+                            ORDER BY u.Nazwisko, u.Imie";
+
+                    cmd.CommandText = query;
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    if (uprawnienieId.HasValue && dt.Rows.Count == 0)
-                    {
-                        MessageBox.Show("Nie znaleziono użytkowników o wskazanym uprawnieniu", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        dgv_users_perms.DataSource = null;
-                        return;
-                    }
-
                     dgv_users_perms.DataSource = dt;
                     dgv_users_perms.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                    if (uprawnienieId.HasValue && dt.Rows.Count == 0)
+                    {
+                        MessageBox.Show(
+                            "Nie znaleziono użytkowników o wskazanym uprawnieniu",
+                            "Brak wyników",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
                 }
             }
             catch (Exception ex)
@@ -1769,16 +2117,7 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd ładowania danych: " + ex.Message);
             }
         }
-        private void cmbx_select_user_role_edit_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbx_select_user_role_edit.SelectedIndex == -1)
-                return;
 
-            int userId = Convert.ToInt32(cmbx_select_user_role_edit.SelectedValue);
-
-            if (clb_roles.DataSource != null)
-                ZaladujUprawnieniaUzytkownika(userId);
-        }
         private void LoadMyProfile()
         {
             if (loggedUserId == -1) return;
@@ -1879,6 +2218,33 @@ namespace ProjektMagazyn
         {
             database.SearchWarehouseItems(dgv_warehouse_items, "", null);
         }
+        private void ShowVatChangeTab()
+        {
+            if (!tabPage_items.TabPages.Contains(tabPage_Vat_Change))
+            {
+                tabPage_items.TabPages.Add(tabPage_Vat_Change);
+            }
+            tabPage_items.SelectedTab = tabPage_Vat_Change;
+        }
+        private void CloseVatChangeTab()
+        {
+            if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
+            {
+                tabPage_items.SelectedTab = tabPage_Warehouse;
+                tabPage_items.TabPages.Remove(tabPage_Vat_Change);
+            }
+        }
+        private void LoadItemTypesToComboBox(System.Windows.Forms.ComboBox targetComboBox)
+        {
+            System.Data.DataTable typesTable = database.GetItemTypes();
 
+            if (typesTable != null && typesTable.Rows.Count > 0)
+            {
+                targetComboBox.DataSource = typesTable;
+                targetComboBox.DisplayMember = "Nazwa";
+                targetComboBox.ValueMember = "RodzajID";
+                targetComboBox.SelectedIndex = -1; 
+            }
+        }
     }
 }

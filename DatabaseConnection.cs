@@ -707,5 +707,197 @@ namespace ProjektMagazyn
                 return false;
             }
         }
+
+        public bool GetItemReplenishmentHistory(DataGridView dgv, int itemId, DateTime? dateFrom, DateTime? dateTo, string employeeName)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                    SELECT 
+                        rd.Ilosc AS [Dodana Ilość],
+                        rd.CenaNetto AS [Cena Netto],
+                        rd.ZastosowanyVAT AS [VAT (%)],
+                        rd.Dostawca,
+                        CAST(rd.DataDostawy AS DATE) AS [Data Dostawy],
+                        CAST(rd.DataRejestracji AS DATE) AS [Data Wprowadzenia do Systemu],
+                        u.Imie + ' ' + u.Nazwisko AS [Zarejestrował Pracownik]
+                    FROM RejestracjaDostaw rd
+                    JOIN Uzytkownicy u ON rd.RejestrujacyUzytkownikID = u.UzytkownikID
+                    WHERE rd.TowarID = @itemId
+                      AND (@dateFrom IS NULL OR CAST(rd.DataRejestracji AS DATE) >= @dateFrom)
+                      AND (@dateTo IS NULL OR CAST(rd.DataRejestracji AS DATE) <= @dateTo)
+                      AND (@employee IS NULL OR @employee = '' OR u.Imie + ' ' + u.Nazwisko LIKE '%' + @employee + '%' OR u.Nazwisko + ' ' + u.Imie LIKE '%' + @employee + '%')
+                    ORDER BY rd.DataRejestracji DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@itemId", itemId);
+                        cmd.Parameters.AddWithValue("@dateFrom", dateFrom.HasValue ? (object)dateFrom.Value.Date : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@dateTo", dateTo.HasValue ? (object)dateTo.Value.Date : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@employee", string.IsNullOrWhiteSpace(employeeName) ? (object)DBNull.Value : employeeName);
+
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+
+                            if (dt.Rows.Count == 0)
+                            {
+                                return false; 
+                            }
+                            else
+                            {
+                                dgv.DataSource = dt;
+                                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd pobierania historii uzupełnień: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public Dictionary<string, string> GetItemExtraDetails(int itemId)
+        {
+            var details = new Dictionary<string, string>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT 
+                    t.Nazwa,
+                    t.Opis, 
+                    t.JednostkaMiary, 
+                    rt.Nazwa AS Rodzaj 
+                FROM Towary t
+                JOIN RodzajeTowarow rt ON t.RodzajID = rt.RodzajID
+                WHERE t.TowarID = @itemId";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@itemId", itemId);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                details["Nazwa"] = reader["Nazwa"].ToString();
+                                details["Opis"] = reader["Opis"].ToString();
+                                details["JednostkaMiary"] = reader["JednostkaMiary"].ToString();
+                                details["Rodzaj"] = reader["Rodzaj"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd pobierania dodatkowych szczegółów towaru: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return details;
+        }
+        public decimal GetCurrentItemVat(int itemId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT TOP 1 WartoscVAT FROM StawkiVAT WHERE TowarID = @itemId ORDER BY ObowiazujeOd DESC";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@itemId", itemId);
+                        object result = cmd.ExecuteScalar();
+                        return result != null ? Convert.ToDecimal(result) : -1;
+                    }
+                }
+            }
+            catch { return -1; }
+        }
+
+        public bool CheckIfCategoryNeedsVatChange(int categoryId, decimal newVat)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT COUNT(1) FROM Towary t
+                OUTER APPLY (SELECT TOP 1 WartoscVAT FROM StawkiVAT v WHERE v.TowarID = t.TowarID ORDER BY ObowiazujeOd DESC) lastVat
+                WHERE t.RodzajID = @categoryId AND ISNULL(lastVat.WartoscVAT, -1) != @newVat";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@categoryId", categoryId);
+                        cmd.Parameters.AddWithValue("@newVat", newVat);
+                        int itemsToUpdate = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        return itemsToUpdate > 0;
+                    }
+                }
+            }
+            catch { return false; }
+        }
+        public bool SaveVatChangeForItem(int itemId, decimal newVat, DateTime dateFrom)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    // Zmiana na ObowiazujeOd
+                    string query = "INSERT INTO StawkiVAT (TowarID, WartoscVAT, ObowiazujeOd) VALUES (@itemId, @newVat, @dateFrom)";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@itemId", itemId);
+                        cmd.Parameters.AddWithValue("@newVat", newVat);
+                        cmd.Parameters.AddWithValue("@dateFrom", dateFrom.Date);
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd zapisu VAT: " + ex.Message);
+                return false;
+            }
+        }
+        public bool SaveVatChangeForCategory(int categoryId, decimal newVat, DateTime dateFrom)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "INSERT INTO StawkiVAT (TowarID, WartoscVAT, ObowiazujeOd) SELECT TowarID, @newVat, @dateFrom FROM Towary WHERE RodzajID = @categoryId";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@categoryId", categoryId);
+                        cmd.Parameters.AddWithValue("@newVat", newVat);
+                        cmd.Parameters.AddWithValue("@dateFrom", dateFrom.Date);
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd zapisu masowego VAT: " + ex.Message);
+                return false;
+            }
+        }
     }
 }
