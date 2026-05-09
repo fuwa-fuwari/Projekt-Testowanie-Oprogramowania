@@ -316,6 +316,7 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_main_view.Size = new System.Drawing.Size(913, 549);
             this.dotNetBarTabControl_main_view.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.dotNetBarTabControl_main_view.TabIndex = 2;
+            this.dotNetBarTabControl_main_view.SelectedIndexChanged += new System.EventHandler(this.dotNetBarTabControl_main_view_SelectedIndexChanged);
             // 
             // tabPage_my_profile
             // 

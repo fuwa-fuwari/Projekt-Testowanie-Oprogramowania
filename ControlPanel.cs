@@ -43,31 +43,24 @@ namespace ProjektMagazyn
         public ControlPanel(int userId)
         {
             InitializeComponent();
+
             loggedUserId = userId;
-            this.Load += ControlPanel_Load;
-        }
-        private void ControlPanel_Load(object sender, EventArgs e)
-        {
+            LoadUserPermissions(loggedUserId);
+            EnablePermittedTabs();
+
             LoadData();
         }
         private void LoadData()
         {
-            LoadUserPermissions(loggedUserId);
+            
             WczytajTowaryDoSprzedazy();
             LoadMyProfile();
             LoadProfileRoles(loggedUserId);
-            EnablePermittedTabs();
-
-            database.RoleListDvg(dgv_roles);
-            database.RoleListClb(clb_add_user_role);
-            database.RoleListClb(clb_roles_group_edit);
-            database.UserListClb(clb_users_group_edit);
-
+            
             btn_refresh_Click(null, null);
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
-            WczytajUprawnienia();
-            WczytajUzytkownikowZUprawnieniami();
+            
             LoadItemTypes();
             SetWarehousePermissions();
             LoadWarehouseItems();
@@ -2052,6 +2045,19 @@ namespace ProjektMagazyn
             catch (Exception ex)
             {
                 MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
+            }
+        }
+
+        private void dotNetBarTabControl_main_view_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(dotNetBarTabControl_main_view.SelectedTab == tabPage_roles)
+            {
+                database.RoleListDvg(dgv_roles);
+                database.RoleListClb(clb_add_user_role);
+                database.RoleListClb(clb_roles_group_edit);
+                database.UserListClb(clb_users_group_edit);
+                WczytajUprawnienia();
+                WczytajUzytkownikowZUprawnieniami();
             }
         }
 
