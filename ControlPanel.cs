@@ -31,6 +31,7 @@ namespace ProjektMagazyn
         private bool isHistoryFiltered = false;
         private int vatChangeMode = 0; // 1 = Pojedynczy towar, 2 = Rodzaj towaru
         private int selectedVatItemId = -1;
+        private int replenishItemId = -1; 
 
         DatabaseConnection database = new DatabaseConnection();
         private ErrorProvider errorProvider = new ErrorProvider();
@@ -47,41 +48,69 @@ namespace ProjektMagazyn
             loggedUserId = userId;
             LoadUserPermissions(loggedUserId);
             EnablePermittedTabs();
+            this.Load += ControlPanel_Load;
+
 
             LoadData();
         }
         private void LoadData()
         {
-            
-            WczytajTowaryDoSprzedazy();
-            LoadMyProfile();
-            LoadProfileRoles(loggedUserId);
-            
-            btn_refresh_Click(null, null);
-            WczytajUzytkownikowDoListy();
-            ZablokujPolaEdycji();
-            
-            LoadItemTypes();
-            SetWarehousePermissions();
-            LoadWarehouseItems();
 
-            tbx_search.GotFocus += tbx_search_GotFocus;
+            ZablokujPolaEdycji();
 
             if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
-            {
                 dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
-            }
+
             if (tabPage_items.TabPages.Contains(tabPage_Item_History))
-            {
                 tabPage_items.TabPages.Remove(tabPage_Item_History);
-            }
+
             if (tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
-            {
                 tabPage_items.TabPages.Remove(tabPage_Delivery_Details);
-            }
+
             if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
-            {
                 tabPage_items.TabPages.Remove(tabPage_Vat_Change);
+
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_my_profile)
+            {
+                LoadMyProfile();
+                LoadProfileRoles(loggedUserId);
+            }
+        }
+        private void ControlPanel_Load(object sender, EventArgs e)
+        {
+            LoadMyProfile();
+            LoadProfileRoles(loggedUserId);
+        }
+        private void dotNetBarTabControl_main_view_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_users)
+            {
+                btn_refresh_Click(null, null); 
+                WczytajUzytkownikowDoListy();
+            }
+            else if (dotNetBarTabControl_main_view.SelectedTab == tabPage_roles)
+            {
+                database.RoleListDvg(dgv_roles);
+                database.RoleListClb(clb_add_user_role);
+                database.RoleListClb(clb_roles_group_edit);
+                database.UserListClb(clb_users_group_edit);
+                WczytajUprawnienia();
+                WczytajUzytkownikowZUprawnieniami();
+            }
+            else if (dotNetBarTabControl_main_view.SelectedTab == tabPage_manage_warehouse)
+            {
+                LoadItemTypes();
+                SetWarehousePermissions();
+                LoadWarehouseItems();
+            }
+            else if (dotNetBarTabControl_main_view.SelectedTab == tabPage_manage_sales)
+            {
+                WczytajTowaryDoSprzedazy();
+            }
+            else if (dotNetBarTabControl_main_view.SelectedTab == tabPage_my_profile)
+            {
+                LoadMyProfile();
+                LoadProfileRoles(loggedUserId);
             }
         }
         private void LoadUserPermissions(int userId)
@@ -118,30 +147,21 @@ namespace ProjektMagazyn
             //3 - Pracownik magazynu
             //4 - Kierownik sprzedazy
             //5 - Sprzedawca
-
             if (!currentUserPermissions.Contains(1))
             {
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_users);
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_roles);
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_overview);
             }
-
             if (!currentUserPermissions.Contains(2) && !currentUserPermissions.Contains(3))
             {
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_manage_warehouse);
             }
-
             if (!currentUserPermissions.Contains(4) && !currentUserPermissions.Contains(5))
             {
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_manage_sales);
             }
-
         }
-        private void tbx_search_GotFocus(object sender, EventArgs e)
-        {
-            tbx_search.Clear();
-        }
-
         private void btn_add_user_Click(object sender, EventArgs e)
         {
             Validation validation = new Validation();
@@ -1352,61 +1372,111 @@ namespace ProjektMagazyn
             errorProvider.Clear();
             int invalids = 0;
 
+            StringBuilder errorMessages = new StringBuilder();
+            bool showGenericError = false;
+
+            DateTime deliveryDate = dtp_item_deliveryDate.Value.Date;
+            if (deliveryDate > DateTime.Today)
+            {
+                errorProvider.SetError(dtp_item_deliveryDate, "Data dostawy nie może być z przyszłości.");
+                errorMessages.AppendLine("Wskazana data dostawy jest nieprawidłowa. Data nie może być z przyszłości.\n");
+                invalids++;
+            }
+
             string name = tbx_item_name.Text.Trim();
             string description = tbx_item_description.Text.Trim();
             string supplier = tbx_item_supplier.Text.Trim();
-            string priceStr = tbx_item_price.Text.Trim();
-            string quantityStr = tbx_item_quantity.Text.Trim();
-            DateTime deliveryDate = DateTime.Today;
 
             var inputs = new List<Control> { tbx_item_name, cmbx_item_type, cmbx_item_unit, tbx_item_quantity, tbx_item_price, cmbx_item_vat, tbx_item_description, tbx_item_supplier };
             foreach (var input in inputs) input.BackColor = Color.White;
 
-            // --- WYJĄTEK E1: Brak wymaganych pól  ---
-            if (string.IsNullOrEmpty(name)) { errorProvider.SetError(tbx_item_name, "Brak wymaganych pól"); tbx_item_name.BackColor = Color.Red; invalids++; }
-            if (string.IsNullOrEmpty(description)) { errorProvider.SetError(tbx_item_description, "Brak wymaganych pól"); tbx_item_description.BackColor = Color.Red; invalids++; }
-            if (string.IsNullOrEmpty(supplier)) { errorProvider.SetError(tbx_item_supplier, "Brak wymaganych pól"); tbx_item_supplier.BackColor = Color.Red; invalids++; }
-            if (string.IsNullOrEmpty(priceStr)) { errorProvider.SetError(tbx_item_price, "Brak wymaganych pól"); tbx_item_price.BackColor = Color.Red; invalids++; }
-            if (string.IsNullOrEmpty(quantityStr)) { errorProvider.SetError(tbx_item_quantity, "Brak wymaganych pól"); tbx_item_quantity.BackColor = Color.Red; invalids++; }
-            if (cmbx_item_type.SelectedIndex == -1) { errorProvider.SetError(cmbx_item_type, "Brak wymaganych pól"); cmbx_item_type.BackColor = Color.Red; invalids++; }
-            if (cmbx_item_unit.SelectedIndex == -1) { errorProvider.SetError(cmbx_item_unit, "Brak wymaganych pól"); cmbx_item_unit.BackColor = Color.Red; invalids++; }
-            if (cmbx_item_vat.SelectedIndex == -1) { errorProvider.SetError(cmbx_item_vat, "Brak wymaganych pól"); cmbx_item_vat.BackColor = Color.Red; invalids++; }
-            if (invalids > 0)
+            if (string.IsNullOrEmpty(name)) { errorProvider.SetError(tbx_item_name, "Brak wymaganych pól"); tbx_item_name.BackColor = Color.Red; invalids++; showGenericError = true; }
+            if (string.IsNullOrEmpty(description)) { errorProvider.SetError(tbx_item_description, "Brak wymaganych pól"); tbx_item_description.BackColor = Color.Red; invalids++; showGenericError = true; }
+            if (string.IsNullOrEmpty(supplier)) { errorProvider.SetError(tbx_item_supplier, "Brak wymaganych pól"); tbx_item_supplier.BackColor = Color.Red; invalids++; showGenericError = true; }
+            if (cmbx_item_type.SelectedIndex == -1) { errorProvider.SetError(cmbx_item_type, "Brak wymaganych pól"); cmbx_item_type.BackColor = Color.Red; invalids++; showGenericError = true; }
+            if (cmbx_item_unit.SelectedIndex == -1) { errorProvider.SetError(cmbx_item_unit, "Brak wymaganych pól"); cmbx_item_unit.BackColor = Color.Red; invalids++; showGenericError = true; }
+            if (cmbx_item_vat.SelectedIndex == -1) { errorProvider.SetError(cmbx_item_vat, "Brak wymaganych pól"); cmbx_item_vat.BackColor = Color.Red; invalids++; showGenericError = true; }
+
+            if (showGenericError)
             {
-                MessageBox.Show("Brak wymaganych pól.", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                errorMessages.AppendLine("Wypełnij wszystkie wymagane pola zaznaczone na czerwono.\n");
             }
 
-            string unit = cmbx_item_unit.Text;
+            string priceStr = tbx_item_price.Text.Trim();
+            decimal netPrice = 0m;
 
-            // --- WYJĄTEK E2: Nieprawidłowy format ceny netto ---
-            if (!Regex.IsMatch(priceStr, @"^\d+(,\d{1,2})?$"))
+            if (string.IsNullOrEmpty(priceStr))
+            {
+                errorProvider.SetError(tbx_item_price, "Brak wymaganych pól");
+                tbx_item_price.BackColor = Color.Red;
+                invalids++;
+            }
+            else if (!Regex.IsMatch(priceStr, @"^\d+(,\d{1,2})?$"))
             {
                 errorProvider.SetError(tbx_item_price, "Wprowadzono błędną cenę netto");
                 tbx_item_price.BackColor = Color.Red;
-                MessageBox.Show("Wprowadzono błędną cenę netto.\n\nWymagania ceny netto:\n- Format walutowy: Cena musi mieć maksymalnie dwa miejsca po przecinku (np. 10,50)\n- Wartości nienumeryczne: Cena nie może zawierać niczego innego oprócz cyfr i separatora (,)\n- Wartości ujemne: Cena nie może być ujemna\n- Błędny separator: Użycie znaku, którego system nie rozpoznaje (np. 10;50)", "Błąd formatu", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            decimal netPrice = decimal.Parse(priceStr, new CultureInfo("pl-PL"));
+                invalids++;
 
-            // --- WYJĄTEK E3: Nieprawidłowy format ilości ---
-            if (!Regex.IsMatch(quantityStr, @"^\d+(\.\d+)?$") || quantityStr == "0" || quantityStr.StartsWith("0.00"))
-            {
-                RejectItemQuantity();
-                return;
+                errorMessages.AppendLine("Wprowadzono błędną cenne netto");
+                errorMessages.AppendLine("Wymagania cenny netto:");
+                errorMessages.AppendLine("- Format walutowy: Cena musi mieć maksymalnie dwa miejsca po przecinku (np. 10,50)");
+                errorMessages.AppendLine("- Wartości nienumeryczne: Cena nie może zawierać niczego innego oprócz cyfr i separatora ( , )");
+                errorMessages.AppendLine("- Wartości ujemne: Cena nie może być ujemna");
+                errorMessages.AppendLine("- Błędny separator: Użycie znaku, którego system nie rozpoznaje (np. 10;50)\n");
             }
-            decimal quantity = decimal.Parse(quantityStr, CultureInfo.InvariantCulture);
+            else
+            {
+                netPrice = decimal.Parse(priceStr, new CultureInfo("pl-PL"));
+            }
 
-            if (quantity <= 0)
+            string quantityStr = tbx_item_quantity.Text.Trim();
+            decimal quantity = 0m;
+            string unit = cmbx_item_unit.Text;
+            bool isQuantityFormatError = false;
+
+            if (string.IsNullOrEmpty(quantityStr))
             {
-                RejectItemQuantity();
-                return;
-            }
-            if (unit == "Sztuki" && quantity % 1 != 0)
-            {
-                errorProvider.SetError(tbx_item_quantity, "System blokuje ułamki dla Sztuk.");
+                errorProvider.SetError(tbx_item_quantity, "Brak wymaganych pól");
                 tbx_item_quantity.BackColor = Color.Red;
-                MessageBox.Show("Niezgodność z jednostką miary: System blokuje ułamki dla jednostki 'Sztuki'.", "Błąd formatu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                invalids++;
+            }
+            else
+            {
+                bool formatOk = Regex.IsMatch(quantityStr, @"^\d+(\.\d+)?$");
+                decimal parsedQty = 0m;
+
+                if (formatOk)
+                {
+                    decimal.TryParse(quantityStr, NumberStyles.Any, CultureInfo.InvariantCulture, out parsedQty);
+                }
+
+                if (!formatOk || parsedQty <= 0 || (unit == "Sztuki" && parsedQty % 1 != 0))
+                {
+                    errorProvider.SetError(tbx_item_quantity, "Wprowadzono błędną ilość/liczbę rejestrowanego towaru");
+                    tbx_item_quantity.BackColor = Color.Red;
+                    invalids++;
+                    isQuantityFormatError = true;
+                }
+                else
+                {
+                    quantity = parsedQty;
+                }
+            }
+
+            if (isQuantityFormatError)
+            {
+                errorMessages.AppendLine("Wprowadzono błędną ilość/liczbę rejestrowanego towaru");
+                errorMessages.AppendLine("Wymagania ilości/liczby rejestrowanego towaru:");
+                errorMessages.AppendLine("- Wartości nienumeryczne: ilość/liczba rejestrowanego towaru nie może zawierać niczego innego oprócz cyfr i separatora (.)");
+                errorMessages.AppendLine("- Wartości ujemne: Ilość/liczba nie może być ujemna");
+                errorMessages.AppendLine("- Wartości zerowe: ilość/liczba nie może być zerowa");
+                errorMessages.AppendLine("- Błędny separator: Użycie znaku, którego system nie rozpoznaje (np. 1;5)");
+                errorMessages.AppendLine("- Niezgodność z jednostką miary: Nie można dodać niecałkowitej liczby sztuk.\n");
+            }
+
+            if (invalids > 0)
+            {
+                MessageBox.Show(errorMessages.ToString().Trim(), "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -1415,13 +1485,22 @@ namespace ProjektMagazyn
             if (vatText != "zw") vatRate = decimal.Parse(vatText);
 
             int typeId = (int)cmbx_item_type.SelectedValue;
+            bool success = false;
 
-            bool success = database.RegisterNewItem(name, typeId, unit, description, netPrice, quantity, vatRate, supplier, deliveryDate, loggedUserId);
+            if (replenishItemId == -1)
+            {
+                success = database.RegisterNewItem(name, typeId, unit, description, netPrice, quantity, vatRate, supplier, deliveryDate, loggedUserId);
+            }
+            else
+            {
+                success = database.ReplenishExistingItem(replenishItemId, quantity, netPrice, vatRate, supplier, deliveryDate, loggedUserId);
+            }
 
             if (success)
             {
-                MessageBox.Show("Towar został zarejestrowany pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                btn_register_item_cancel_Click(null, null);
+                MessageBox.Show("Operacja zakończona pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                btn_register_item_cancel_Click(null, null); 
+                LoadWarehouseItems();
                 WczytajTowaryDoSprzedazy();
             }
         }
@@ -1437,17 +1516,25 @@ namespace ProjektMagazyn
         {
             errorProvider.Clear();
 
+            replenishItemId = -1;
+            var inputsToUnlock = new List<Control> { tbx_item_name, cmbx_item_type, cmbx_item_unit, tbx_item_price, cmbx_item_vat, tbx_item_description, tbx_item_supplier };
+            foreach (var input in inputsToUnlock)
+            {
+                input.Enabled = true;
+                input.BackColor = Color.White;
+            }
+
             tbx_item_name.Clear();
             tbx_item_description.Clear();
             tbx_item_supplier.Clear();
             tbx_item_price.Clear();
             tbx_item_quantity.Clear();
 
+            dtp_item_deliveryDate.Value = DateTime.Today; 
+
             cmbx_item_type.SelectedIndex = -1;
             cmbx_item_unit.SelectedIndex = -1;
             cmbx_item_vat.SelectedIndex = -1;
-            var inputs = new List<Control> { tbx_item_name, cmbx_item_type, cmbx_item_unit, tbx_item_quantity, tbx_item_price, cmbx_item_vat, tbx_item_description, tbx_item_supplier };
-            foreach (var input in inputs) input.BackColor = Color.White;
         }
 
         private void btn_add_item_type_Click(object sender, EventArgs e)
@@ -2048,16 +2135,39 @@ namespace ProjektMagazyn
             }
         }
 
-        private void dotNetBarTabControl_main_view_SelectedIndexChanged(object sender, EventArgs e)
+        private void btn_replenish_item_Click(object sender, EventArgs e)
         {
-            if(dotNetBarTabControl_main_view.SelectedTab == tabPage_roles)
+            if (dgv_warehouse_items.CurrentRow == null || dgv_warehouse_items.CurrentRow.Index < 0)
             {
-                database.RoleListDvg(dgv_roles);
-                database.RoleListClb(clb_add_user_role);
-                database.RoleListClb(clb_roles_group_edit);
-                database.UserListClb(clb_users_group_edit);
-                WczytajUprawnienia();
-                WczytajUzytkownikowZUprawnieniami();
+                MessageBox.Show("Wybierz towar, któremu chcesz zaktualizować stan.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            replenishItemId = Convert.ToInt32(dgv_warehouse_items.CurrentRow.Cells["TowarID"].Value);
+            var details = database.GetItemFullDetailsForReplenish(replenishItemId);
+
+            if (details.Count > 0)
+            {
+                tbx_item_name.Text = details.ContainsKey("Nazwa") ? details["Nazwa"] : "";
+                tbx_item_description.Text = details.ContainsKey("Opis") ? details["Opis"] : "";
+                cmbx_item_unit.Text = details.ContainsKey("JednostkaMiary") ? details["JednostkaMiary"] : "";
+                cmbx_item_type.Text = details.ContainsKey("Rodzaj") ? details["Rodzaj"] : "";
+
+                tbx_item_price.Text = details.ContainsKey("CenaNetto") ? details["CenaNetto"] : "";
+                tbx_item_supplier.Text = details.ContainsKey("Dostawca") ? details["Dostawca"] : "";
+
+                if (details.ContainsKey("VAT"))
+                {
+                    cmbx_item_vat.Text = details["VAT"];
+                }
+
+                dtp_item_deliveryDate.Value = DateTime.Today;
+                tbx_item_quantity.Clear();
+
+                var inputsToLock = new List<Control> { tbx_item_name, cmbx_item_type, cmbx_item_unit, tbx_item_price, cmbx_item_vat, tbx_item_description, tbx_item_supplier };
+                foreach (var input in inputsToLock) input.Enabled = false;
+
+                MessageBox.Show("Wpisz ilość oraz wskaż datę dostawy, a następnie kliknij Zapisz.", "Tryb uzupełniania", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

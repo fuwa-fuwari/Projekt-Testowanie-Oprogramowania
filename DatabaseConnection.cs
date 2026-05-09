@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -896,6 +897,110 @@ namespace ProjektMagazyn
             catch (Exception ex)
             {
                 MessageBox.Show("Błąd zapisu masowego VAT: " + ex.Message);
+                return false;
+            }
+        }
+
+        public Dictionary<string, string> GetItemFullDetailsForReplenish(int itemId)
+        {
+            var details = new Dictionary<string, string>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                SELECT TOP 1 
+                    t.Nazwa, t.Opis, t.JednostkaMiary, rt.Nazwa AS Rodzaj, 
+                    rd.CenaNetto, rd.ZastosowanyVAT, rd.Dostawca
+                FROM Towary t
+                JOIN RodzajeTowarow rt ON t.RodzajID = rt.RodzajID
+                LEFT JOIN RejestracjaDostaw rd ON t.TowarID = rd.TowarID
+                WHERE t.TowarID = @id
+                ORDER BY rd.DataRejestracji DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", itemId);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                details["Nazwa"] = reader["Nazwa"].ToString();
+                                details["Opis"] = reader["Opis"].ToString();
+                                details["JednostkaMiary"] = reader["JednostkaMiary"].ToString();
+                                details["Rodzaj"] = reader["Rodzaj"].ToString();
+
+                                if (reader["CenaNetto"] != DBNull.Value)
+                                {
+                                    decimal cn = Convert.ToDecimal(reader["CenaNetto"]);
+                                    details["CenaNetto"] = cn.ToString("0.00", new CultureInfo("pl-PL"));
+                                }
+
+                                if (reader["ZastosowanyVAT"] != DBNull.Value)
+                                {
+                                    decimal vat = Convert.ToDecimal(reader["ZastosowanyVAT"]);
+                                    details["VAT"] = (vat == 0) ? "zw" : vat.ToString("0");
+                                }
+
+                                details["Dostawca"] = reader["Dostawca"] != DBNull.Value ? reader["Dostawca"].ToString() : "";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("Błąd pobierania danych towaru z bazy: " + ex.Message); }
+            return details;
+        }
+
+
+        public bool ReplenishExistingItem(int itemId, decimal quantity, decimal netPrice, decimal vatRate, string supplier, DateTime deliveryDate, int userId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlTransaction tran = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            string insertDeliveryQuery = @"INSERT INTO RejestracjaDostaw (TowarID, Ilosc, CenaNetto, ZastosowanyVAT, Dostawca, DataDostawy, RejestrujacyUzytkownikID) 
+                                                   VALUES (@itemId, @quantity, @netPrice, @vatRate, @supplier, @deliveryDate, @userId)";
+                            using (SqlCommand cmd = new SqlCommand(insertDeliveryQuery, conn, tran))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.Parameters.AddWithValue("@quantity", quantity);
+                                cmd.Parameters.AddWithValue("@netPrice", netPrice);
+                                cmd.Parameters.AddWithValue("@vatRate", vatRate);
+                                cmd.Parameters.AddWithValue("@supplier", supplier);
+                                cmd.Parameters.AddWithValue("@deliveryDate", deliveryDate);
+                                cmd.Parameters.AddWithValue("@userId", userId);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            string updateStockQuery = "UPDATE StanyMagazynowe SET IloscDostepna = IloscDostepna + @quantity WHERE TowarID = @itemId";
+                            using (SqlCommand cmd = new SqlCommand(updateStockQuery, conn, tran))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.Parameters.AddWithValue("@quantity", quantity); 
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            tran.Commit();
+                            return true;
+                        }
+                        catch
+                        {
+                            tran.Rollback();
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd zapisu dostawy: " + ex.Message);
                 return false;
             }
         }

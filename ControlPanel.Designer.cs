@@ -49,6 +49,7 @@ namespace ProjektMagazyn
             this.label34 = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
             this.tabPage_overview = new System.Windows.Forms.TabPage();
+            this.lbl_search_user = new System.Windows.Forms.Label();
             this.btn_show_forgotten = new System.Windows.Forms.Button();
             this.tbx_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
@@ -267,6 +268,9 @@ namespace ProjektMagazyn
             this.label32 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.btn_logout = new System.Windows.Forms.Button();
+            this.label63 = new System.Windows.Forms.Label();
+            this.dtp_item_deliveryDate = new System.Windows.Forms.DateTimePicker();
+            this.btn_replenish_item = new System.Windows.Forms.Button();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_my_profile.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
@@ -482,6 +486,7 @@ namespace ProjektMagazyn
             // 
             // tabPage_overview
             // 
+            this.tabPage_overview.Controls.Add(this.lbl_search_user);
             this.tabPage_overview.Controls.Add(this.btn_show_forgotten);
             this.tabPage_overview.Controls.Add(this.tbx_search);
             this.tabPage_overview.Controls.Add(this.btn_search);
@@ -495,6 +500,15 @@ namespace ProjektMagazyn
             this.tabPage_overview.TabIndex = 1;
             this.tabPage_overview.Text = "Przegląd";
             this.tabPage_overview.UseVisualStyleBackColor = true;
+            // 
+            // lbl_search_user
+            // 
+            this.lbl_search_user.AutoSize = true;
+            this.lbl_search_user.Location = new System.Drawing.Point(131, 53);
+            this.lbl_search_user.Name = "lbl_search_user";
+            this.lbl_search_user.Size = new System.Drawing.Size(281, 13);
+            this.lbl_search_user.TabIndex = 10;
+            this.lbl_search_user.Text = "Wyszukaj użytkownika podając imię, nazwisko lub PESEL";
             // 
             // btn_show_forgotten
             // 
@@ -512,7 +526,6 @@ namespace ProjektMagazyn
             this.tbx_search.Name = "tbx_search";
             this.tbx_search.Size = new System.Drawing.Size(589, 20);
             this.tbx_search.TabIndex = 8;
-            this.tbx_search.Text = "(Podaj imię, nazwisko lub PESEL)";
             // 
             // btn_search
             // 
@@ -1773,6 +1786,9 @@ namespace ProjektMagazyn
             // 
             // tabPage_Warehouse
             // 
+            this.tabPage_Warehouse.Controls.Add(this.btn_replenish_item);
+            this.tabPage_Warehouse.Controls.Add(this.dtp_item_deliveryDate);
+            this.tabPage_Warehouse.Controls.Add(this.label63);
             this.tabPage_Warehouse.Controls.Add(this.btn_change_category_vat);
             this.tabPage_Warehouse.Controls.Add(this.btn_change_item_vat);
             this.tabPage_Warehouse.Controls.Add(this.btn_search_items);
@@ -1810,7 +1826,7 @@ namespace ProjektMagazyn
             // 
             // btn_change_category_vat
             // 
-            this.btn_change_category_vat.Location = new System.Drawing.Point(177, 254);
+            this.btn_change_category_vat.Location = new System.Drawing.Point(177, 234);
             this.btn_change_category_vat.Name = "btn_change_category_vat";
             this.btn_change_category_vat.Size = new System.Drawing.Size(200, 23);
             this.btn_change_category_vat.TabIndex = 48;
@@ -1820,7 +1836,7 @@ namespace ProjektMagazyn
             // 
             // btn_change_item_vat
             // 
-            this.btn_change_item_vat.Location = new System.Drawing.Point(7, 254);
+            this.btn_change_item_vat.Location = new System.Drawing.Point(7, 234);
             this.btn_change_item_vat.Name = "btn_change_item_vat";
             this.btn_change_item_vat.Size = new System.Drawing.Size(164, 23);
             this.btn_change_item_vat.TabIndex = 47;
@@ -1866,7 +1882,7 @@ namespace ProjektMagazyn
             // 
             // btn_delete_item
             // 
-            this.btn_delete_item.Location = new System.Drawing.Point(497, 254);
+            this.btn_delete_item.Location = new System.Drawing.Point(497, 234);
             this.btn_delete_item.Name = "btn_delete_item";
             this.btn_delete_item.Size = new System.Drawing.Size(112, 23);
             this.btn_delete_item.TabIndex = 42;
@@ -1879,13 +1895,13 @@ namespace ProjektMagazyn
             this.dgv_warehouse_items.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_warehouse_items.Location = new System.Drawing.Point(6, 39);
             this.dgv_warehouse_items.Name = "dgv_warehouse_items";
-            this.dgv_warehouse_items.Size = new System.Drawing.Size(603, 209);
+            this.dgv_warehouse_items.Size = new System.Drawing.Size(603, 189);
             this.dgv_warehouse_items.TabIndex = 41;
             this.dgv_warehouse_items.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_warehouse_items_CellDoubleClick);
             // 
             // btn_register_item_cancel
             // 
-            this.btn_register_item_cancel.Location = new System.Drawing.Point(453, 496);
+            this.btn_register_item_cancel.Location = new System.Drawing.Point(453, 504);
             this.btn_register_item_cancel.Name = "btn_register_item_cancel";
             this.btn_register_item_cancel.Size = new System.Drawing.Size(75, 23);
             this.btn_register_item_cancel.TabIndex = 40;
@@ -1895,7 +1911,7 @@ namespace ProjektMagazyn
             // 
             // btn_register_item_save
             // 
-            this.btn_register_item_save.Location = new System.Drawing.Point(88, 500);
+            this.btn_register_item_save.Location = new System.Drawing.Point(88, 506);
             this.btn_register_item_save.Name = "btn_register_item_save";
             this.btn_register_item_save.Size = new System.Drawing.Size(75, 23);
             this.btn_register_item_save.TabIndex = 39;
@@ -1921,7 +1937,7 @@ namespace ProjektMagazyn
             "5",
             "0",
             "zw"});
-            this.cmbx_item_vat.Location = new System.Drawing.Point(172, 419);
+            this.cmbx_item_vat.Location = new System.Drawing.Point(172, 399);
             this.cmbx_item_vat.Name = "cmbx_item_vat";
             this.cmbx_item_vat.Size = new System.Drawing.Size(356, 21);
             this.cmbx_item_vat.TabIndex = 36;
@@ -1929,7 +1945,7 @@ namespace ProjektMagazyn
             // label46
             // 
             this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(88, 422);
+            this.label46.Location = new System.Drawing.Point(88, 402);
             this.label46.Name = "label46";
             this.label46.Size = new System.Drawing.Size(67, 13);
             this.label46.TabIndex = 35;
@@ -1938,7 +1954,7 @@ namespace ProjektMagazyn
             // label45
             // 
             this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(88, 340);
+            this.label45.Location = new System.Drawing.Point(88, 320);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(83, 13);
             this.label45.TabIndex = 34;
@@ -1953,7 +1969,7 @@ namespace ProjektMagazyn
             "Kilogramy",
             "Litry",
             "Palety"});
-            this.cmbx_item_unit.Location = new System.Drawing.Point(172, 337);
+            this.cmbx_item_unit.Location = new System.Drawing.Point(172, 317);
             this.cmbx_item_unit.Name = "cmbx_item_unit";
             this.cmbx_item_unit.Size = new System.Drawing.Size(356, 21);
             this.cmbx_item_unit.TabIndex = 33;
@@ -1961,7 +1977,7 @@ namespace ProjektMagazyn
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(88, 313);
+            this.label44.Location = new System.Drawing.Point(88, 293);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(75, 13);
             this.label44.TabIndex = 32;
@@ -1971,7 +1987,7 @@ namespace ProjektMagazyn
             // 
             this.cmbx_item_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbx_item_type.FormattingEnabled = true;
-            this.cmbx_item_type.Location = new System.Drawing.Point(172, 310);
+            this.cmbx_item_type.Location = new System.Drawing.Point(172, 290);
             this.cmbx_item_type.Name = "cmbx_item_type";
             this.cmbx_item_type.Size = new System.Drawing.Size(356, 21);
             this.cmbx_item_type.TabIndex = 31;
@@ -1979,7 +1995,7 @@ namespace ProjektMagazyn
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(88, 449);
+            this.label43.Location = new System.Drawing.Point(88, 429);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(63, 13);
             this.label43.TabIndex = 30;
@@ -1988,7 +2004,7 @@ namespace ProjektMagazyn
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(88, 475);
+            this.label42.Location = new System.Drawing.Point(88, 455);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(55, 13);
             this.label42.TabIndex = 29;
@@ -1997,7 +2013,7 @@ namespace ProjektMagazyn
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(88, 367);
+            this.label41.Location = new System.Drawing.Point(88, 347);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(29, 13);
             this.label41.TabIndex = 28;
@@ -2006,7 +2022,7 @@ namespace ProjektMagazyn
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(88, 393);
+            this.label40.Location = new System.Drawing.Point(88, 373);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(59, 13);
             this.label40.TabIndex = 27;
@@ -2015,7 +2031,7 @@ namespace ProjektMagazyn
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(88, 286);
+            this.label39.Location = new System.Drawing.Point(88, 266);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(75, 13);
             this.label39.TabIndex = 26;
@@ -2023,35 +2039,35 @@ namespace ProjektMagazyn
             // 
             // tbx_item_description
             // 
-            this.tbx_item_description.Location = new System.Drawing.Point(172, 446);
+            this.tbx_item_description.Location = new System.Drawing.Point(172, 426);
             this.tbx_item_description.Name = "tbx_item_description";
             this.tbx_item_description.Size = new System.Drawing.Size(356, 20);
             this.tbx_item_description.TabIndex = 25;
             // 
             // tbx_item_supplier
             // 
-            this.tbx_item_supplier.Location = new System.Drawing.Point(172, 472);
+            this.tbx_item_supplier.Location = new System.Drawing.Point(172, 452);
             this.tbx_item_supplier.Name = "tbx_item_supplier";
             this.tbx_item_supplier.Size = new System.Drawing.Size(356, 20);
             this.tbx_item_supplier.TabIndex = 24;
             // 
             // tbx_item_price
             // 
-            this.tbx_item_price.Location = new System.Drawing.Point(172, 390);
+            this.tbx_item_price.Location = new System.Drawing.Point(172, 370);
             this.tbx_item_price.Name = "tbx_item_price";
             this.tbx_item_price.Size = new System.Drawing.Size(356, 20);
             this.tbx_item_price.TabIndex = 23;
             // 
             // tbx_item_quantity
             // 
-            this.tbx_item_quantity.Location = new System.Drawing.Point(172, 364);
+            this.tbx_item_quantity.Location = new System.Drawing.Point(172, 344);
             this.tbx_item_quantity.Name = "tbx_item_quantity";
             this.tbx_item_quantity.Size = new System.Drawing.Size(356, 20);
             this.tbx_item_quantity.TabIndex = 22;
             // 
             // tbx_item_name
             // 
-            this.tbx_item_name.Location = new System.Drawing.Point(172, 283);
+            this.tbx_item_name.Location = new System.Drawing.Point(172, 263);
             this.tbx_item_name.Name = "tbx_item_name";
             this.tbx_item_name.Size = new System.Drawing.Size(356, 20);
             this.tbx_item_name.TabIndex = 21;
@@ -2711,6 +2727,32 @@ namespace ProjektMagazyn
             this.btn_logout.UseVisualStyleBackColor = true;
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(88, 478);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(72, 13);
+            this.label63.TabIndex = 50;
+            this.label63.Text = "Data dostawy";
+            // 
+            // dtp_item_deliveryDate
+            // 
+            this.dtp_item_deliveryDate.Location = new System.Drawing.Point(172, 478);
+            this.dtp_item_deliveryDate.Name = "dtp_item_deliveryDate";
+            this.dtp_item_deliveryDate.Size = new System.Drawing.Size(356, 20);
+            this.dtp_item_deliveryDate.TabIndex = 51;
+            // 
+            // btn_replenish_item
+            // 
+            this.btn_replenish_item.Location = new System.Drawing.Point(383, 234);
+            this.btn_replenish_item.Name = "btn_replenish_item";
+            this.btn_replenish_item.Size = new System.Drawing.Size(108, 23);
+            this.btn_replenish_item.TabIndex = 52;
+            this.btn_replenish_item.Text = "Aktualizuj stan";
+            this.btn_replenish_item.UseVisualStyleBackColor = true;
+            this.btn_replenish_item.Click += new System.EventHandler(this.btn_replenish_item_Click);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3012,5 +3054,9 @@ namespace ProjektMagazyn
         private Label label64;
         private Label label65;
         private Label label66;
+        private Label lbl_search_user;
+        private Button btn_replenish_item;
+        private DateTimePicker dtp_item_deliveryDate;
+        private Label label63;
     }
 }
