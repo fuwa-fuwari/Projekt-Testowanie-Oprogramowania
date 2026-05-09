@@ -267,6 +267,7 @@ namespace ProjektMagazyn
             this.label32 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.btn_logout = new System.Windows.Forms.Button();
+            this.lbl_search_user = new System.Windows.Forms.Label();
             this.dotNetBarTabControl_main_view.SuspendLayout();
             this.tabPage_my_profile.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
@@ -482,6 +483,7 @@ namespace ProjektMagazyn
             // 
             // tabPage_overview
             // 
+            this.tabPage_overview.Controls.Add(this.lbl_search_user);
             this.tabPage_overview.Controls.Add(this.btn_show_forgotten);
             this.tabPage_overview.Controls.Add(this.tbx_search);
             this.tabPage_overview.Controls.Add(this.btn_search);
@@ -512,7 +514,6 @@ namespace ProjektMagazyn
             this.tbx_search.Name = "tbx_search";
             this.tbx_search.Size = new System.Drawing.Size(589, 20);
             this.tbx_search.TabIndex = 8;
-            this.tbx_search.Text = "(Podaj imię, nazwisko lub PESEL)";
             // 
             // btn_search
             // 
@@ -2711,6 +2712,15 @@ namespace ProjektMagazyn
             this.btn_logout.UseVisualStyleBackColor = true;
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
+            // lbl_search_user
+            // 
+            this.lbl_search_user.AutoSize = true;
+            this.lbl_search_user.Location = new System.Drawing.Point(131, 53);
+            this.lbl_search_user.Name = "lbl_search_user";
+            this.lbl_search_user.Size = new System.Drawing.Size(281, 13);
+            this.lbl_search_user.TabIndex = 10;
+            this.lbl_search_user.Text = "Wyszukaj użytkownika podając imię, nazwisko lub PESEL";
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3012,5 +3022,6 @@ namespace ProjektMagazyn
         private Label label64;
         private Label label65;
         private Label label66;
+        private Label lbl_search_user;
     }
 }

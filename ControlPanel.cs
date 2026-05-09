@@ -47,6 +47,8 @@ namespace ProjektMagazyn
             loggedUserId = userId;
             LoadUserPermissions(loggedUserId);
             EnablePermittedTabs();
+            this.Load += ControlPanel_Load;
+
 
             LoadData();
         }
@@ -54,18 +56,9 @@ namespace ProjektMagazyn
         {
             
             WczytajTowaryDoSprzedazy();
-            LoadMyProfile();
-            LoadProfileRoles(loggedUserId);
             
-            btn_refresh_Click(null, null);
             WczytajUzytkownikowDoListy();
             ZablokujPolaEdycji();
-            
-            LoadItemTypes();
-            SetWarehousePermissions();
-            LoadWarehouseItems();
-
-            tbx_search.GotFocus += tbx_search_GotFocus;
 
             if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
             {
@@ -82,6 +75,34 @@ namespace ProjektMagazyn
             if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
             {
                 tabPage_items.TabPages.Remove(tabPage_Vat_Change);
+            }
+        }
+        private void ControlPanel_Load(object sender, EventArgs e)
+        {
+            LoadMyProfile();
+            LoadProfileRoles(loggedUserId);
+        }
+        private void dotNetBarTabControl_main_view_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_roles)
+            {
+                database.RoleListDvg(dgv_roles);
+                database.RoleListClb(clb_add_user_role);
+                database.RoleListClb(clb_roles_group_edit);
+                database.UserListClb(clb_users_group_edit);
+                WczytajUprawnienia();
+                WczytajUzytkownikowZUprawnieniami();
+            }
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_my_profile)
+            {
+                LoadMyProfile();
+                LoadProfileRoles(loggedUserId);
+            }
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_manage_warehouse)
+            {
+                LoadItemTypes();
+                SetWarehousePermissions();
+                LoadWarehouseItems();
             }
         }
         private void LoadUserPermissions(int userId)
@@ -118,30 +139,21 @@ namespace ProjektMagazyn
             //3 - Pracownik magazynu
             //4 - Kierownik sprzedazy
             //5 - Sprzedawca
-
             if (!currentUserPermissions.Contains(1))
             {
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_users);
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_roles);
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_overview);
             }
-
             if (!currentUserPermissions.Contains(2) && !currentUserPermissions.Contains(3))
             {
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_manage_warehouse);
             }
-
             if (!currentUserPermissions.Contains(4) && !currentUserPermissions.Contains(5))
             {
                 dotNetBarTabControl_main_view.TabPages.Remove(tabPage_manage_sales);
             }
-
         }
-        private void tbx_search_GotFocus(object sender, EventArgs e)
-        {
-            tbx_search.Clear();
-        }
-
         private void btn_add_user_Click(object sender, EventArgs e)
         {
             Validation validation = new Validation();
@@ -2047,20 +2059,6 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd ładowania listy uprawnień: " + ex.Message);
             }
         }
-
-        private void dotNetBarTabControl_main_view_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(dotNetBarTabControl_main_view.SelectedTab == tabPage_roles)
-            {
-                database.RoleListDvg(dgv_roles);
-                database.RoleListClb(clb_add_user_role);
-                database.RoleListClb(clb_roles_group_edit);
-                database.UserListClb(clb_users_group_edit);
-                WczytajUprawnienia();
-                WczytajUzytkownikowZUprawnieniami();
-            }
-        }
-
         private void WczytajUzytkownikowZUprawnieniami(int? uprawnienieId = null)
         {
             try
