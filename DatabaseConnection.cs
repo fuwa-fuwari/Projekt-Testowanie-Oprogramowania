@@ -1004,5 +1004,148 @@ namespace ProjektMagazyn
                 return false;
             }
         }
+
+        public void SearchSalesHistory(DataGridView dgv, DateTime? dateFrom, DateTime? dateTo, string buyerName, string sellerName, string itemName)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = @"
+                SELECT 
+                    s.SprzedazID,
+                    s.DataSprzedazy AS [Data sprzedaży],
+                    s.NazwaKlienta AS [Nabywca],
+                    ISNULL(u.Imie + ' ' + u.Nazwisko, 'Nieznany (Baza)') AS [Sprzedawca],
+                    ISNULL((
+                        SELECT SUM(ps.Ilosc * ISNULL(rd.CenaNetto, 0) * (1 + ISNULL(v.WartoscVAT, 0) / 100))
+                        FROM PozycjeSprzedazy ps
+                        LEFT JOIN (
+                            SELECT TowarID, MAX(CenaNetto) as CenaNetto
+                            FROM RejestracjaDostaw
+                            GROUP BY TowarID
+                        ) rd ON ps.TowarID = rd.TowarID
+                        LEFT JOIN (
+                            SELECT TowarID, MAX(WartoscVAT) as WartoscVAT
+                            FROM StawkiVAT
+                            GROUP BY TowarID
+                        ) v ON ps.TowarID = v.TowarID
+                        WHERE ps.SprzedazID = s.SprzedazID
+                    ), 0) AS [Łączna wartość sprzedaży]
+                FROM Sprzedaz s
+                LEFT JOIN Uzytkownicy u ON s.SprzedawcaID = u.UzytkownikID
+                WHERE 1=1";
+
+                    if (dateFrom.HasValue) query += " AND CAST(s.DataSprzedazy AS DATE) >= @dateFrom";
+                    if (dateTo.HasValue) query += " AND CAST(s.DataSprzedazy AS DATE) <= @dateTo";
+                    if (!string.IsNullOrEmpty(buyerName)) query += " AND s.NazwaKlienta LIKE '%' + @buyerName + '%'";
+                    if (!string.IsNullOrEmpty(sellerName)) query += " AND (u.Imie LIKE '%' + @sellerName + '%' OR u.Nazwisko LIKE '%' + @sellerName + '%')";
+                    if (!string.IsNullOrEmpty(itemName))
+                    {
+                        query += @" AND EXISTS (
+                        SELECT 1 FROM PozycjeSprzedazy ps 
+                        JOIN Towary t ON ps.TowarID = t.TowarID 
+                        WHERE ps.SprzedazID = s.SprzedazID AND t.Nazwa LIKE '%' + @itemName + '%'
+                    )";
+                    }
+
+                    query += " ORDER BY s.DataSprzedazy DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        if (dateFrom.HasValue) cmd.Parameters.AddWithValue("@dateFrom", dateFrom.Value.Date);
+                        if (dateTo.HasValue) cmd.Parameters.AddWithValue("@dateTo", dateTo.Value.Date);
+                        if (!string.IsNullOrEmpty(buyerName)) cmd.Parameters.AddWithValue("@buyerName", buyerName);
+                        if (!string.IsNullOrEmpty(sellerName)) cmd.Parameters.AddWithValue("@sellerName", sellerName);
+                        if (!string.IsNullOrEmpty(itemName)) cmd.Parameters.AddWithValue("@itemName", itemName);
+
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+
+                            dgv.DataSource = dt;
+                            if (dgv.Columns["SprzedazID"] != null) dgv.Columns["SprzedazID"].Visible = false;
+                            if (dgv.Columns["Łączna wartość sprzedaży"] != null) dgv.Columns["Łączna wartość sprzedaży"].DefaultCellStyle.Format = "C2";
+                            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd podczas pobierania historii sprzedaży: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public DataTable GetSaleDetails(int sprzedazId, out string clientName, out string clientAddress, out string saleDate, out string sellerName)
+        {
+            clientName = ""; clientAddress = ""; saleDate = ""; sellerName = "";
+            DataTable itemsTable = new DataTable();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string headerQuery = @"
+                SELECT s.NazwaKlienta, s.AdresKlienta, s.DataSprzedazy, u.Imie + ' ' + u.Nazwisko AS Sprzedawca
+                FROM Sprzedaz s
+                JOIN Uzytkownicy u ON s.SprzedawcaID = u.UzytkownikID
+                WHERE s.SprzedazID = @id";
+
+                    using (SqlCommand cmd = new SqlCommand(headerQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", sprzedazId);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                clientName = reader["NazwaKlienta"].ToString();
+                                clientAddress = reader["AdresKlienta"].ToString();
+                                saleDate = Convert.ToDateTime(reader["DataSprzedazy"]).ToString("yyyy-MM-dd HH:mm");
+                                sellerName = reader["Sprzedawca"].ToString();
+                            }
+                        }
+                    }
+
+                    string itemsQuery = @"
+                SELECT 
+                    t.Nazwa AS [Towar], 
+                    ps.Ilosc AS [Ilość],
+                    t.JednostkaMiary AS [J.m.],
+                    ISNULL(rd.CenaNetto, 0) AS [Cena Netto],
+                    ISNULL(v.WartoscVAT, 0) AS [VAT %],
+                    CAST(ISNULL(ps.Ilosc * rd.CenaNetto * (1 + v.WartoscVAT / 100), 0) AS DECIMAL(18,2)) AS [Wartość Brutto]
+                FROM PozycjeSprzedazy ps
+                JOIN Towary t ON ps.TowarID = t.TowarID
+                LEFT JOIN (
+                    SELECT TowarID, MAX(CenaNetto) as CenaNetto
+                    FROM RejestracjaDostaw
+                    GROUP BY TowarID
+                ) rd ON ps.TowarID = rd.TowarID
+                LEFT JOIN (
+                    SELECT TowarID, MAX(WartoscVAT) as WartoscVAT
+                    FROM StawkiVAT
+                    GROUP BY TowarID
+                ) v ON ps.TowarID = v.TowarID
+                WHERE ps.SprzedazID = @id";
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(itemsQuery, conn))
+                    {
+                        da.SelectCommand.Parameters.AddWithValue("@id", sprzedazId);
+                        da.Fill(itemsTable);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd podczas pobierania szczegółów sprzedaży: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return itemsTable;
+        }
     }
 }
