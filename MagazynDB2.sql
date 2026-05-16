@@ -1,0 +1,197 @@
+USE [MagazynDB]
+GO
+
+IF OBJECT_ID('dbo.HistoriaHasel', 'U') IS NOT NULL DROP TABLE dbo.HistoriaHasel;
+IF OBJECT_ID('dbo.PozycjeSprzedazy', 'U') IS NOT NULL DROP TABLE dbo.PozycjeSprzedazy;
+IF OBJECT_ID('dbo.Sprzedaz', 'U') IS NOT NULL DROP TABLE dbo.Sprzedaz;
+IF OBJECT_ID('dbo.RejestracjaDostaw', 'U') IS NOT NULL DROP TABLE dbo.RejestracjaDostaw;
+IF OBJECT_ID('dbo.StanyMagazynowe', 'U') IS NOT NULL DROP TABLE dbo.StanyMagazynowe;
+IF OBJECT_ID('dbo.StawkiVAT', 'U') IS NOT NULL DROP TABLE dbo.StawkiVAT;
+IF OBJECT_ID('dbo.Towary', 'U') IS NOT NULL DROP TABLE dbo.Towary;
+IF OBJECT_ID('dbo.RodzajeTowarow', 'U') IS NOT NULL DROP TABLE dbo.RodzajeTowarow;
+IF OBJECT_ID('dbo.Uzytkownicy_Uprawnienia', 'U') IS NOT NULL DROP TABLE dbo.Uzytkownicy_Uprawnienia;
+IF OBJECT_ID('dbo.Uprawnienia', 'U') IS NOT NULL DROP TABLE dbo.Uprawnienia;
+IF OBJECT_ID('dbo.Uzytkownicy', 'U') IS NOT NULL DROP TABLE dbo.Uzytkownicy;
+GO
+
+
+
+CREATE TABLE [dbo].[Uzytkownicy](
+	[UzytkownikID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[Login] [nvarchar](50) NOT NULL UNIQUE,
+	[HasloHash] [nvarchar](255) NOT NULL,
+	[Imie] [nvarchar](50) NOT NULL,
+	[Nazwisko] [nvarchar](50) NOT NULL,
+	[Miejscowosc] [nvarchar](100) NOT NULL,
+	[KodPocztowy] [nvarchar](6) NOT NULL,
+	[Ulica] [nvarchar](100) NULL,
+	[NumerPosesji] [nvarchar](10) NOT NULL,
+	[NumerLokalu] [nvarchar](10) NULL,
+	[PESEL] [char](11) NOT NULL UNIQUE,
+	[DataUrodzenia] [date] NOT NULL,
+	[Plec] [nvarchar](20) NOT NULL,
+	[Email] [nvarchar](255) NOT NULL UNIQUE,
+	[Telefon] [char](9) NOT NULL,
+	[LiczbaBlednychLogowan] [int] DEFAULT 0,
+	[KontoZablokowaneDo] [datetime] NULL,
+	[CzyZapomniany] [bit] DEFAULT 0,
+	[DataZapomnienia] [datetime] NULL,
+	[ZapomnianyPrzezID] [int] NULL
+);
+
+CREATE TABLE [dbo].[Uprawnienia](
+	[UprawnienieID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[Nazwa] [nvarchar](50) NOT NULL UNIQUE
+);
+
+CREATE TABLE [dbo].[Uzytkownicy_Uprawnienia](
+	[UzytkownikID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Uzytkownicy](UzytkownikID),
+	[UprawnienieID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Uprawnienia](UprawnienieID),
+	PRIMARY KEY ([UzytkownikID], [UprawnienieID])
+);
+
+CREATE TABLE [dbo].[HistoriaHasel](
+	[HistoriaID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[UzytkownikID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Uzytkownicy](UzytkownikID),
+	[HasloHash] [nvarchar](255) NOT NULL,
+	[DataZmiany] [datetime] NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE [dbo].[RodzajeTowarow](
+	[RodzajID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[Nazwa] [nvarchar](100) NOT NULL UNIQUE
+);
+
+CREATE TABLE [dbo].[Towary](
+	[TowarID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[Nazwa] [nvarchar](255) NOT NULL,
+	[RodzajID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[RodzajeTowarow](RodzajID),
+	[JednostkaMiary] [nvarchar](20) NOT NULL,
+	[Opis] [nvarchar](max) NOT NULL DEFAULT 'Brak opisu'
+);
+
+CREATE TABLE [dbo].[StawkiVAT](
+	[StawkaID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[TowarID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Towary](TowarID),
+	[WartoscVAT] [decimal](5, 2) NOT NULL,
+	[ObowiazujeOd] [date] NOT NULL
+);
+
+CREATE TABLE [dbo].[StanyMagazynowe](
+	[TowarID] [int] NOT NULL PRIMARY KEY FOREIGN KEY REFERENCES [dbo].[Towary](TowarID),
+	[IloscDostepna] [decimal](18, 2) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE [dbo].[RejestracjaDostaw](
+	[RejestracjaID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[TowarID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Towary](TowarID),
+	[Ilosc] [decimal](18, 2) NOT NULL,
+	[CenaNetto] [decimal](18, 2) NOT NULL,
+	[ZastosowanyVAT] [decimal](5, 2) NOT NULL,
+	[Dostawca] [nvarchar](255) NOT NULL,
+	[DataDostawy] [date] NOT NULL,
+	[DataRejestracji] [datetime] NOT NULL DEFAULT GETDATE(),
+	[RejestrujacyUzytkownikID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Uzytkownicy](UzytkownikID)
+);
+
+CREATE TABLE [dbo].[Sprzedaz](
+	[SprzedazID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[NazwaKlienta] [nvarchar](255) NOT NULL,
+	[AdresKlienta] [nvarchar](255) NOT NULL,
+	[DataSprzedazy] [datetime] NOT NULL DEFAULT GETDATE(),
+	[SprzedawcaID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Uzytkownicy](UzytkownikID)
+);
+
+CREATE TABLE [dbo].[PozycjeSprzedazy](
+	[PozycjaID] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[SprzedazID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Sprzedaz](SprzedazID),
+	[TowarID] [int] NOT NULL FOREIGN KEY REFERENCES [dbo].[Towary](TowarID),
+	[Ilosc] [decimal](18, 2) NOT NULL
+);
+GO
+
+-- 3. WSTAWIANIE CZYSTYCH DANYCH TESTOWYCH
+
+SET IDENTITY_INSERT [dbo].[Uzytkownicy] ON 
+INSERT [dbo].[Uzytkownicy] ([UzytkownikID], [Login], [HasloHash], [Imie], [Nazwisko], [Miejscowosc], [KodPocztowy], [Ulica], [NumerPosesji], [NumerLokalu], [PESEL], [DataUrodzenia], [Plec], [Email], [Telefon], [CzyZapomniany]) VALUES 
+(1, N'admin1', N'$MYHASH$V1$10000$II1qT0FbjfgzCRkK4fmstreqgqpwhy+Zv8p2Xv/SVHalAktO', N'Jan', N'Kowalski', N'Warszawa', N'00-001', N'Zlota', N'11', N'1', N'80010112319', '1980-01-01', N'mężczyzna', N'admin1@firma.pl', N'123456789', 0),
+(2, N'kier_mag1', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Anna', N'Nowak', N'Krakow', N'30-001', N'Florianska', N'22', NULL, N'85020212329', '1985-02-02', N'kobieta', N'anna.n@firma.pl', N'987654321', 0),
+(3, N'prac_mag1', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Piotr', N'Wisniewski', N'Poznan', N'60-001', N'Polna', N'33', N'12', N'90030312338', '1990-03-03', N'mężczyzna', N'piotr.w@firma.pl', N'500600700', 0),
+(4, N'prac_mag2', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Katarzyna', N'Wojcik', N'Wroclaw', N'50-001', N'Dluga', N'44', N'5a', N'92040412347', '1992-04-04', N'kobieta', N'kasia.w@firma.pl', N'600700800', 0),
+(5, N'kier_sprz1', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Tomasz', N'Kaminski', N'Gdansk', N'80-001', N'Morska', N'55', NULL, N'88050512355', '1988-05-05', N'mężczyzna', N'tomek.k@firma.pl', N'700800900', 0),
+(6, N'sprz1', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Magdalena', N'Lewandowska', N'Lublin', N'20-001', N'Krotka', N'66', N'3', N'95060612368', '1995-06-06', N'kobieta', N'magda.l@firma.pl', N'800900111', 0),
+(7, N'sprz2', N'$MYHASH$V1$10000$snnhUorHWHcSWcn29vmdwnLpNoVSurwGvCB7yXOnlTX85ONN', N'Michal', N'Zielinski', N'Szczecin', N'70-001', N'Waska', N'77', NULL, N'93070712379', '1993-07-07', N'mężczyzna', N'michal.z@firma.pl', N'555666777', 0),
+(8, N'user8', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Agnieszka', N'Szymanska', N'Bydgoszcz', N'85-001', N'Szeroka', N'88', N'14', N'91080812380', '1991-08-08', N'kobieta', N'aga.s@firma.pl', N'444555666', 0),
+(9, N'user9', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Krzysztof', N'Dabrowski', N'Katowice', N'40-001', N'Stroma', N'99', NULL, N'89090912392', '1989-09-09', N'mężczyzna', N'krzys.d@firma.pl', N'333444555', 0),
+(10, N'user10', N'$MYHASH$V1$10000$4sAlMriOanF2RRXenkq4yeVm0g/NYJYNtVUkQObVooipl4vb', N'Monika', N'Kozlowska', N'Lodz', N'90-001', N'Piotrkowska', N'100', N'2', N'94101000025', '1994-10-10', N'kobieta', N'monika.k@firma.pl', N'222333444', 0);
+SET IDENTITY_INSERT [dbo].[Uzytkownicy] OFF
+
+SET IDENTITY_INSERT [dbo].[Uprawnienia] ON 
+INSERT [dbo].[Uprawnienia] ([UprawnienieID], [Nazwa]) VALUES (1, N'Administrator'), (2, N'Kierownik magazynu'), (3, N'Pracownik magazynu'), (4, N'Kierownik sprzedazy'), (5, N'Sprzedawca');
+SET IDENTITY_INSERT [dbo].[Uprawnienia] OFF
+
+INSERT [dbo].[Uzytkownicy_Uprawnienia] ([UzytkownikID], [UprawnienieID]) VALUES 
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 2), (3, 3), (4, 3), (5, 4), (6, 5), (7, 5), (8, 3), (9, 5), (10, 3);
+
+SET IDENTITY_INSERT [dbo].[HistoriaHasel] ON 
+INSERT [dbo].[HistoriaHasel] ([HistoriaID], [UzytkownikID], [HasloHash], [DataZmiany]) VALUES 
+(1, 1, N'starehash1!', '2024-01-01'), (2, 1, N'starehash2!', '2024-06-01');
+SET IDENTITY_INSERT [dbo].[HistoriaHasel] OFF
+
+SET IDENTITY_INSERT [dbo].[RodzajeTowarow] ON 
+INSERT [dbo].[RodzajeTowarow] ([RodzajID], [Nazwa]) VALUES (1, N'Elektronika'), (2, N'AGD'), (3, N'Meble'), (4, N'Narzedzia'), (5, N'Materialy budowlane');
+SET IDENTITY_INSERT [dbo].[RodzajeTowarow] OFF
+
+SET IDENTITY_INSERT [dbo].[Towary] ON 
+INSERT [dbo].[Towary] ([TowarID], [Nazwa], [RodzajID], [JednostkaMiary], [Opis]) VALUES 
+(1, N'Telewizor 55 cali', 1, N'Sztuki', N'Smart TV 4K, czarny'),
+(2, N'Laptop Biurowy', 1, N'Sztuki', N'16GB RAM, 512GB SSD'),
+(3, N'Pralka Automatyczna', 2, N'Sztuki', N'Ladowana od frontu, 7kg'),
+(4, N'Lodowka No Frost', 2, N'Sztuki', N'Wysokosc 180cm, srebrna'),
+(5, N'Biurko Narozne', 3, N'Sztuki', N'Drewniane z metalowymi nogami'),
+(6, N'Krzeslo Obrotowe', 3, N'Sztuki', N'Ergonomiczne, czarne'),
+(7, N'Wiertarka Udarowa', 4, N'Sztuki', N'Moc 800W, w walizce'),
+(8, N'Zestaw Kluczy', 4, N'Sztuki', N'108 elementow ze stali'),
+(9, N'Gwozdzie Stalowe', 5, N'Kilogramy', N'Dlugosc 50mm, ocynkowane'),
+(10, N'Klej do plytek', 5, N'Kilogramy', N'Worek 25kg, elastyczny');
+SET IDENTITY_INSERT [dbo].[Towary] OFF
+
+SET IDENTITY_INSERT [dbo].[StawkiVAT] ON 
+INSERT [dbo].[StawkiVAT] ([StawkaID], [TowarID], [WartoscVAT], [ObowiazujeOd]) VALUES 
+(1, 1, 23.00, '2023-01-01'), (2, 2, 23.00, '2023-01-01'), (3, 3, 23.00, '2023-01-01'), (4, 4, 23.00, '2023-01-01'),
+(5, 5, 23.00, '2023-01-01'), (6, 6, 23.00, '2023-01-01'), (7, 7, 23.00, '2023-01-01'), (8, 8, 23.00, '2023-01-01'),
+(9, 9, 8.00, '2023-01-01'), (10, 10, 8.00, '2023-01-01');
+SET IDENTITY_INSERT [dbo].[StawkiVAT] OFF
+
+SET IDENTITY_INSERT [dbo].[Sprzedaz] ON 
+INSERT [dbo].[Sprzedaz] ([SprzedazID], [NazwaKlienta], [AdresKlienta], [DataSprzedazy], [SprzedawcaID]) VALUES 
+(1, N'Janusz Kowalski', N'ul. Polna 1, 00-001 Warszawa', '2025-03-01', 6),
+(2, N'Firma XYZ Sp. z o.o.', N'ul. Lesna 5, 30-002 Krakow', '2025-03-10', 7),
+(3, N'Anna Nowak', N'ul. Krotka 2, 80-003 Gdansk', '2025-03-15', 6);
+SET IDENTITY_INSERT [dbo].[Sprzedaz] OFF
+
+SET IDENTITY_INSERT [dbo].[PozycjeSprzedazy] ON 
+INSERT [dbo].[PozycjeSprzedazy] ([PozycjaID], [SprzedazID], [TowarID], [Ilosc]) VALUES 
+(1, 1, 1, 1.00), (2, 1, 8, 2.00), (3, 2, 2, 5.00), (4, 2, 6, 5.00), (5, 3, 3, 1.00);
+SET IDENTITY_INSERT [dbo].[PozycjeSprzedazy] OFF
+
+-- Rejestrujemy DOSTAWY tak, aby po odjęciu SPRZEDAŻY wyszedł nam idealny STAN MAGAZYNOWY
+SET IDENTITY_INSERT [dbo].[RejestracjaDostaw] ON 
+INSERT [dbo].[RejestracjaDostaw] ([RejestracjaID], [TowarID], [Ilosc], [CenaNetto], [ZastosowanyVAT], [Dostawca], [DataDostawy], [DataRejestracji], [RejestrujacyUzytkownikID]) VALUES 
+(1, 1, 19.00, 2100.00, 23.00, N'Hurtownia RTV', '2025-01-15', '2025-01-15 12:00:00', 3), -- Zeszła 1 szt = Stan 18
+(2, 2, 35.00, 3200.00, 23.00, N'Hurtownia IT', '2025-01-20', '2025-01-20 12:00:00', 3),  -- Zeszło 5 szt = Stan 30
+(3, 3, 11.00, 1500.00, 23.00, N'AGD Hurt', '2025-02-01', '2025-02-01 12:00:00', 3),     -- Zeszła 1 szt = Stan 10
+(4, 4, 5.00, 2000.00, 23.00, N'AGD Hurt', '2025-02-05', '2025-02-05 12:00:00', 3),      -- Zeszło 0 szt = Stan 5
+(5, 5, 20.00, 500.00, 23.00, N'Meblex', '2025-02-10', '2025-02-10 12:00:00', 4),        -- Zeszło 0 szt = Stan 20
+(6, 6, 55.00, 250.00, 23.00, N'Meblex', '2025-02-10', '2025-02-10 12:00:00', 4),        -- Zeszło 5 szt = Stan 50
+(7, 7, 40.00, 300.00, 23.00, N'Narzedziownia', '2025-02-15', '2025-02-15 12:00:00', 4), -- Zeszło 0 szt = Stan 40
+(8, 8, 27.00, 150.00, 23.00, N'Narzedziownia', '2025-02-15', '2025-02-15 12:00:00', 4), -- Zeszły 2 szt = Stan 25
+(9, 9, 100.50, 12.50, 8.00, N'Bud-Pol', '2025-02-20', '2025-02-20 12:00:00', 4),        -- Zeszło 0 szt = Stan 100.50
+(10, 10, 200.00, 45.00, 8.00, N'Bud-Pol', '2025-02-20', '2025-02-20 12:00:00', 4);      -- Zeszło 0 szt = Stan 200
+SET IDENTITY_INSERT [dbo].[RejestracjaDostaw] OFF
+
+-- Zapisywanie idealnych Stanów Magazynowych (równych matematycznie dostawom minus sprzedaż)
+INSERT [dbo].[StanyMagazynowe] ([TowarID], [IloscDostepna]) VALUES 
+(1, 18.00), (2, 30.00), (3, 10.00), (4, 5.00), (5, 20.00),
+(6, 50.00), (7, 40.00), (8, 25.00), (9, 100.50), (10, 200.00);
+GO
