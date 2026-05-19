@@ -75,12 +75,6 @@ namespace ProjektMagazyn
 
             if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
                 tabControl_sales.TabPages.Remove(tabPage_sale_details);
-
-            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_my_profile)
-            {
-                LoadMyProfile();
-                LoadProfileRoles(loggedUserId);
-            }
         }
         private void ControlPanel_Load(object sender, EventArgs e)
         {
@@ -1116,7 +1110,10 @@ namespace ProjektMagazyn
 
         private void btn_logout_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (MessageBox.Show("Czy na pewno chcesz się wylogować?", "Wyloguj", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                this.Close();
+            }
         }
 
         private void tabPage_edit_roles_Enter(object sender, EventArgs e)
