@@ -45,6 +45,12 @@ namespace ProjektMagazyn
             string login = tbx_login.Text;
             string password = tbx_password.Text;
 
+            if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show("Niepoprawne dane logowania.");
+                return;
+            }
+
             if (!loginAttempts.ContainsKey(login))
                 loginAttempts[login] = new LoginAttemptInfo();
 

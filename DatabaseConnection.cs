@@ -1041,7 +1041,12 @@ namespace ProjektMagazyn
                     if (dateFrom.HasValue) query += " AND CAST(s.DataSprzedazy AS DATE) >= @dateFrom";
                     if (dateTo.HasValue) query += " AND CAST(s.DataSprzedazy AS DATE) <= @dateTo";
                     if (!string.IsNullOrEmpty(buyerName)) query += " AND s.NazwaKlienta LIKE '%' + @buyerName + '%'";
-                    if (!string.IsNullOrEmpty(sellerName)) query += " AND (u.Imie LIKE '%' + @sellerName + '%' OR u.Nazwisko LIKE '%' + @sellerName + '%')";
+
+                    if (!string.IsNullOrEmpty(sellerName))
+                    {
+                        query += " AND (u.Imie + ' ' + u.Nazwisko LIKE '%' + @sellerName + '%' OR u.Nazwisko + ' ' + u.Imie LIKE '%' + @sellerName + '%')";
+                    }
+
                     if (!string.IsNullOrEmpty(itemName))
                     {
                         query += @" AND EXISTS (
@@ -1069,6 +1074,11 @@ namespace ProjektMagazyn
                             dgv.DataSource = dt;
                             if (dgv.Columns["SprzedazID"] != null) dgv.Columns["SprzedazID"].Visible = false;
                             if (dgv.Columns["Łączna wartość sprzedaży"] != null) dgv.Columns["Łączna wartość sprzedaży"].DefaultCellStyle.Format = "C2";
+                            if (dt.Rows.Count == 0)
+                            {
+                                dgv.DataSource = null; 
+                                MessageBox.Show("Brak wyników spełniających podane kryteria.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
                             dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                         }
                     }

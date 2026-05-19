@@ -36,6 +36,7 @@ namespace ProjektMagazyn
             this.lbl_history_date_from = new System.Windows.Forms.Label();
             this.tabControl_sales = new TabControls.DotNetBarTabControl();
             this.tabPage_register_sale = new System.Windows.Forms.TabPage();
+            this.btn_cancel_sale = new System.Windows.Forms.Button();
             this.btn_remove_from_basket = new System.Windows.Forms.Button();
             this.label68 = new System.Windows.Forms.Label();
             this.label67 = new System.Windows.Forms.Label();
@@ -304,7 +305,7 @@ namespace ProjektMagazyn
             this.tabPage_manage_sales = new System.Windows.Forms.TabPage();
             this.btn_logout = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.btn_cancel_sale = new System.Windows.Forms.Button();
+            this.chk_sales_history_dates = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_sale_basket)).BeginInit();
             this.tabControl_sales.SuspendLayout();
             this.tabPage_register_sale.SuspendLayout();
@@ -365,7 +366,7 @@ namespace ProjektMagazyn
             // 
             // lbl_history_date_from
             // 
-            this.lbl_history_date_from.Location = new System.Drawing.Point(52, 12);
+            this.lbl_history_date_from.Location = new System.Drawing.Point(22, 11);
             this.lbl_history_date_from.Name = "lbl_history_date_from";
             this.lbl_history_date_from.Size = new System.Drawing.Size(26, 23);
             this.lbl_history_date_from.TabIndex = 4;
@@ -412,6 +413,16 @@ namespace ProjektMagazyn
             this.tabPage_register_sale.TabIndex = 0;
             this.tabPage_register_sale.Text = "Rejestracja sprzedaży";
             this.tabPage_register_sale.UseVisualStyleBackColor = true;
+            // 
+            // btn_cancel_sale
+            // 
+            this.btn_cancel_sale.Location = new System.Drawing.Point(528, 500);
+            this.btn_cancel_sale.Name = "btn_cancel_sale";
+            this.btn_cancel_sale.Size = new System.Drawing.Size(75, 23);
+            this.btn_cancel_sale.TabIndex = 16;
+            this.btn_cancel_sale.Text = "Anuluj";
+            this.btn_cancel_sale.UseVisualStyleBackColor = true;
+            this.btn_cancel_sale.Click += new System.EventHandler(this.btn_cancel_sale_Click);
             // 
             // btn_remove_from_basket
             // 
@@ -528,6 +539,7 @@ namespace ProjektMagazyn
             // 
             // tabPage_sales_history
             // 
+            this.tabPage_sales_history.Controls.Add(this.chk_sales_history_dates);
             this.tabPage_sales_history.Controls.Add(this.lbl_history_item);
             this.tabPage_sales_history.Controls.Add(this.lbl_history_seller);
             this.tabPage_sales_history.Controls.Add(this.lbl_history_buyer);
@@ -573,7 +585,7 @@ namespace ProjektMagazyn
             // 
             // lbl_history_date_to
             // 
-            this.lbl_history_date_to.Location = new System.Drawing.Point(290, 15);
+            this.lbl_history_date_to.Location = new System.Drawing.Point(258, 14);
             this.lbl_history_date_to.Name = "lbl_history_date_to";
             this.lbl_history_date_to.Size = new System.Drawing.Size(25, 23);
             this.lbl_history_date_to.TabIndex = 3;
@@ -625,14 +637,14 @@ namespace ProjektMagazyn
             // 
             // dtp_sales_history_to
             // 
-            this.dtp_sales_history_to.Location = new System.Drawing.Point(321, 12);
+            this.dtp_sales_history_to.Location = new System.Drawing.Point(283, 11);
             this.dtp_sales_history_to.Name = "dtp_sales_history_to";
             this.dtp_sales_history_to.Size = new System.Drawing.Size(200, 20);
             this.dtp_sales_history_to.TabIndex = 10;
             // 
             // dtp_sales_history_from
             // 
-            this.dtp_sales_history_from.Location = new System.Drawing.Point(84, 12);
+            this.dtp_sales_history_from.Location = new System.Drawing.Point(46, 11);
             this.dtp_sales_history_from.Name = "dtp_sales_history_from";
             this.dtp_sales_history_from.Size = new System.Drawing.Size(200, 20);
             this.dtp_sales_history_from.TabIndex = 11;
@@ -3096,15 +3108,16 @@ namespace ProjektMagazyn
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // btn_cancel_sale
+            // chk_sales_history_dates
             // 
-            this.btn_cancel_sale.Location = new System.Drawing.Point(528, 500);
-            this.btn_cancel_sale.Name = "btn_cancel_sale";
-            this.btn_cancel_sale.Size = new System.Drawing.Size(75, 23);
-            this.btn_cancel_sale.TabIndex = 16;
-            this.btn_cancel_sale.Text = "Anuluj";
-            this.btn_cancel_sale.UseVisualStyleBackColor = true;
-            this.btn_cancel_sale.Click += new System.EventHandler(this.btn_cancel_sale_Click);
+            this.chk_sales_history_dates.AutoSize = true;
+            this.chk_sales_history_dates.Location = new System.Drawing.Point(490, 14);
+            this.chk_sales_history_dates.Name = "chk_sales_history_dates";
+            this.chk_sales_history_dates.Size = new System.Drawing.Size(118, 17);
+            this.chk_sales_history_dates.TabIndex = 12;
+            this.chk_sales_history_dates.Text = "Filtrować po dacie?";
+            this.chk_sales_history_dates.UseVisualStyleBackColor = true;
+            this.chk_sales_history_dates.CheckedChanged += new System.EventHandler(this.chk_sales_history_dates_CheckedChanged);
             // 
             // ControlPanel
             // 
@@ -3453,5 +3466,6 @@ namespace ProjektMagazyn
         private Label label68;
         private Button btn_remove_from_basket;
         private Button btn_cancel_sale;
+        private CheckBox chk_sales_history_dates;
     }
 }

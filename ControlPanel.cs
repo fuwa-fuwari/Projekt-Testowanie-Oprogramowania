@@ -129,12 +129,25 @@ namespace ProjektMagazyn
                     tabControl_sales.TabPages.Remove(tabPage_sale_details);
                 }
             }
+
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_manage_sales)
+            {
+                WczytajTowaryDoSprzedazy();
+                btn_search_sales_Click(null, null);
+            }
+            else
+            {
+                if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
+                {
+                    tabControl_sales.TabPages.Remove(tabPage_sale_details);
+                }
+            }
         }
         private void tabControl_sales_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (tabControl_sales.SelectedTab == tabPage_sales_history)
             {
-                database.SearchSalesHistory(dgv_sales_history, null, null, "", "", "");
+                btn_search_sales_Click(null, null);
             }
 
             if (tabControl_sales.SelectedTab != tabPage_sale_details && tabControl_sales.TabPages.Contains(tabPage_sale_details))
@@ -1325,6 +1338,17 @@ namespace ProjektMagazyn
         private void btn_add_to_basket_Click(object sender, EventArgs e)
         {
             errorProvider.Clear();
+
+            DateTime saleDate = dtp_sale_date.Value.Date;
+            if (saleDate < DateTime.Today)
+            {
+                MessageBox.Show("Data sprzedaży nie może być datą wsteczną. Popraw datę przed dodaniem towarów do koszyka.", "Błędna data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dtp_sale_date.BackColor = Color.Red;
+                errorProvider.SetError(dtp_sale_date, "Data sprzedaży nie może być datą wsteczną.");
+                return;
+            }
+
+            
             if (string.IsNullOrWhiteSpace(tbx_sale_client_name.Text) || string.IsNullOrWhiteSpace(tbx_sale_client_address.Text))
             {
                 MessageBox.Show("Najpierw uzupełnij nazwę i adres klienta, zanim zaczniesz dodawać towary do koszyka.", "Brak danych klienta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1332,10 +1356,12 @@ namespace ProjektMagazyn
                 if (string.IsNullOrWhiteSpace(tbx_sale_client_address.Text)) tbx_sale_client_address.BackColor = Color.Red;
                 return;
             }
+
             if (cmbx_sale_product.SelectedIndex == -1)
             {
                 errorProvider.SetError(cmbx_sale_product, "Wybierz towar z listy.");
                 cmbx_sale_product.BackColor = Color.Red;
+                MessageBox.Show("Wybierz towar z rozwijanej listy przed dodaniem go do koszyka.", "Brak wybranego towaru", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -1350,6 +1376,8 @@ namespace ProjektMagazyn
 
             int towarId = (int)cmbx_sale_product.SelectedValue;
             decimal requestedQty = decimal.Parse(quantityStr, CultureInfo.InvariantCulture);
+
+            
             string rawComboText = cmbx_sale_product.Text;
             string towarNazwa = rawComboText;
             int bracketIndex = rawComboText.LastIndexOf(" (Dostępne:");
@@ -1358,6 +1386,7 @@ namespace ProjektMagazyn
                 towarNazwa = rawComboText.Substring(0, bracketIndex);
             }
 
+            
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -1391,7 +1420,7 @@ namespace ProjektMagazyn
                             {
                                 errorProvider.SetError(tbx_sale_quantity, "Przekroczenie stanu magazynowego.");
                                 tbx_sale_quantity.BackColor = Color.Red;
-                                MessageBox.Show($"Błąd: Niewystarczająca ilość towaru w magazynie (Dostępna: {stockQty})", "Przekroczenie stanu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show($"Błąd: Niewystarczająca ilość towaru w magazynie (Dostępna: {stockQty}, w koszyku: {alreadyInBasket})", "Przekroczenie stanu", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
                         }
@@ -1416,6 +1445,8 @@ namespace ProjektMagazyn
             }
 
             tbx_sale_quantity.Clear();
+
+            
             tbx_sale_client_name.Enabled = false;
             tbx_sale_client_address.Enabled = false;
             dtp_sale_date.Enabled = false;
@@ -1483,10 +1514,30 @@ namespace ProjektMagazyn
 
         private void btn_search_sales_Click(object sender, EventArgs e)
         {
+            dtp_sales_history_from.BackColor = Color.White;
+            dtp_sales_history_to.BackColor = Color.White;
+
+            DateTime? from = null;
+            DateTime? to = null;
+
+            if (chk_sales_history_dates.Checked)
+            {
+                if (dtp_sales_history_from.Value.Date > dtp_sales_history_to.Value.Date)
+                {
+                    MessageBox.Show("Data 'Od' nie może być późniejsza niż data 'Do'.",
+                                    "Błąd zakresu dat", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dtp_sales_history_from.BackColor = Color.Red;
+                    dtp_sales_history_to.BackColor = Color.Red;
+                    return; 
+                }
+
+                from = dtp_sales_history_from.Value.Date;
+                to = dtp_sales_history_to.Value.Date;
+            }
             database.SearchSalesHistory(
                 dgv_sales_history,
-                dtp_sales_history_from.Value,   
-                dtp_sales_history_to.Value,     
+                from,
+                to,
                 tbx_history_buyer.Text.Trim(),
                 tbx_history_seller.Text.Trim(),
                 tbx_history_item.Text.Trim()
@@ -2472,7 +2523,7 @@ namespace ProjektMagazyn
         {
             if (dtBasket != null && dtBasket.Rows.Count > 0)
             {
-                var result = MessageBox.Show("Czy na pewno chcesz anulować obecną sprzedaż? Koszyk zostanie wyczyszczony, a wprowadzone dane usunięte.", "Potwierdzenie anulowania", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var result = MessageBox.Show("Czy na pewno chcesz anulować obecną sprzedaż? Koszyk zostanie wyczyszczony, a wprowadzone dane klienta usunięte.", "Potwierdzenie anulowania", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No) return;
             }
 
@@ -2487,9 +2538,29 @@ namespace ProjektMagazyn
             tbx_sale_client_address.Enabled = true;
             dtp_sale_date.Enabled = true;
 
-            errorProvider.Clear();
+            errorProvider.Clear(); 
+
+            var inputsToReset = new List<Control> {
+        tbx_sale_client_name,
+        tbx_sale_client_address,
+        dtp_sale_date,
+        cmbx_sale_product,
+        tbx_sale_quantity
+    };
+
+            foreach (var input in inputsToReset)
+            {
+                input.BackColor = Color.White;
+            }
             WczytajTowaryDoSprzedazy();
         }
+
+        private void chk_sales_history_dates_CheckedChanged(object sender, EventArgs e)
+        {
+            dtp_sales_history_from.Enabled = chk_sales_history_dates.Checked;
+            dtp_sales_history_to.Enabled = chk_sales_history_dates.Checked;
+        }
+        
 
         private void LoadProfileRoles(int userId)
         {
