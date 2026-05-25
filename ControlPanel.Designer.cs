@@ -52,6 +52,7 @@ namespace ProjektMagazyn
             this.label32 = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.tabPage_sales_history = new System.Windows.Forms.TabPage();
+            this.chk_sales_history_dates = new System.Windows.Forms.CheckBox();
             this.lbl_history_item = new System.Windows.Forms.Label();
             this.lbl_history_seller = new System.Windows.Forms.Label();
             this.lbl_history_buyer = new System.Windows.Forms.Label();
@@ -305,7 +306,10 @@ namespace ProjektMagazyn
             this.tabPage_manage_sales = new System.Windows.Forms.TabPage();
             this.btn_logout = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.chk_sales_history_dates = new System.Windows.Forms.CheckBox();
+            this.msktbx_postal_code = new System.Windows.Forms.MaskedTextBox();
+            this.lbl_postal_code = new System.Windows.Forms.Label();
+            this.label69 = new System.Windows.Forms.Label();
+            this.msktbx_postal_code_edit = new System.Windows.Forms.MaskedTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_sale_basket)).BeginInit();
             this.tabControl_sales.SuspendLayout();
             this.tabPage_register_sale.SuspendLayout();
@@ -558,6 +562,17 @@ namespace ProjektMagazyn
             this.tabPage_sales_history.TabIndex = 1;
             this.tabPage_sales_history.Text = "Historia sprzedaży";
             this.tabPage_sales_history.UseVisualStyleBackColor = true;
+            // 
+            // chk_sales_history_dates
+            // 
+            this.chk_sales_history_dates.AutoSize = true;
+            this.chk_sales_history_dates.Location = new System.Drawing.Point(490, 14);
+            this.chk_sales_history_dates.Name = "chk_sales_history_dates";
+            this.chk_sales_history_dates.Size = new System.Drawing.Size(118, 17);
+            this.chk_sales_history_dates.TabIndex = 12;
+            this.chk_sales_history_dates.Text = "Filtrować po dacie?";
+            this.chk_sales_history_dates.UseVisualStyleBackColor = true;
+            this.chk_sales_history_dates.CheckedChanged += new System.EventHandler(this.chk_sales_history_dates_CheckedChanged);
             // 
             // lbl_history_item
             // 
@@ -1198,7 +1213,7 @@ namespace ProjektMagazyn
             // lbl_birthdate
             // 
             this.lbl_birthdate.AutoSize = true;
-            this.lbl_birthdate.Location = new System.Drawing.Point(156, 272);
+            this.lbl_birthdate.Location = new System.Drawing.Point(156, 263);
             this.lbl_birthdate.Name = "lbl_birthdate";
             this.lbl_birthdate.Size = new System.Drawing.Size(83, 13);
             this.lbl_birthdate.TabIndex = 29;
@@ -1206,7 +1221,7 @@ namespace ProjektMagazyn
             // 
             // dtpckr_birthdate
             // 
-            this.dtpckr_birthdate.Location = new System.Drawing.Point(241, 269);
+            this.dtpckr_birthdate.Location = new System.Drawing.Point(241, 260);
             this.dtpckr_birthdate.Name = "dtpckr_birthdate";
             this.dtpckr_birthdate.Size = new System.Drawing.Size(200, 20);
             this.dtpckr_birthdate.TabIndex = 28;
@@ -1231,6 +1246,8 @@ namespace ProjektMagazyn
             // 
             // grpbx_address
             // 
+            this.grpbx_address.Controls.Add(this.lbl_postal_code);
+            this.grpbx_address.Controls.Add(this.msktbx_postal_code);
             this.grpbx_address.Controls.Add(this.lbl_street_number);
             this.grpbx_address.Controls.Add(this.msktbx_locale_number);
             this.grpbx_address.Controls.Add(this.msktbx_street_number);
@@ -1239,9 +1256,9 @@ namespace ProjektMagazyn
             this.grpbx_address.Controls.Add(this.lbl_locale_number);
             this.grpbx_address.Controls.Add(this.lbl_street);
             this.grpbx_address.Controls.Add(this.lbl_city);
-            this.grpbx_address.Location = new System.Drawing.Point(149, 309);
+            this.grpbx_address.Location = new System.Drawing.Point(149, 286);
             this.grpbx_address.Name = "grpbx_address";
-            this.grpbx_address.Size = new System.Drawing.Size(292, 152);
+            this.grpbx_address.Size = new System.Drawing.Size(292, 175);
             this.grpbx_address.TabIndex = 25;
             this.grpbx_address.TabStop = false;
             this.grpbx_address.Text = "Adres";
@@ -1249,7 +1266,7 @@ namespace ProjektMagazyn
             // lbl_street_number
             // 
             this.lbl_street_number.AutoSize = true;
-            this.lbl_street_number.Location = new System.Drawing.Point(13, 88);
+            this.lbl_street_number.Location = new System.Drawing.Point(13, 119);
             this.lbl_street_number.Name = "lbl_street_number";
             this.lbl_street_number.Size = new System.Drawing.Size(77, 13);
             this.lbl_street_number.TabIndex = 7;
@@ -1257,21 +1274,21 @@ namespace ProjektMagazyn
             // 
             // msktbx_locale_number
             // 
-            this.msktbx_locale_number.Location = new System.Drawing.Point(92, 118);
+            this.msktbx_locale_number.Location = new System.Drawing.Point(92, 149);
             this.msktbx_locale_number.Name = "msktbx_locale_number";
             this.msktbx_locale_number.Size = new System.Drawing.Size(178, 20);
             this.msktbx_locale_number.TabIndex = 6;
             // 
             // msktbx_street_number
             // 
-            this.msktbx_street_number.Location = new System.Drawing.Point(92, 85);
+            this.msktbx_street_number.Location = new System.Drawing.Point(92, 116);
             this.msktbx_street_number.Name = "msktbx_street_number";
             this.msktbx_street_number.Size = new System.Drawing.Size(178, 20);
             this.msktbx_street_number.TabIndex = 5;
             // 
             // msktbx_street
             // 
-            this.msktbx_street.Location = new System.Drawing.Point(92, 52);
+            this.msktbx_street.Location = new System.Drawing.Point(92, 83);
             this.msktbx_street.Name = "msktbx_street";
             this.msktbx_street.Size = new System.Drawing.Size(178, 20);
             this.msktbx_street.TabIndex = 4;
@@ -1286,7 +1303,7 @@ namespace ProjektMagazyn
             // lbl_locale_number
             // 
             this.lbl_locale_number.AutoSize = true;
-            this.lbl_locale_number.Location = new System.Drawing.Point(17, 121);
+            this.lbl_locale_number.Location = new System.Drawing.Point(17, 152);
             this.lbl_locale_number.Name = "lbl_locale_number";
             this.lbl_locale_number.Size = new System.Drawing.Size(69, 13);
             this.lbl_locale_number.TabIndex = 2;
@@ -1295,7 +1312,7 @@ namespace ProjektMagazyn
             // lbl_street
             // 
             this.lbl_street.AutoSize = true;
-            this.lbl_street.Location = new System.Drawing.Point(55, 55);
+            this.lbl_street.Location = new System.Drawing.Point(55, 86);
             this.lbl_street.Name = "lbl_street";
             this.lbl_street.Size = new System.Drawing.Size(31, 13);
             this.lbl_street.TabIndex = 1;
@@ -1548,6 +1565,8 @@ namespace ProjektMagazyn
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label69);
+            this.groupBox1.Controls.Add(this.msktbx_postal_code_edit);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.msktbx_locale_number_edit);
             this.groupBox1.Controls.Add(this.msktbx_street_number_edit);
@@ -1556,9 +1575,9 @@ namespace ProjektMagazyn
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.label13);
-            this.groupBox1.Location = new System.Drawing.Point(192, 301);
+            this.groupBox1.Location = new System.Drawing.Point(192, 287);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(292, 152);
+            this.groupBox1.Size = new System.Drawing.Size(292, 166);
             this.groupBox1.TabIndex = 46;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Adres";
@@ -1566,7 +1585,7 @@ namespace ProjektMagazyn
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(13, 88);
+            this.label10.Location = new System.Drawing.Point(13, 107);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(77, 13);
             this.label10.TabIndex = 7;
@@ -1575,7 +1594,7 @@ namespace ProjektMagazyn
             // msktbx_locale_number_edit
             // 
             this.msktbx_locale_number_edit.Enabled = false;
-            this.msktbx_locale_number_edit.Location = new System.Drawing.Point(92, 118);
+            this.msktbx_locale_number_edit.Location = new System.Drawing.Point(92, 137);
             this.msktbx_locale_number_edit.Name = "msktbx_locale_number_edit";
             this.msktbx_locale_number_edit.Size = new System.Drawing.Size(178, 20);
             this.msktbx_locale_number_edit.TabIndex = 6;
@@ -1583,7 +1602,7 @@ namespace ProjektMagazyn
             // msktbx_street_number_edit
             // 
             this.msktbx_street_number_edit.Enabled = false;
-            this.msktbx_street_number_edit.Location = new System.Drawing.Point(92, 85);
+            this.msktbx_street_number_edit.Location = new System.Drawing.Point(92, 104);
             this.msktbx_street_number_edit.Name = "msktbx_street_number_edit";
             this.msktbx_street_number_edit.Size = new System.Drawing.Size(178, 20);
             this.msktbx_street_number_edit.TabIndex = 5;
@@ -1591,7 +1610,7 @@ namespace ProjektMagazyn
             // msktbx_street_edit
             // 
             this.msktbx_street_edit.Enabled = false;
-            this.msktbx_street_edit.Location = new System.Drawing.Point(92, 52);
+            this.msktbx_street_edit.Location = new System.Drawing.Point(92, 74);
             this.msktbx_street_edit.Name = "msktbx_street_edit";
             this.msktbx_street_edit.Size = new System.Drawing.Size(178, 20);
             this.msktbx_street_edit.TabIndex = 4;
@@ -1599,7 +1618,7 @@ namespace ProjektMagazyn
             // msktbx_city_edit
             // 
             this.msktbx_city_edit.Enabled = false;
-            this.msktbx_city_edit.Location = new System.Drawing.Point(92, 19);
+            this.msktbx_city_edit.Location = new System.Drawing.Point(91, 19);
             this.msktbx_city_edit.Name = "msktbx_city_edit";
             this.msktbx_city_edit.Size = new System.Drawing.Size(178, 20);
             this.msktbx_city_edit.TabIndex = 3;
@@ -1607,7 +1626,7 @@ namespace ProjektMagazyn
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(17, 121);
+            this.label11.Location = new System.Drawing.Point(17, 140);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(69, 13);
             this.label11.TabIndex = 2;
@@ -1616,7 +1635,7 @@ namespace ProjektMagazyn
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(55, 55);
+            this.label12.Location = new System.Drawing.Point(55, 77);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(31, 13);
             this.label12.TabIndex = 1;
@@ -1625,7 +1644,7 @@ namespace ProjektMagazyn
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(18, 22);
+            this.label13.Location = new System.Drawing.Point(17, 22);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(72, 13);
             this.label13.TabIndex = 0;
@@ -3108,16 +3127,39 @@ namespace ProjektMagazyn
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // chk_sales_history_dates
+            // msktbx_postal_code
             // 
-            this.chk_sales_history_dates.AutoSize = true;
-            this.chk_sales_history_dates.Location = new System.Drawing.Point(490, 14);
-            this.chk_sales_history_dates.Name = "chk_sales_history_dates";
-            this.chk_sales_history_dates.Size = new System.Drawing.Size(118, 17);
-            this.chk_sales_history_dates.TabIndex = 12;
-            this.chk_sales_history_dates.Text = "Filtrować po dacie?";
-            this.chk_sales_history_dates.UseVisualStyleBackColor = true;
-            this.chk_sales_history_dates.CheckedChanged += new System.EventHandler(this.chk_sales_history_dates_CheckedChanged);
+            this.msktbx_postal_code.Location = new System.Drawing.Point(92, 45);
+            this.msktbx_postal_code.Mask = "00-999";
+            this.msktbx_postal_code.Name = "msktbx_postal_code";
+            this.msktbx_postal_code.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_postal_code.TabIndex = 46;
+            // 
+            // lbl_postal_code
+            // 
+            this.lbl_postal_code.AutoSize = true;
+            this.lbl_postal_code.Location = new System.Drawing.Point(13, 48);
+            this.lbl_postal_code.Name = "lbl_postal_code";
+            this.lbl_postal_code.Size = new System.Drawing.Size(78, 13);
+            this.lbl_postal_code.TabIndex = 47;
+            this.lbl_postal_code.Text = "Kod pocztowy*";
+            // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Location = new System.Drawing.Point(12, 48);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(78, 13);
+            this.label69.TabIndex = 49;
+            this.label69.Text = "Kod pocztowy*";
+            // 
+            // msktbx_postal_code_edit
+            // 
+            this.msktbx_postal_code_edit.Location = new System.Drawing.Point(91, 45);
+            this.msktbx_postal_code_edit.Mask = "00-999";
+            this.msktbx_postal_code_edit.Name = "msktbx_postal_code_edit";
+            this.msktbx_postal_code_edit.Size = new System.Drawing.Size(178, 20);
+            this.msktbx_postal_code_edit.TabIndex = 48;
             // 
             // ControlPanel
             // 
@@ -3467,5 +3509,9 @@ namespace ProjektMagazyn
         private Button btn_remove_from_basket;
         private Button btn_cancel_sale;
         private CheckBox chk_sales_history_dates;
+        private Label lbl_postal_code;
+        private MaskedTextBox msktbx_postal_code;
+        private Label label69;
+        private MaskedTextBox msktbx_postal_code_edit;
     }
 }

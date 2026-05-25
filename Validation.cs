@@ -96,6 +96,14 @@ namespace ProjektMagazyn
             }
             return true;
         }
+        public bool valid_postal_code(string postal_code)
+        {
+            if (!Regex.IsMatch(postal_code, @"^\d{2}-\d{3}$"))
+            {
+                return false;
+            }
+            return true;
+        }
 
         public bool valid_street(string street)
         {
