@@ -41,7 +41,7 @@ namespace ProjektMagazyn
         // Zmienne do sprawdzania, czy wprowadzono zmiany (można usnąć, ale będą wysyłane zapytania do bazy nawet, jeśli nic się nie zmieniło)
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
         private DateTime origBirthdate;
-        private string origCity, origStreet, origStreetNumber, origLocaleNumber;
+        private string origCity, origPostalCode, origStreet, origStreetNumber, origLocaleNumber;
         private int loggedUserId;
         public ControlPanel(int userId)
         {
@@ -219,6 +219,7 @@ namespace ProjektMagazyn
             var phone = msktbx_phone.Text.Replace(" ", "").Trim();
             var birthdate = dtpckr_birthdate.Value.Date;
             var city = msktbx_city.Text.Trim();
+            var postal_code = msktbx_postal_code.Text.Trim();
             var street = msktbx_street.Text.Trim();
             var street_number = msktbx_street_number.Text.Trim();
             var locale_number = msktbx_locale_number.Text.Trim();
@@ -228,7 +229,7 @@ namespace ProjektMagazyn
             {
                 msktbx_user_login, msktbx_user_name, msktbx_user_surname, cmbx_gender,
                 msktbx_pesel, msktbx_email, msktbx_phone, dtpckr_birthdate,
-                msktbx_city, msktbx_street, msktbx_street_number, msktbx_locale_number
+                msktbx_city, msktbx_street, msktbx_postal_code, msktbx_street_number, msktbx_locale_number
             };
 
             foreach (var textbox in textboxes) textbox.BackColor = Color.White;
@@ -284,12 +285,17 @@ namespace ProjektMagazyn
                 invalids++; msktbx_city.BackColor = Color.Red;
                 errorProvider.SetError(msktbx_city, "Brak wymaganych pól");
             }
+            if (!validation.valid_postal_code(postal_code))
+            {
+                invalids++; msktbx_postal_code.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagany format XX-XXX");
+            }
             if (!validation.valid_street_number(street_number))
             {
                 invalids++; msktbx_street_number.BackColor = Color.Red;
                 errorProvider.SetError(msktbx_street_number, "Brak wymaganych pól");
             }
-
+            
             if (invalids != 0)
             {
                 validation.incorrect_input();
@@ -350,7 +356,7 @@ namespace ProjektMagazyn
                         cmd.Parameters.AddWithValue("@imie", name);
                         cmd.Parameters.AddWithValue("@nazwisko", surname);
                         cmd.Parameters.AddWithValue("@miasto", city);
-                        cmd.Parameters.AddWithValue("@kod", "00-000");
+                        cmd.Parameters.AddWithValue("@kod", postal_code);
                         cmd.Parameters.AddWithValue("@ulica", street ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@nrPos", street_number);
                         cmd.Parameters.AddWithValue("@nrLok", string.IsNullOrEmpty(locale_number) ? (object)DBNull.Value : locale_number);
@@ -707,7 +713,8 @@ namespace ProjektMagazyn
                 msktbx_email_edit, 
                 msktbx_phone_edit, 
                 dtpckr_birthdate_edit, 
-                msktbx_city_edit, 
+                msktbx_city_edit,
+                msktbx_postal_code_edit,
                 msktbx_street_edit, 
                 msktbx_street_number_edit, 
                 msktbx_locale_number_edit
@@ -756,6 +763,7 @@ namespace ProjektMagazyn
                                 msktbx_phone_edit.Text = reader["Telefon"].ToString();
                                 dtpckr_birthdate_edit.Value = Convert.ToDateTime(reader["DataUrodzenia"]);
                                 msktbx_city_edit.Text = reader["Miejscowosc"].ToString();
+                                msktbx_postal_code_edit.Text = reader["KodPocztowy"].ToString();
                                 msktbx_street_edit.Text = reader["Ulica"].ToString();
                                 msktbx_street_number_edit.Text = reader["NumerPosesji"].ToString();
                                 msktbx_locale_number_edit.Text = reader["NumerLokalu"].ToString();
@@ -767,6 +775,7 @@ namespace ProjektMagazyn
                                 origPhone = msktbx_phone_edit.Text.Replace(" ", "").Trim();
                                 origBirthdate = dtpckr_birthdate_edit.Value.Date;
                                 origCity = msktbx_city_edit.Text.Trim();
+                                origPostalCode = msktbx_postal_code_edit.Text.Trim();
                                 origStreet = msktbx_street_edit.Text.Trim();
                                 origStreetNumber = msktbx_street_number_edit.Text.Trim();
                                 origLocaleNumber = msktbx_locale_number_edit.Text.Trim();
@@ -798,7 +807,8 @@ namespace ProjektMagazyn
                     msktbx_email_edit, 
                     msktbx_phone_edit, 
                     dtpckr_birthdate_edit, 
-                    msktbx_city_edit, 
+                    msktbx_city_edit,
+                    msktbx_postal_code_edit,
                     msktbx_street_edit, 
                     msktbx_street_number_edit, 
                     msktbx_locale_number_edit
@@ -824,6 +834,7 @@ namespace ProjektMagazyn
             var phone = msktbx_phone_edit.Text.Replace(" ", "").Trim();
             var birthdate = dtpckr_birthdate_edit.Value.Date;
             var city = msktbx_city_edit.Text.Trim();
+            var postal_code = msktbx_postal_code_edit.Text.Trim();
             var street = msktbx_street_edit.Text.Trim();
             var street_number = msktbx_street_number_edit.Text.Trim();
             var locale_number = msktbx_locale_number_edit.Text.Trim();
@@ -831,7 +842,7 @@ namespace ProjektMagazyn
             bool hasChanges =
                 name != origName || surname != origSurname || gender != origGender ||
                 pesel != origPesel || email != origEmail || phone != origPhone ||
-                birthdate != origBirthdate || city != origCity || street != origStreet ||
+                birthdate != origBirthdate || city != origCity || postal_code != origPostalCode || street != origStreet ||
                 street_number != origStreetNumber || locale_number != origLocaleNumber;
 
             if (!hasChanges)
@@ -841,18 +852,74 @@ namespace ProjektMagazyn
                 return;
             }
 
-            var textboxes = new List<Control> { msktbx_user_name_edit, msktbx_user_surname_edit, cmbx_gender_edit, msktbx_pesel_edit, msktbx_email_edit, msktbx_phone_edit, dtpckr_birthdate_edit, msktbx_city_edit, msktbx_street_number_edit };
+            var textboxes = new List<Control>
+            {
+                    msktbx_user_name_edit,
+                    msktbx_user_surname_edit,
+                    cmbx_gender_edit,
+                    msktbx_pesel_edit,
+                    msktbx_email_edit,
+                    msktbx_phone_edit,
+                    dtpckr_birthdate_edit,
+                    msktbx_city_edit,
+                    msktbx_postal_code_edit,
+                    msktbx_street_edit,
+                    msktbx_street_number_edit,
+                    msktbx_locale_number_edit
+            };
             foreach (var textbox in textboxes) textbox.BackColor = Color.White;
 
-            if (!validation.valid_name(name)) { invalids++; msktbx_user_name_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_user_name_edit, "Brak wymaganych pól"); }
-            if (!validation.valid_surname(surname)) { invalids++; msktbx_user_surname_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_user_surname_edit, "Brak wymaganych pól"); }
-            if (!validation.valid_gender(gender, pesel)) { invalids++; cmbx_gender_edit.BackColor = Color.Red; errorProvider.SetError(cmbx_gender_edit, "Brak wymaganych pól"); }
-            if (!validation.valid_birthdate(birthdate.Date, pesel)) { invalids++; dtpckr_birthdate_edit.BackColor = Color.Red; msktbx_pesel_edit.BackColor = Color.Red; errorProvider.SetError(dtpckr_birthdate_edit, "Wiek użytkownika musi być większy bądź równy 18 lat"); }
-            if (!validation.valid_pesel(pesel, birthdate.Date, gender)) { invalids++; msktbx_pesel_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_pesel_edit, "Wprowadzono błędny numer pesel\nWymagania numeru pesel:\n- Pierwsze sześć cyfr odpowiada dacie urodzenia: RRMMDD\n- Przedostatnia cyfra odpowiada płci:\n  Nieparzyste – mężczyźni\n  Parzyste i zero – kobiety\n- Cyfra kontrolna, zgodnie z: https://www.gov.pl/web/gov/czym-jest-numer-pesel"); }
-            if (!validation.valid_email(email)) { invalids++; msktbx_email_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_email_edit, "Wprowadzono błędny adres email.\nWymagania Adresu e-mail:\n- Zawiera dokładnie jeden znak: @\n- Zawiera składnię, zgodnie z: nazwa_użytkownika@nazwa_domeny_serwera_poczty\n- Domena_serwera_poczty = domena_wyższego_poziomu.domena_najwyższego_poziomu\n- Liczba znaków: max 255"); }
-            if (!validation.valid_phone(phone)) { invalids++; msktbx_phone_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_phone_edit, "Wprowadzono błędny numer telefonu\nWymagania numeru telefonu:\n- 9 cyfr"); }
-            if (!validation.valid_city(city)) { invalids++; msktbx_city_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_city_edit, "Brak wymaganych pól"); }
-            if (!validation.valid_street_number(street_number)) { invalids++; msktbx_street_number_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_street_number_edit, "Brak wymaganych pól"); }
+
+            if (!validation.valid_name(name))
+            { 
+                invalids++; msktbx_user_name_edit.BackColor = Color.Red; 
+                errorProvider.SetError(msktbx_user_name_edit, "Brak wymaganych pól"); 
+            }
+            if (!validation.valid_surname(surname)) 
+            { 
+                invalids++; msktbx_user_surname_edit.BackColor = Color.Red; 
+                errorProvider.SetError(msktbx_user_surname_edit, "Brak wymaganych pól"); 
+            }
+            if (!validation.valid_gender(gender, pesel)) 
+            { 
+                invalids++; cmbx_gender_edit.BackColor = Color.Red; 
+                errorProvider.SetError(cmbx_gender_edit, "Brak wymaganych pól"); 
+            }
+            if (!validation.valid_birthdate(birthdate.Date, pesel)) 
+            { 
+                invalids++; dtpckr_birthdate_edit.BackColor = Color.Red; msktbx_pesel_edit.BackColor = Color.Red; 
+                errorProvider.SetError(dtpckr_birthdate_edit, "Wiek użytkownika musi być większy bądź równy 18 lat"); 
+            }
+            if (!validation.valid_pesel(pesel, birthdate.Date, gender))
+            { 
+                invalids++; msktbx_pesel_edit.BackColor = Color.Red; 
+                errorProvider.SetError(msktbx_pesel_edit, "Wprowadzono błędny numer pesel\nWymagania numeru pesel:\n- Pierwsze sześć cyfr odpowiada dacie urodzenia: RRMMDD\n- Przedostatnia cyfra odpowiada płci:\n  Nieparzyste – mężczyźni\n  Parzyste i zero – kobiety\n- Cyfra kontrolna, zgodnie z: https://www.gov.pl/web/gov/czym-jest-numer-pesel"); 
+            }
+            if (!validation.valid_email(email)) 
+            { 
+                invalids++; msktbx_email_edit.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_email_edit, "Wprowadzono błędny adres email.\nWymagania Adresu e-mail:\n- Zawiera dokładnie jeden znak: @\n- Zawiera składnię, zgodnie z: nazwa_użytkownika@nazwa_domeny_serwera_poczty\n- Domena_serwera_poczty = domena_wyższego_poziomu.domena_najwyższego_poziomu\n- Liczba znaków: max 255"); 
+            }
+            if (!validation.valid_phone(phone)) 
+            { 
+                invalids++; msktbx_phone_edit.BackColor = Color.Red; 
+                errorProvider.SetError(msktbx_phone_edit, "Wprowadzono błędny numer telefonu\nWymagania numeru telefonu:\n- 9 cyfr"); 
+            }
+            if (!validation.valid_city(city)) 
+            { 
+                invalids++; msktbx_city_edit.BackColor = Color.Red; 
+                errorProvider.SetError(msktbx_city_edit, "Brak wymaganych pól"); 
+            }
+            if (!validation.valid_postal_code(postal_code))
+            {
+                invalids++; msktbx_postal_code.BackColor = Color.Red;
+                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagany format XX-XXX");
+            }
+            if (!validation.valid_street_number(street_number)) 
+            {
+                invalids++; msktbx_street_number_edit.BackColor = Color.Red; 
+                errorProvider.SetError(msktbx_street_number_edit, "Brak wymaganych pól"); 
+            }
 
             if (invalids != 0)
             {
@@ -912,7 +979,7 @@ namespace ProjektMagazyn
                     string query = @"
                         UPDATE Uzytkownicy SET 
                         Imie = @imie, Nazwisko = @nazwisko, Miejscowosc = @miasto, 
-                        Ulica = @ulica, NumerPosesji = @nrPos, NumerLokalu = @nrLok, 
+                        KodPocztowy = @postal_code, Ulica = @ulica, NumerPosesji = @nrPos, NumerLokalu = @nrLok, 
                         PESEL = @pesel, DataUrodzenia = @dataUr, Plec = @plec, 
                         Email = @email, Telefon = @telefon
                         WHERE UzytkownikID = @id";
@@ -922,6 +989,7 @@ namespace ProjektMagazyn
                         cmd.Parameters.AddWithValue("@imie", name);
                         cmd.Parameters.AddWithValue("@nazwisko", surname);
                         cmd.Parameters.AddWithValue("@miasto", city);
+                        cmd.Parameters.AddWithValue("@postal_code", postal_code);
                         cmd.Parameters.AddWithValue("@ulica", string.IsNullOrEmpty(street) ? (object)DBNull.Value : street);
                         cmd.Parameters.AddWithValue("@nrPos", street_number);
                         cmd.Parameters.AddWithValue("@nrLok", string.IsNullOrEmpty(locale_number) ? (object)DBNull.Value : locale_number);
@@ -2554,6 +2622,7 @@ namespace ProjektMagazyn
             }
             WczytajTowaryDoSprzedazy();
         }
+
 
         private void chk_sales_history_dates_CheckedChanged(object sender, EventArgs e)
         {
