@@ -42,7 +42,15 @@ namespace ProjektMagazyn
 
         private void btn_zaloguj_Click(object sender, EventArgs e)
         {
-            string login = tbx_login.Text;
+            DatabaseConnection database = new DatabaseConnection();
+            string login = tbx_login.Text.Trim();
+
+            if (!database.CheckLogin(login))
+            {
+                MessageBox.Show("Podano błedne dane.");
+                return;
+            }
+
             string password = tbx_password.Text;
 
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
@@ -55,8 +63,6 @@ namespace ProjektMagazyn
                 loginAttempts[login] = new LoginAttemptInfo();
 
             var info = loginAttempts[login];
-
-            DatabaseConnection database = new DatabaseConnection();
 
             if (info.LockoutEnd != null && info.LockoutEnd > DateTime.Now)
             {
@@ -135,7 +141,14 @@ namespace ProjektMagazyn
 
         private async void btn_reset_password_Click(object sender, EventArgs e)
         {
+            DatabaseConnection database = new DatabaseConnection();
             string login = tbx_login.Text.Trim();
+
+            if (!database.CheckLogin(login))
+            {
+                MessageBox.Show("Podano błedne dane.");
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(login))
             {
@@ -150,7 +163,6 @@ namespace ProjektMagazyn
                 string newPassword = recoveryMail.GeneratePassword();
                 string hash = SecurePasswordHasher.Hash(newPassword);
 
-                DatabaseConnection database = new DatabaseConnection();
                 bool success = database.ResetUserPassword(login, hash);
 
                 if (!success)
