@@ -121,6 +121,8 @@ namespace ProjektMagazyn
             this.lbl_pesel = new System.Windows.Forms.Label();
             this.msktbx_pesel = new System.Windows.Forms.MaskedTextBox();
             this.grpbx_address = new System.Windows.Forms.GroupBox();
+            this.lbl_postal_code = new System.Windows.Forms.Label();
+            this.msktbx_postal_code = new System.Windows.Forms.MaskedTextBox();
             this.lbl_street_number = new System.Windows.Forms.Label();
             this.msktbx_locale_number = new System.Windows.Forms.MaskedTextBox();
             this.msktbx_street_number = new System.Windows.Forms.MaskedTextBox();
@@ -153,6 +155,8 @@ namespace ProjektMagazyn
             this.label9 = new System.Windows.Forms.Label();
             this.msktbx_pesel_edit = new System.Windows.Forms.MaskedTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label69 = new System.Windows.Forms.Label();
+            this.msktbx_postal_code_edit = new System.Windows.Forms.MaskedTextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.msktbx_locale_number_edit = new System.Windows.Forms.MaskedTextBox();
             this.msktbx_street_number_edit = new System.Windows.Forms.MaskedTextBox();
@@ -306,10 +310,9 @@ namespace ProjektMagazyn
             this.tabPage_manage_sales = new System.Windows.Forms.TabPage();
             this.btn_logout = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.msktbx_postal_code = new System.Windows.Forms.MaskedTextBox();
-            this.lbl_postal_code = new System.Windows.Forms.Label();
-            this.label69 = new System.Windows.Forms.Label();
-            this.msktbx_postal_code_edit = new System.Windows.Forms.MaskedTextBox();
+            this.tbx_admin_password_reset = new System.Windows.Forms.TextBox();
+            this.btn_admin_password_reset = new System.Windows.Forms.Button();
+            this.lbl_edit_password = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_sale_basket)).BeginInit();
             this.tabControl_sales.SuspendLayout();
             this.tabPage_register_sale.SuspendLayout();
@@ -1396,6 +1399,9 @@ namespace ProjektMagazyn
             // 
             // tabPage_edit_user
             // 
+            this.tabPage_edit_user.Controls.Add(this.lbl_edit_password);
+            this.tabPage_edit_user.Controls.Add(this.btn_admin_password_reset);
+            this.tabPage_edit_user.Controls.Add(this.tbx_admin_password_reset);
             this.tabPage_edit_user.Controls.Add(this.btn_unlock_edit);
             this.tabPage_edit_user.Controls.Add(this.label17);
             this.tabPage_edit_user.Controls.Add(this.cmbx_select_user_edit);
@@ -3167,39 +3173,32 @@ namespace ProjektMagazyn
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // msktbx_postal_code
+            // tbx_admin_password_reset
             // 
-            this.msktbx_postal_code.Location = new System.Drawing.Point(92, 45);
-            this.msktbx_postal_code.Mask = "00-999";
-            this.msktbx_postal_code.Name = "msktbx_postal_code";
-            this.msktbx_postal_code.Size = new System.Drawing.Size(178, 20);
-            this.msktbx_postal_code.TabIndex = 46;
+            this.tbx_admin_password_reset.Location = new System.Drawing.Point(25, 144);
+            this.tbx_admin_password_reset.Name = "tbx_admin_password_reset";
+            this.tbx_admin_password_reset.PasswordChar = '*';
+            this.tbx_admin_password_reset.Size = new System.Drawing.Size(155, 20);
+            this.tbx_admin_password_reset.TabIndex = 63;
             // 
-            // lbl_postal_code
+            // btn_admin_password_reset
             // 
-            this.lbl_postal_code.AutoSize = true;
-            this.lbl_postal_code.Location = new System.Drawing.Point(13, 48);
-            this.lbl_postal_code.Name = "lbl_postal_code";
-            this.lbl_postal_code.Size = new System.Drawing.Size(78, 13);
-            this.lbl_postal_code.TabIndex = 47;
-            this.lbl_postal_code.Text = "Kod pocztowy*";
+            this.btn_admin_password_reset.Location = new System.Drawing.Point(25, 171);
+            this.btn_admin_password_reset.Name = "btn_admin_password_reset";
+            this.btn_admin_password_reset.Size = new System.Drawing.Size(155, 23);
+            this.btn_admin_password_reset.TabIndex = 64;
+            this.btn_admin_password_reset.Text = "Zmień hasło";
+            this.btn_admin_password_reset.UseVisualStyleBackColor = true;
+            this.btn_admin_password_reset.Click += new System.EventHandler(this.btn_admin_password_reset_Click);
             // 
-            // label69
+            // lbl_edit_password
             // 
-            this.label69.AutoSize = true;
-            this.label69.Location = new System.Drawing.Point(12, 48);
-            this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(78, 13);
-            this.label69.TabIndex = 49;
-            this.label69.Text = "Kod pocztowy*";
-            // 
-            // msktbx_postal_code_edit
-            // 
-            this.msktbx_postal_code_edit.Location = new System.Drawing.Point(91, 45);
-            this.msktbx_postal_code_edit.Mask = "00-999";
-            this.msktbx_postal_code_edit.Name = "msktbx_postal_code_edit";
-            this.msktbx_postal_code_edit.Size = new System.Drawing.Size(178, 20);
-            this.msktbx_postal_code_edit.TabIndex = 48;
+            this.lbl_edit_password.AutoSize = true;
+            this.lbl_edit_password.Location = new System.Drawing.Point(22, 128);
+            this.lbl_edit_password.Name = "lbl_edit_password";
+            this.lbl_edit_password.Size = new System.Drawing.Size(36, 13);
+            this.lbl_edit_password.TabIndex = 65;
+            this.lbl_edit_password.Text = "Hasło";
             // 
             // ControlPanel
             // 
@@ -3553,5 +3552,8 @@ namespace ProjektMagazyn
         private MaskedTextBox msktbx_postal_code;
         private Label label69;
         private MaskedTextBox msktbx_postal_code_edit;
+        private Button btn_admin_password_reset;
+        private TextBox tbx_admin_password_reset;
+        private Label lbl_edit_password;
     }
 }

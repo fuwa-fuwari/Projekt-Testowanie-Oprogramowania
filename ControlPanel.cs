@@ -717,7 +717,9 @@ namespace ProjektMagazyn
                 msktbx_postal_code_edit,
                 msktbx_street_edit, 
                 msktbx_street_number_edit, 
-                msktbx_locale_number_edit
+                msktbx_locale_number_edit,
+                tbx_admin_password_reset,
+                btn_admin_password_reset
             };
             foreach (var ctrl in controls) ctrl.Enabled = false;
         }
@@ -800,18 +802,20 @@ namespace ProjektMagazyn
 
             var controls = new List<Control> 
             { 
-                    msktbx_user_name_edit,
-                    msktbx_user_surname_edit, 
-                    cmbx_gender_edit, 
-                    msktbx_pesel_edit, 
-                    msktbx_email_edit, 
-                    msktbx_phone_edit, 
-                    dtpckr_birthdate_edit, 
-                    msktbx_city_edit,
-                    msktbx_postal_code_edit,
-                    msktbx_street_edit, 
-                    msktbx_street_number_edit, 
-                    msktbx_locale_number_edit
+                msktbx_user_name_edit,
+                msktbx_user_surname_edit, 
+                cmbx_gender_edit, 
+                msktbx_pesel_edit, 
+                msktbx_email_edit, 
+                msktbx_phone_edit, 
+                dtpckr_birthdate_edit, 
+                msktbx_city_edit,
+                msktbx_postal_code_edit,
+                msktbx_street_edit, 
+                msktbx_street_number_edit, 
+                msktbx_locale_number_edit,
+                tbx_admin_password_reset,
+                btn_admin_password_reset
             };
             foreach (var ctrl in controls) ctrl.Enabled = true;
 
@@ -2623,6 +2627,58 @@ namespace ProjektMagazyn
             WczytajTowaryDoSprzedazy();
         }
 
+        private void btn_admin_password_reset_Click(object sender, EventArgs e)
+        {
+            Validation validation = new Validation();
+
+            string newPassword = tbx_admin_password_reset.Text.Trim();
+
+            if(string.IsNullOrEmpty(newPassword))
+            {
+                MessageBox.Show("Brak wymaganych pól");
+                return;
+            }
+
+            if (!validation.valid_password(newPassword))
+            {
+                MessageBox.Show(@"Hasło nie spełnia wymaganych kryteriów:
+                - długość od 8 do 15 znaków
+                - co najmniej jedna wielka litera
+                - co najmniej jedna mała litera
+                - co najmniej jedna cyfra oraz znak specjalny");
+                return;
+            }
+
+            string newHash = SecurePasswordHasher.Hash(newPassword);
+            string login = msktbx_user_login_edit.Text.Trim();
+            
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string updateQuery = "UPDATE Uzytkownicy SET HasloHash = @password WHERE Login = @login";
+                        using (SqlCommand cmd = new SqlCommand(updateQuery, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@password", newHash);
+                            cmd.Parameters.AddWithValue("@login", login);
+                            cmd.ExecuteNonQuery();
+                        }
+                        transaction.Commit();
+
+                        MessageBox.Show("Hasło zostało zmienione.");
+                        tbx_admin_password_reset.Text = "";
+                    }
+                    catch (Exception exTransaction)
+                    {
+                        transaction.Rollback();
+                        throw exTransaction;
+                    }
+                }
+            }
+        }
 
         private void chk_sales_history_dates_CheckedChanged(object sender, EventArgs e)
         {
