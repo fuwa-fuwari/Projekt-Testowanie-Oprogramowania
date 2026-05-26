@@ -165,7 +165,7 @@ namespace ProjektMagazyn
                     secretsauceFilename
                 );
 
-                MessageBox.Show("Nowe hasło zostało wygenerowane i wysłane (Mailtrap).");
+                MessageBox.Show("Jeśli login istnieje w bazie nowe hasło zostało wysłane na przypisany adres email.");
             }
             catch (Exception ex)
             {
