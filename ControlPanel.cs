@@ -21,6 +21,7 @@ namespace ProjektMagazyn
 {
     public partial class ControlPanel : Form
     {
+        private List<TabPage> masterMainTabs = new List<TabPage>();
         private int selectedUserId = -1;
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
         private List<int> currentUserPermissions = new List<int>();
@@ -46,13 +47,17 @@ namespace ProjektMagazyn
         public ControlPanel(int userId)
         {
             InitializeComponent();
+            foreach (TabPage tab in dotNetBarTabControl_main_view.TabPages)
+            {
+                masterMainTabs.Add(tab);
+            }
             InicjalizujKoszyk();
             PrzypiszAutomatyczneCzyszczenieBledow();
             loggedUserId = userId;
             LoadUserPermissions(loggedUserId);
             EnablePermittedTabs();
             this.Load += ControlPanel_Load;
-
+            OdswiezUprawnieniaIZakladki();
 
             LoadData();
         }
@@ -445,6 +450,8 @@ namespace ProjektMagazyn
                 WHERE CzyZapomniany = 0
                 ORDER BY Nazwisko";
             databaseConnection.DisplayTableUsers(dvg_user_list, query);
+            WczytajUzytkownikowDoListy(); 
+            OdswiezUprawnieniaIZakladki();
         }
 
         private void btn_forget_Click(object sender, EventArgs e)
@@ -1151,6 +1158,7 @@ namespace ProjektMagazyn
             }
 
             ZaladujUprawnieniaUzytkownika(userId);
+            OdswiezUprawnieniaIZakladki();
         }
 
         private void btn_cancel_role_Click(object sender, EventArgs e)
@@ -1186,6 +1194,8 @@ namespace ProjektMagazyn
             var roles = database.GetSelectedIds(clb_roles_group_edit, "UprawnienieId");
 
             database.SynchronizeRoles(users, roles);
+
+            OdswiezUprawnieniaIZakladki();
         }
 
         private void btn_group_edit_cancel_Click(object sender, EventArgs e)
@@ -2741,7 +2751,7 @@ namespace ProjektMagazyn
 
         private void SetWarehousePermissions()
         {
-            bool isManager = currentUserPermissions.Contains(2) || currentUserPermissions.Contains(1);
+            bool isManager = currentUserPermissions.Contains(2);
 
             chk_use_history_date.Enabled = isManager;
             dtp_history_date.MaxDate = DateTime.Today;
@@ -2813,6 +2823,51 @@ namespace ProjektMagazyn
                 else if (ctrl is DateTimePicker)
                     ((DateTimePicker)ctrl).ValueChanged += (s, e) => { ctrl.BackColor = Color.White; errorProvider.SetError(ctrl, ""); };
             }
+        }
+
+        public void OdswiezUprawnieniaIZakladki()
+        {
+            LoadUserPermissions(loggedUserId);
+            TabPage previouslySelected = dotNetBarTabControl_main_view.SelectedTab;
+            dotNetBarTabControl_main_view.TabPages.Clear();
+
+            foreach (TabPage tab in masterMainTabs)
+            {
+                bool hasAccess = false;
+
+                if (tab == tabPage_my_profile)
+                {
+                    hasAccess = true; 
+                }
+                else if (tab == tabPage_overview || tab == tabPage_users || tab == tabPage_roles)
+                {
+                    hasAccess = currentUserPermissions.Contains(1); 
+                }
+                else if (tab == tabPage_manage_warehouse)
+                {
+                    hasAccess = currentUserPermissions.Contains(2) || currentUserPermissions.Contains(3);
+                }
+                else if (tab == tabPage_manage_sales)
+                {
+                    hasAccess = currentUserPermissions.Contains(2) || currentUserPermissions.Contains(4);
+                }
+
+                if (hasAccess)
+                {
+                    dotNetBarTabControl_main_view.TabPages.Add(tab);
+                }
+            }
+
+            if (previouslySelected != null && dotNetBarTabControl_main_view.TabPages.Contains(previouslySelected))
+            {
+                dotNetBarTabControl_main_view.SelectedTab = previouslySelected;
+            }
+            else if (dotNetBarTabControl_main_view.TabPages.Count > 0)
+            {
+                dotNetBarTabControl_main_view.SelectedIndex = 0;
+            }
+
+            SetWarehousePermissions();
         }
     }
 }

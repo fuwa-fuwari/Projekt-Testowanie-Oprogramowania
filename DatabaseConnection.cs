@@ -297,7 +297,7 @@ namespace ProjektMagazyn
                 }
             }
         }
-        public bool ResetUserPassword(string login, string passwordHash)
+        public bool CheckLogin(string login)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -315,7 +315,18 @@ namespace ProjektMagazyn
                     if (exists == 0)
                         return false;
                 }
-
+                return true;
+            }
+        }
+        public bool ResetUserPassword(string login, string passwordHash)
+        {
+            if (!CheckLogin(login))
+            {
+                return false;
+            }
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
                 string updateQuery = @"UPDATE Uzytkownicy 
                                    SET HasloHash = @hash 
                                    WHERE Login = @login";
