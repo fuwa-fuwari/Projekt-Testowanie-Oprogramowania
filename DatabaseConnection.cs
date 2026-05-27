@@ -1023,7 +1023,6 @@ namespace ProjektMagazyn
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-
                     string query = @"
                 SELECT 
                     s.SprzedazID,
@@ -1038,11 +1037,12 @@ namespace ProjektMagazyn
                             FROM RejestracjaDostaw
                             GROUP BY TowarID
                         ) rd ON ps.TowarID = rd.TowarID
-                        LEFT JOIN (
-                            SELECT TowarID, MAX(WartoscVAT) as WartoscVAT
-                            FROM StawkiVAT
-                            GROUP BY TowarID
-                        ) v ON ps.TowarID = v.TowarID
+                        OUTER APPLY (
+                            SELECT TOP 1 vsub.WartoscVAT 
+                            FROM StawkiVAT vsub 
+                            WHERE vsub.TowarID = ps.TowarID AND vsub.ObowiazujeOd <= s.DataSprzedazy 
+                            ORDER BY vsub.ObowiazujeOd DESC
+                        ) v
                         WHERE ps.SprzedazID = s.SprzedazID
                     ), 0) AS [Łączna wartość sprzedaży]
                 FROM Sprzedaz s
@@ -1082,15 +1082,17 @@ namespace ProjektMagazyn
                             DataTable dt = new DataTable();
                             da.Fill(dt);
 
-                            dgv.DataSource = dt;
-                            if (dgv.Columns["SprzedazID"] != null) dgv.Columns["SprzedazID"].Visible = false;
-                            if (dgv.Columns["Łączna wartość sprzedaży"] != null) dgv.Columns["Łączna wartość sprzedaży"].DefaultCellStyle.Format = "C2";
                             if (dt.Rows.Count == 0)
                             {
-                                dgv.DataSource = null; 
-                                MessageBox.Show("Brak wyników spełniających podane kryteria.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                dgv.DataSource = null;
                             }
-                            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                            else
+                            {
+                                dgv.DataSource = dt;
+                                if (dgv.Columns["SprzedazID"] != null) dgv.Columns["SprzedazID"].Visible = false;
+                                if (dgv.Columns["Łączna wartość sprzedaży"] != null) dgv.Columns["Łączna wartość sprzedaży"].DefaultCellStyle.Format = "C2";
+                                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                            }
                         }
                     }
                 }
@@ -1132,28 +1134,33 @@ namespace ProjektMagazyn
                             }
                         }
                     }
-
                     string itemsQuery = @"
-                SELECT 
-                    t.Nazwa AS [Towar], 
-                    ps.Ilosc AS [Ilość],
-                    t.JednostkaMiary AS [J.m.],
-                    ISNULL(rd.CenaNetto, 0) AS [Cena Netto],
-                    ISNULL(v.WartoscVAT, 0) AS [VAT %],
-                    CAST(ISNULL(ps.Ilosc * rd.CenaNetto * (1 + v.WartoscVAT / 100), 0) AS DECIMAL(18,2)) AS [Wartość Brutto]
-                FROM PozycjeSprzedazy ps
-                JOIN Towary t ON ps.TowarID = t.TowarID
-                LEFT JOIN (
-                    SELECT TowarID, MAX(CenaNetto) as CenaNetto
-                    FROM RejestracjaDostaw
-                    GROUP BY TowarID
-                ) rd ON ps.TowarID = rd.TowarID
-                LEFT JOIN (
-                    SELECT TowarID, MAX(WartoscVAT) as WartoscVAT
-                    FROM StawkiVAT
-                    GROUP BY TowarID
-                ) v ON ps.TowarID = v.TowarID
-                WHERE ps.SprzedazID = @id";
+                    SELECT 
+                        t.Nazwa AS [Towar], 
+                        ps.Ilosc AS [Ilość],
+                        t.JednostkaMiary AS [J.m.],
+                        ISNULL(rd.CenaNetto, 0) AS [Cena Netto],
+                        ISNULL((
+                            SELECT TOP 1 v.WartoscVAT 
+                            FROM StawkiVAT v 
+                            WHERE v.TowarID = ps.TowarID AND v.ObowiazujeOd <= s.DataSprzedazy 
+                            ORDER BY v.ObowiazujeOd DESC
+                        ), 0) AS [VAT %],
+                        CAST(ISNULL(ps.Ilosc * rd.CenaNetto * (1 + ISNULL((
+                            SELECT TOP 1 v2.WartoscVAT 
+                            FROM StawkiVAT v2 
+                            WHERE v2.TowarID = ps.TowarID AND v2.ObowiazujeOd <= s.DataSprzedazy 
+                            ORDER BY v2.ObowiazujeOd DESC
+                        ), 0) / 100), 0) AS DECIMAL(18,2)) AS [Wartość Brutto]
+                    FROM PozycjeSprzedazy ps
+                    JOIN Towary t ON ps.TowarID = t.TowarID
+                    JOIN Sprzedaz s ON ps.SprzedazID = s.SprzedazID
+                    LEFT JOIN (
+                        SELECT TowarID, MAX(CenaNetto) as CenaNetto
+                        FROM RejestracjaDostaw
+                        GROUP BY TowarID
+                    ) rd ON ps.TowarID = rd.TowarID
+                    WHERE ps.SprzedazID = @id";
 
                     using (SqlDataAdapter da = new SqlDataAdapter(itemsQuery, conn))
                     {

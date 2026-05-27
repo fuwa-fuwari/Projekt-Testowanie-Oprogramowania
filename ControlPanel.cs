@@ -22,6 +22,7 @@ namespace ProjektMagazyn
     public partial class ControlPanel : Form
     {
         private List<TabPage> masterMainTabs = new List<TabPage>();
+        private List<TabPage> masterSalesTabs = new List<TabPage>();
         private int selectedUserId = -1;
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
         private List<int> currentUserPermissions = new List<int>();
@@ -50,6 +51,10 @@ namespace ProjektMagazyn
             foreach (TabPage tab in dotNetBarTabControl_main_view.TabPages)
             {
                 masterMainTabs.Add(tab);
+            }
+            foreach (TabPage tab in tabControl_sales.TabPages)
+            {
+                masterSalesTabs.Add(tab);
             }
             InicjalizujKoszyk();
             PrzypiszAutomatyczneCzyszczenieBledow();
@@ -90,7 +95,7 @@ namespace ProjektMagazyn
         {
             if (dotNetBarTabControl_main_view.SelectedTab == tabPage_users)
             {
-                btn_refresh_Click(null, null); 
+                btn_refresh_Click(null, null);
                 WczytajUzytkownikowDoListy();
             }
             else if (dotNetBarTabControl_main_view.SelectedTab == tabPage_roles)
@@ -139,6 +144,23 @@ namespace ProjektMagazyn
             {
                 WczytajTowaryDoSprzedazy();
                 btn_search_sales_Click(null, null);
+            }
+            else
+            {
+                if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
+                {
+                    tabControl_sales.TabPages.Remove(tabPage_sale_details);
+                }
+            }
+
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_manage_sales)
+            {
+                WczytajTowaryDoSprzedazy();
+
+                if (currentUserPermissions.Contains(1) || currentUserPermissions.Contains(4))
+                {
+                    btn_search_sales_Click(null, null);
+                }
             }
             else
             {
@@ -2830,32 +2852,26 @@ namespace ProjektMagazyn
             LoadUserPermissions(loggedUserId);
             TabPage previouslySelected = dotNetBarTabControl_main_view.SelectedTab;
             dotNetBarTabControl_main_view.TabPages.Clear();
-
             foreach (TabPage tab in masterMainTabs)
             {
                 bool hasAccess = false;
 
-                if (tab == tabPage_my_profile)
-                {
-                    hasAccess = true; 
-                }
+                if (tab == tabPage_my_profile) hasAccess = true;
                 else if (tab == tabPage_overview || tab == tabPage_users || tab == tabPage_roles)
                 {
-                    hasAccess = currentUserPermissions.Contains(1); 
+                    hasAccess = currentUserPermissions.Contains(1);
                 }
                 else if (tab == tabPage_manage_warehouse)
                 {
-                    hasAccess = currentUserPermissions.Contains(2) || currentUserPermissions.Contains(3);
+                    hasAccess = currentUserPermissions.Contains(1) || currentUserPermissions.Contains(2) || currentUserPermissions.Contains(3);
                 }
                 else if (tab == tabPage_manage_sales)
                 {
-                    hasAccess = currentUserPermissions.Contains(2) || currentUserPermissions.Contains(4);
+                    hasAccess = currentUserPermissions.Contains(1) || currentUserPermissions.Contains(4) || currentUserPermissions.Contains(5);
                 }
 
-                if (hasAccess)
-                {
-                    dotNetBarTabControl_main_view.TabPages.Add(tab);
-                }
+
+                if (hasAccess) dotNetBarTabControl_main_view.TabPages.Add(tab);
             }
 
             if (previouslySelected != null && dotNetBarTabControl_main_view.TabPages.Contains(previouslySelected))
@@ -2865,6 +2881,30 @@ namespace ProjektMagazyn
             else if (dotNetBarTabControl_main_view.TabPages.Count > 0)
             {
                 dotNetBarTabControl_main_view.SelectedIndex = 0;
+            }
+
+            tabControl_sales.TabPages.Clear();
+
+            bool isSalesManagerOrAdmin = currentUserPermissions.Contains(1) || currentUserPermissions.Contains(4);
+            bool isSeller = currentUserPermissions.Contains(5);
+
+            foreach (TabPage subTab in masterSalesTabs)
+            {
+                if (subTab == tabPage_register_sale)
+                {
+                    if (isSalesManagerOrAdmin || isSeller)
+                        tabControl_sales.TabPages.Add(subTab);
+                }
+                else if (subTab == tabPage_sales_history)
+                {
+                    if (isSalesManagerOrAdmin)
+                        tabControl_sales.TabPages.Add(subTab);
+                }
+            }
+
+            if (tabControl_sales.TabPages.Count > 0)
+            {
+                tabControl_sales.SelectedIndex = 0;
             }
 
             SetWarehousePermissions();
