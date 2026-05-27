@@ -545,78 +545,45 @@ namespace ProjektMagazyn
         {
             string match = tbx_search.Text.Trim();
 
-            if (!string.IsNullOrEmpty(match))
-            {
-                string name = null;
-                string surname = null;
-                long? pesel = null;
-
-                if (long.TryParse(match, out long parsedPesel))
-                {
-                    pesel = parsedPesel;
-                }
-                else
-                {
-                    string[] parts = match.Split(' ');
-
-                    if (parts.Length == 2)
-                    {
-                        name = parts[0];
-                        surname = parts[1];
-                    }
-                    else if (parts.Length == 1)
-                    {
-                        name = parts[0];
-                    }
-                }
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-                    string query = @"
-                SELECT 
-                    UzytkownikID, 
-                    Login, 
-                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
-                    Email, 
-                    PESEL 
-                FROM Uzytkownicy
-                WHERE
-                (@pesel IS NOT NULL AND PESEL = @pesel)
-                OR
-                (@pesel IS NULL AND
-                    (
-                        (@name IS NOT NULL AND @surname IS NULL 
-                            AND (Imie LIKE @name OR Nazwisko LIKE @name))
-                        
-                        OR
-                        
-                        (@name IS NOT NULL AND @surname IS NOT NULL 
-                            AND Imie LIKE @name AND Nazwisko LIKE @surname)
-                    )
-                )
-                AND CzyZapomniany = 0
-                ORDER BY Nazwisko";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@pesel", (object)pesel ?? DBNull.Value);
-
-                        cmd.Parameters.AddWithValue("@name",
-                            name != null ? "%" + name + "%" : (object)DBNull.Value);
-
-                        cmd.Parameters.AddWithValue("@surname",
-                            surname != null ? "%" + surname + "%" : (object)DBNull.Value);
-
-                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                        DataTable dt = new DataTable();
-                        adapter.Fill(dt);
-
-                        dvg_user_list.DataSource = dt;
-                    }
-                }
-            }
-            else
+            if (string.IsNullOrEmpty(match))
             {
                 MessageBox.Show("Podaj informacje do wyszukania!");
+                return;
+            }
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = @"
+                    SELECT UzytkownikID, Login, Imie + ' ' + Nazwisko AS [Imię i Nazwisko], Email, PESEL 
+                    FROM Uzytkownicy
+                    WHERE CzyZapomniany = 0
+                    AND (
+                        Login LIKE @match OR 
+                        Email LIKE @match OR 
+                        PESEL LIKE @match OR 
+                        Imie LIKE @match OR 
+                        Nazwisko LIKE @match
+                    )
+                    ORDER BY Nazwisko";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@match", "%" + match + "%");
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    if (dt.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Brak wyników spełniających podane kryteria.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    dvg_user_list.DataSource = dt;
+                    if (dvg_user_list.Columns["UzytkownikID"] != null) dvg_user_list.Columns["UzytkownikID"].Visible = false;
+                }
             }
         }
 
