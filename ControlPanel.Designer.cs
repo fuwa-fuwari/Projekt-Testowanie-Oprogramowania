@@ -138,6 +138,9 @@ namespace ProjektMagazyn
             this.msktbx_user_login = new System.Windows.Forms.MaskedTextBox();
             this.lbl_user_login = new System.Windows.Forms.Label();
             this.tabPage_edit_user = new System.Windows.Forms.TabPage();
+            this.lbl_edit_password = new System.Windows.Forms.Label();
+            this.btn_admin_password_reset = new System.Windows.Forms.Button();
+            this.tbx_admin_password_reset = new System.Windows.Forms.TextBox();
             this.btn_unlock_edit = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
             this.cmbx_select_user_edit = new System.Windows.Forms.ComboBox();
@@ -310,9 +313,6 @@ namespace ProjektMagazyn
             this.tabPage_manage_sales = new System.Windows.Forms.TabPage();
             this.btn_logout = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tbx_admin_password_reset = new System.Windows.Forms.TextBox();
-            this.btn_admin_password_reset = new System.Windows.Forms.Button();
-            this.lbl_edit_password = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_sale_basket)).BeginInit();
             this.tabControl_sales.SuspendLayout();
             this.tabPage_register_sale.SuspendLayout();
@@ -974,9 +974,9 @@ namespace ProjektMagazyn
             this.lbl_search_user.AutoSize = true;
             this.lbl_search_user.Location = new System.Drawing.Point(131, 53);
             this.lbl_search_user.Name = "lbl_search_user";
-            this.lbl_search_user.Size = new System.Drawing.Size(281, 13);
+            this.lbl_search_user.Size = new System.Drawing.Size(339, 13);
             this.lbl_search_user.TabIndex = 10;
-            this.lbl_search_user.Text = "Wyszukaj użytkownika podając imię, nazwisko lub PESEL";
+            this.lbl_search_user.Text = "Wyszukaj użytkownika podając imię, nazwisko, email, login lub PESEL";
             // 
             // btn_show_forgotten
             // 
@@ -1432,6 +1432,33 @@ namespace ProjektMagazyn
             this.tabPage_edit_user.TabIndex = 1;
             this.tabPage_edit_user.Text = "Edytuj";
             this.tabPage_edit_user.UseVisualStyleBackColor = true;
+            // 
+            // lbl_edit_password
+            // 
+            this.lbl_edit_password.AutoSize = true;
+            this.lbl_edit_password.Location = new System.Drawing.Point(22, 128);
+            this.lbl_edit_password.Name = "lbl_edit_password";
+            this.lbl_edit_password.Size = new System.Drawing.Size(36, 13);
+            this.lbl_edit_password.TabIndex = 65;
+            this.lbl_edit_password.Text = "Hasło";
+            // 
+            // btn_admin_password_reset
+            // 
+            this.btn_admin_password_reset.Location = new System.Drawing.Point(25, 171);
+            this.btn_admin_password_reset.Name = "btn_admin_password_reset";
+            this.btn_admin_password_reset.Size = new System.Drawing.Size(155, 23);
+            this.btn_admin_password_reset.TabIndex = 64;
+            this.btn_admin_password_reset.Text = "Zmień hasło";
+            this.btn_admin_password_reset.UseVisualStyleBackColor = true;
+            this.btn_admin_password_reset.Click += new System.EventHandler(this.btn_admin_password_reset_Click);
+            // 
+            // tbx_admin_password_reset
+            // 
+            this.tbx_admin_password_reset.Location = new System.Drawing.Point(25, 144);
+            this.tbx_admin_password_reset.Name = "tbx_admin_password_reset";
+            this.tbx_admin_password_reset.PasswordChar = '*';
+            this.tbx_admin_password_reset.Size = new System.Drawing.Size(155, 20);
+            this.tbx_admin_password_reset.TabIndex = 63;
             // 
             // btn_unlock_edit
             // 
@@ -3172,33 +3199,6 @@ namespace ProjektMagazyn
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // tbx_admin_password_reset
-            // 
-            this.tbx_admin_password_reset.Location = new System.Drawing.Point(25, 144);
-            this.tbx_admin_password_reset.Name = "tbx_admin_password_reset";
-            this.tbx_admin_password_reset.PasswordChar = '*';
-            this.tbx_admin_password_reset.Size = new System.Drawing.Size(155, 20);
-            this.tbx_admin_password_reset.TabIndex = 63;
-            // 
-            // btn_admin_password_reset
-            // 
-            this.btn_admin_password_reset.Location = new System.Drawing.Point(25, 171);
-            this.btn_admin_password_reset.Name = "btn_admin_password_reset";
-            this.btn_admin_password_reset.Size = new System.Drawing.Size(155, 23);
-            this.btn_admin_password_reset.TabIndex = 64;
-            this.btn_admin_password_reset.Text = "Zmień hasło";
-            this.btn_admin_password_reset.UseVisualStyleBackColor = true;
-            this.btn_admin_password_reset.Click += new System.EventHandler(this.btn_admin_password_reset_Click);
-            // 
-            // lbl_edit_password
-            // 
-            this.lbl_edit_password.AutoSize = true;
-            this.lbl_edit_password.Location = new System.Drawing.Point(22, 128);
-            this.lbl_edit_password.Name = "lbl_edit_password";
-            this.lbl_edit_password.Size = new System.Drawing.Size(36, 13);
-            this.lbl_edit_password.TabIndex = 65;
-            this.lbl_edit_password.Text = "Hasło";
             // 
             // ControlPanel
             // 

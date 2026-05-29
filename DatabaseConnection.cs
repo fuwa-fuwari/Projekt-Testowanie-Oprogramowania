@@ -60,7 +60,7 @@ namespace ProjektMagazyn
 
                     if (dt.Rows.Count == 0)
                     {
-                        MessageBox.Show("Brak wyników.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Brak wyników", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         dvg_user_list.DataSource = null;
                     }
                     else
@@ -177,7 +177,7 @@ namespace ProjektMagazyn
             }
             if (!roleIds.Any())
             {
-                MessageBox.Show("Wybierz uprawnienie do dodania.");
+                MessageBox.Show("Wybierz uprawnienie do nadania.");
                 return;
             }
 

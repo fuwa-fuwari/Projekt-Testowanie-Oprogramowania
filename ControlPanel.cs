@@ -93,6 +93,10 @@ namespace ProjektMagazyn
         }
         private void dotNetBarTabControl_main_view_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (dotNetBarTabControl_main_view.SelectedTab == tabPage_overview)
+            {
+                OdswiezTabeleUzytkownikow();
+            }
             if (dotNetBarTabControl_main_view.SelectedTab == tabPage_users)
             {
                 btn_refresh_Click(null, null);
@@ -315,7 +319,7 @@ namespace ProjektMagazyn
             if (!validation.valid_postal_code(postal_code))
             {
                 invalids++; msktbx_postal_code.BackColor = Color.Red;
-                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagany format XX-XXX");
+                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagania kodu pocztowego:\n Format XX-XXX, X – cyfra");   
             }
             if (!validation.valid_street_number(street_number))
             {
@@ -409,6 +413,7 @@ namespace ProjektMagazyn
                     }
                 }
                 MessageBox.Show("Dodano użytkownika do bazy");
+                OdswiezTabeleUzytkownikow();
                 WczytajUzytkownikowDoListy();
                 ClearAddUserData(textboxes);
             }
@@ -460,18 +465,7 @@ namespace ProjektMagazyn
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
-            DatabaseConnection databaseConnection = new DatabaseConnection();
-            string query = @"
-                SELECT 
-                    UzytkownikID, 
-                    Login, 
-                    Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
-                    Email, 
-                    PESEL 
-                FROM Uzytkownicy 
-                WHERE CzyZapomniany = 0
-                ORDER BY Nazwisko";
-            databaseConnection.DisplayTableUsers(dvg_user_list, query);
+            OdswiezTabeleUzytkownikow();
             WczytajUzytkownikowDoListy(); 
             OdswiezUprawnieniaIZakladki();
         }
@@ -480,7 +474,7 @@ namespace ProjektMagazyn
         {
             if (dvg_user_list.CurrentRow == null)
             {
-                MessageBox.Show("Wybierz użytkownika z listy.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Wybierz użytkownika z listy", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -488,7 +482,7 @@ namespace ProjektMagazyn
             string imieINazwisko = dvg_user_list.CurrentRow.Cells["Imię i Nazwisko"].Value.ToString();
 
             var potwierdzenie = MessageBox.Show(
-                $"Czy na pewno chcesz zanonimizować dane użytkownika {imieINazwisko}?\n\nOperacja jest NIEODWRACALNA.",
+                $"Czy na pewno chcesz zanonimizować dane użytkownika {imieINazwisko}?\nOperacja jest NIEODWRACALNA",
                 "Potwierdzenie anonimizacji",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
@@ -545,7 +539,7 @@ namespace ProjektMagazyn
 
                             transaction.Commit();
 
-                            MessageBox.Show("Zapomniano użytkownika.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Zapomniano użytkownika", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                             btn_refresh_Click(sender, e);
                         }
@@ -567,33 +561,18 @@ namespace ProjektMagazyn
         {
             string match = tbx_search.Text.Trim();
 
-            if (!string.IsNullOrEmpty(match))
+            if (string.IsNullOrEmpty(match))
             {
-                string name = null;
-                string surname = null;
-                long? pesel = null;
+                MessageBox.Show("Podaj informacje do wyszukania!", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-                if (long.TryParse(match, out long parsedPesel))
-                {
-                    pesel = parsedPesel;
-                }
-                else
-                {
-                    string[] parts = match.Split(' ');
-
-                    if (parts.Length == 2)
-                    {
-                        name = parts[0];
-                        surname = parts[1];
-                    }
-                    else if (parts.Length == 1)
-                    {
-                        name = parts[0];
-                    }
-                }
+            try
+            {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
+
                     string query = @"
                 SELECT 
                     UzytkownikID, 
@@ -602,43 +581,42 @@ namespace ProjektMagazyn
                     Email, 
                     PESEL 
                 FROM Uzytkownicy
-                WHERE
-                (@pesel IS NOT NULL AND PESEL = @pesel)
-                OR
-                (@pesel IS NULL AND
-                    (
-                        (@name IS NOT NULL AND @surname IS NULL 
-                            AND (Imie LIKE @name OR Nazwisko LIKE @name))
-                        
-                        OR
-                        
-                        (@name IS NOT NULL AND @surname IS NOT NULL 
-                            AND Imie LIKE @name AND Nazwisko LIKE @surname)
-                    )
+                WHERE CzyZapomniany = 0
+                AND (
+                    Login LIKE '%' + @match + '%' OR
+                    Imie LIKE '%' + @match + '%' OR
+                    Nazwisko LIKE '%' + @match + '%' OR
+                    (Imie + ' ' + Nazwisko) LIKE '%' + @match + '%' OR
+                    (Nazwisko + ' ' + Imie) LIKE '%' + @match + '%' OR
+                    PESEL LIKE '%' + @match + '%'
                 )
-                AND CzyZapomniany = 0
                 ORDER BY Nazwisko";
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@pesel", (object)pesel ?? DBNull.Value);
-
-                        cmd.Parameters.AddWithValue("@name",
-                            name != null ? "%" + name + "%" : (object)DBNull.Value);
-
-                        cmd.Parameters.AddWithValue("@surname",
-                            surname != null ? "%" + surname + "%" : (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@match", match);
 
                         SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                         DataTable dt = new DataTable();
                         adapter.Fill(dt);
 
+                        if (dt.Rows.Count == 0)
+                        {
+                            MessageBox.Show("Brak wyników", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+
                         dvg_user_list.DataSource = dt;
+
+                        if (dvg_user_list.Columns["UzytkownikID"] != null)
+                        {
+                            dvg_user_list.Columns["UzytkownikID"].Visible = false;
+                        }
                     }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Podaj informacje do wyszukania!");
+                MessageBox.Show("Błąd podczas wyszukiwania: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -646,18 +624,16 @@ namespace ProjektMagazyn
         {
             DatabaseConnection databaseConnection = new DatabaseConnection();
             string query = @"
-                SELECT 
-                    u1.UzytkownikID, 
-                    u1.Login, 
-                    u1.Imie + ' ' + u1.Nazwisko AS [Imię i Nazwisko], 
-                    u1.Email, 
-                    u1.PESEL,
-                    u1.DataZapomnienia AS [Data usunięcia],
-                    u2.Login AS [Usunięty przez]
-                FROM Uzytkownicy u1
-                LEFT JOIN Uzytkownicy u2 ON u1.ZapomnianyPrzezID = u2.UzytkownikID
-                WHERE u1.CzyZapomniany = 1
-                ORDER BY u1.Nazwisko";
+        SELECT 
+            u1.UzytkownikID, 
+            u1.Login, 
+            u1.Imie + ' ' + u1.Nazwisko AS [Imię i Nazwisko po zapomnieniu], 
+            u1.DataZapomnienia AS [Data zapomnienia],
+            ISNULL(u2.Login, 'Brak danych') AS [Login użytkownika, który dokonał zapomnienia]
+        FROM Uzytkownicy u1
+        LEFT JOIN Uzytkownicy u2 ON u1.ZapomnianyPrzezID = u2.UzytkownikID
+        WHERE u1.CzyZapomniany = 1
+        ORDER BY u1.Nazwisko";
             databaseConnection.DisplayTableUsers(dvg_user_list, query);
         }
 
@@ -848,7 +824,7 @@ namespace ProjektMagazyn
             };
             foreach (var ctrl in controls) ctrl.Enabled = true;
 
-            MessageBox.Show("Pola zostały odblokowane. Możesz wprowadzić zmiany.");
+            MessageBox.Show("Pola zostały odblokowane. Możesz wprowadzić zmiany");
         }
 
         private void btn_save_edit_Click(object sender, EventArgs e)
@@ -946,7 +922,7 @@ namespace ProjektMagazyn
             if (!validation.valid_postal_code(postal_code))
             {
                 invalids++; msktbx_postal_code.BackColor = Color.Red;
-                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagany format XX-XXX");
+                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagania kodu pocztowego:\n Format XX-XXX, X – cyfra");
             }
             if (!validation.valid_street_number(street_number)) 
             {
@@ -994,13 +970,11 @@ namespace ProjektMagazyn
 
             if (emailExists || peselExists || loginExists)
             {
-                string msg = "Poniższe dane są już przypisane do innego konta w systemie:\n\n";
+                if (loginExists) { msktbx_user_login_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_user_login_edit, "Ten login już istnieje w bazie"); }
+                if (peselExists) { msktbx_pesel_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_pesel_edit, "Ten numer pesel już istnieje w bazie"); }
+                if (emailExists) { msktbx_email_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_email_edit, "Ten adres email już istnieje w bazie"); }
 
-                if (loginExists) { msktbx_user_login_edit.BackColor = Color.Red; msg += "- Login\n"; errorProvider.SetError(msktbx_user_login_edit, "Poniższe dane są już przypisane do innego konta w systemie: - Login"); }
-                if (peselExists) { msktbx_pesel_edit.BackColor = Color.Red; msg += "- Numer PESEL\n"; errorProvider.SetError(msktbx_pesel_edit, "Poniższe dane są już przypisane do innego konta w systemie: - numer pesel"); }
-                if (emailExists) { msktbx_email_edit.BackColor = Color.Red; msg += "- Adres e-mail\n"; errorProvider.SetError(msktbx_email_edit, "Poniższe dane są już przypisane do innego konta w systemie: - Adres e-mail"); }
-
-                MessageBox.Show(msg, "Konflikt unikalności", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Wprowadzono nieprawidłowe dane!", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -1038,6 +1012,7 @@ namespace ProjektMagazyn
                 }
 
                 MessageBox.Show("Dane użytkownika zostały pomyślnie zaktualizowane.");
+                OdswiezTabeleUzytkownikow();
                 WczytajUzytkownikowDoListy();
                 ZablokujPolaEdycji();
             }
@@ -1127,7 +1102,7 @@ namespace ProjektMagazyn
             }
             if (clb_roles.CheckedItems.Count == 0)
             {
-                MessageBox.Show("Wybierz uprawnienia przed zapisania zmian.");
+                MessageBox.Show("Wybierz uprawnienia przed zapisaniem zmian.");
                 return;
             }
 
@@ -1227,7 +1202,7 @@ namespace ProjektMagazyn
 
         private void btn_logout_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Czy na pewno chcesz się wylogować?", "Wyloguj", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Czy na pewno chcesz się wylogować?", "Wyloguj", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
             {
                 this.Close();
             }
@@ -2557,12 +2532,7 @@ namespace ProjektMagazyn
 
                     if (uprawnienieId.HasValue && dt.Rows.Count == 0)
                     {
-                        MessageBox.Show(
-                            "Nie znaleziono użytkowników o wskazanym uprawnieniu",
-                            "Brak wyników",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information
-                        );
+                        MessageBox.Show("Brak wyników", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
@@ -2662,31 +2632,39 @@ namespace ProjektMagazyn
         private void btn_admin_password_reset_Click(object sender, EventArgs e)
         {
             Validation validation = new Validation();
-
             string newPassword = tbx_admin_password_reset.Text.Trim();
+            string login = msktbx_user_login_edit.Text.Trim();
 
-            if(string.IsNullOrEmpty(newPassword))
+            if (string.IsNullOrEmpty(newPassword))
             {
-                MessageBox.Show("Brak wymaganych pól");
+                MessageBox.Show("Hasło użytkownika nie może być puste", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             if (!validation.valid_password(newPassword))
             {
-                MessageBox.Show(@"Hasło nie spełnia wymaganych kryteriów:
-                - długość od 8 do 15 znaków
-                - co najmniej jedna wielka litera
-                - co najmniej jedna mała litera
-                - co najmniej jedna cyfra oraz znak specjalny");
+                MessageBox.Show("Hasło nie spełnia wymaganych kryteriów:\n- długość od 8 do 15 znaków\n- co najmniej jedna wielka litera\n- co najmniej jedna mała litera\n- co najmniej jedna cyfra oraz znak specjalny", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string newHash = SecurePasswordHasher.Hash(newPassword);
-            string login = msktbx_user_login_edit.Text.Trim();
-            
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
+                string getHashQuery = "SELECT HasloHash FROM Uzytkownicy WHERE Login = @login";
+                string currentHash = "";
+                using (SqlCommand cmdHash = new SqlCommand(getHashQuery, conn))
+                {
+                    cmdHash.Parameters.AddWithValue("@login", login);
+                    currentHash = cmdHash.ExecuteScalar()?.ToString();
+                }
+
+                if (SecurePasswordHasher.Verify(newPassword, currentHash))
+                {
+                    MessageBox.Show("Nie wprowadzono żadnych zmian", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string newHash = SecurePasswordHasher.Hash(newPassword);
                 using (SqlTransaction transaction = conn.BeginTransaction())
                 {
                     try
@@ -2700,7 +2678,7 @@ namespace ProjektMagazyn
                         }
                         transaction.Commit();
 
-                        MessageBox.Show("Hasło zostało zmienione.");
+                        MessageBox.Show("Hasło zostało zmienione.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         tbx_admin_password_reset.Text = "";
                     }
                     catch (Exception exTransaction)
@@ -2908,6 +2886,21 @@ namespace ProjektMagazyn
             }
 
             SetWarehousePermissions();
+        }
+
+        private void OdswiezTabeleUzytkownikow()
+        {
+            string query = @"
+        SELECT 
+            UzytkownikID, 
+            Login, 
+            Imie + ' ' + Nazwisko AS [Imię i Nazwisko], 
+            Email, 
+            PESEL 
+        FROM Uzytkownicy 
+        WHERE CzyZapomniany = 0
+        ORDER BY Nazwisko";
+            database.DisplayTableUsers(dvg_user_list, query);
         }
     }
 }
