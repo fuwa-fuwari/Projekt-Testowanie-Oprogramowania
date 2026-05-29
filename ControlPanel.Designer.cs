@@ -76,23 +76,6 @@ namespace ProjektMagazyn
             this.tbx_detail_address = new System.Windows.Forms.TextBox();
             this.tbx_detail_buyer = new System.Windows.Forms.TextBox();
             this.dotNetBarTabControl_main_view = new TabControls.DotNetBarTabControl();
-            this.tabPage_my_profile = new System.Windows.Forms.TabPage();
-            this.clb_profile_roles = new System.Windows.Forms.CheckedListBox();
-            this.lbl_repeat_password = new System.Windows.Forms.Label();
-            this.lbl_new_password = new System.Windows.Forms.Label();
-            this.lbl_old_password = new System.Windows.Forms.Label();
-            this.btn_change_password = new System.Windows.Forms.Button();
-            this.tbx_profile_repeat_password = new System.Windows.Forms.TextBox();
-            this.tbx_profile_new_password = new System.Windows.Forms.TextBox();
-            this.tbx_profile_old_password = new System.Windows.Forms.TextBox();
-            this.tbx_profile_email = new System.Windows.Forms.TextBox();
-            this.tbx_profile_surname = new System.Windows.Forms.TextBox();
-            this.tbx_profile_name = new System.Windows.Forms.TextBox();
-            this.tbx_profile_login = new System.Windows.Forms.TextBox();
-            this.label31 = new System.Windows.Forms.Label();
-            this.label33 = new System.Windows.Forms.Label();
-            this.label34 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
             this.tabPage_overview = new System.Windows.Forms.TabPage();
             this.lbl_search_user = new System.Windows.Forms.Label();
             this.btn_show_forgotten = new System.Windows.Forms.Button();
@@ -321,7 +304,6 @@ namespace ProjektMagazyn
             this.tabPage_sale_details.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_sale_details)).BeginInit();
             this.dotNetBarTabControl_main_view.SuspendLayout();
-            this.tabPage_my_profile.SuspendLayout();
             this.tabPage_overview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).BeginInit();
             this.tabPage_users.SuspendLayout();
@@ -774,7 +756,6 @@ namespace ProjektMagazyn
             // dotNetBarTabControl_main_view
             // 
             this.dotNetBarTabControl_main_view.Alignment = System.Windows.Forms.TabAlignment.Left;
-            this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_my_profile);
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_overview);
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_users);
             this.dotNetBarTabControl_main_view.Controls.Add(this.tabPage_roles);
@@ -789,168 +770,6 @@ namespace ProjektMagazyn
             this.dotNetBarTabControl_main_view.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.dotNetBarTabControl_main_view.TabIndex = 2;
             this.dotNetBarTabControl_main_view.SelectedIndexChanged += new System.EventHandler(this.dotNetBarTabControl_main_view_SelectedIndexChanged);
-            // 
-            // tabPage_my_profile
-            // 
-            this.tabPage_my_profile.Controls.Add(this.clb_profile_roles);
-            this.tabPage_my_profile.Controls.Add(this.lbl_repeat_password);
-            this.tabPage_my_profile.Controls.Add(this.lbl_new_password);
-            this.tabPage_my_profile.Controls.Add(this.lbl_old_password);
-            this.tabPage_my_profile.Controls.Add(this.btn_change_password);
-            this.tabPage_my_profile.Controls.Add(this.tbx_profile_repeat_password);
-            this.tabPage_my_profile.Controls.Add(this.tbx_profile_new_password);
-            this.tabPage_my_profile.Controls.Add(this.tbx_profile_old_password);
-            this.tabPage_my_profile.Controls.Add(this.tbx_profile_email);
-            this.tabPage_my_profile.Controls.Add(this.tbx_profile_surname);
-            this.tabPage_my_profile.Controls.Add(this.tbx_profile_name);
-            this.tabPage_my_profile.Controls.Add(this.tbx_profile_login);
-            this.tabPage_my_profile.Controls.Add(this.label31);
-            this.tabPage_my_profile.Controls.Add(this.label33);
-            this.tabPage_my_profile.Controls.Add(this.label34);
-            this.tabPage_my_profile.Controls.Add(this.label35);
-            this.tabPage_my_profile.Location = new System.Drawing.Point(146, 4);
-            this.tabPage_my_profile.Name = "tabPage_my_profile";
-            this.tabPage_my_profile.Size = new System.Drawing.Size(763, 541);
-            this.tabPage_my_profile.TabIndex = 3;
-            this.tabPage_my_profile.Text = "Mój profil";
-            this.tabPage_my_profile.UseVisualStyleBackColor = true;
-            // 
-            // clb_profile_roles
-            // 
-            this.clb_profile_roles.FormattingEnabled = true;
-            this.clb_profile_roles.Location = new System.Drawing.Point(280, 204);
-            this.clb_profile_roles.Name = "clb_profile_roles";
-            this.clb_profile_roles.Size = new System.Drawing.Size(259, 94);
-            this.clb_profile_roles.TabIndex = 59;
-            // 
-            // lbl_repeat_password
-            // 
-            this.lbl_repeat_password.AutoSize = true;
-            this.lbl_repeat_password.Location = new System.Drawing.Point(268, 412);
-            this.lbl_repeat_password.Name = "lbl_repeat_password";
-            this.lbl_repeat_password.Size = new System.Drawing.Size(69, 13);
-            this.lbl_repeat_password.TabIndex = 58;
-            this.lbl_repeat_password.Text = "ponów hasło";
-            // 
-            // lbl_new_password
-            // 
-            this.lbl_new_password.AutoSize = true;
-            this.lbl_new_password.Location = new System.Drawing.Point(274, 372);
-            this.lbl_new_password.Name = "lbl_new_password";
-            this.lbl_new_password.Size = new System.Drawing.Size(63, 13);
-            this.lbl_new_password.TabIndex = 57;
-            this.lbl_new_password.Text = "nowe hasło";
-            // 
-            // lbl_old_password
-            // 
-            this.lbl_old_password.AutoSize = true;
-            this.lbl_old_password.Location = new System.Drawing.Point(277, 334);
-            this.lbl_old_password.Name = "lbl_old_password";
-            this.lbl_old_password.Size = new System.Drawing.Size(60, 13);
-            this.lbl_old_password.TabIndex = 56;
-            this.lbl_old_password.Text = "stare hasło";
-            // 
-            // btn_change_password
-            // 
-            this.btn_change_password.Location = new System.Drawing.Point(344, 448);
-            this.btn_change_password.Name = "btn_change_password";
-            this.btn_change_password.Size = new System.Drawing.Size(195, 23);
-            this.btn_change_password.TabIndex = 55;
-            this.btn_change_password.Text = "Zmień hasło";
-            this.btn_change_password.UseVisualStyleBackColor = true;
-            this.btn_change_password.Click += new System.EventHandler(this.btn_change_password_Click);
-            // 
-            // tbx_profile_repeat_password
-            // 
-            this.tbx_profile_repeat_password.Location = new System.Drawing.Point(345, 409);
-            this.tbx_profile_repeat_password.Name = "tbx_profile_repeat_password";
-            this.tbx_profile_repeat_password.PasswordChar = '*';
-            this.tbx_profile_repeat_password.Size = new System.Drawing.Size(194, 20);
-            this.tbx_profile_repeat_password.TabIndex = 54;
-            // 
-            // tbx_profile_new_password
-            // 
-            this.tbx_profile_new_password.Location = new System.Drawing.Point(344, 369);
-            this.tbx_profile_new_password.Name = "tbx_profile_new_password";
-            this.tbx_profile_new_password.PasswordChar = '*';
-            this.tbx_profile_new_password.Size = new System.Drawing.Size(194, 20);
-            this.tbx_profile_new_password.TabIndex = 53;
-            // 
-            // tbx_profile_old_password
-            // 
-            this.tbx_profile_old_password.Location = new System.Drawing.Point(344, 331);
-            this.tbx_profile_old_password.Name = "tbx_profile_old_password";
-            this.tbx_profile_old_password.PasswordChar = '*';
-            this.tbx_profile_old_password.Size = new System.Drawing.Size(194, 20);
-            this.tbx_profile_old_password.TabIndex = 52;
-            // 
-            // tbx_profile_email
-            // 
-            this.tbx_profile_email.Location = new System.Drawing.Point(344, 143);
-            this.tbx_profile_email.Name = "tbx_profile_email";
-            this.tbx_profile_email.ReadOnly = true;
-            this.tbx_profile_email.Size = new System.Drawing.Size(195, 20);
-            this.tbx_profile_email.TabIndex = 51;
-            // 
-            // tbx_profile_surname
-            // 
-            this.tbx_profile_surname.Location = new System.Drawing.Point(344, 114);
-            this.tbx_profile_surname.Name = "tbx_profile_surname";
-            this.tbx_profile_surname.ReadOnly = true;
-            this.tbx_profile_surname.Size = new System.Drawing.Size(195, 20);
-            this.tbx_profile_surname.TabIndex = 50;
-            // 
-            // tbx_profile_name
-            // 
-            this.tbx_profile_name.Location = new System.Drawing.Point(344, 81);
-            this.tbx_profile_name.Name = "tbx_profile_name";
-            this.tbx_profile_name.ReadOnly = true;
-            this.tbx_profile_name.Size = new System.Drawing.Size(195, 20);
-            this.tbx_profile_name.TabIndex = 49;
-            // 
-            // tbx_profile_login
-            // 
-            this.tbx_profile_login.Location = new System.Drawing.Point(344, 48);
-            this.tbx_profile_login.Name = "tbx_profile_login";
-            this.tbx_profile_login.ReadOnly = true;
-            this.tbx_profile_login.Size = new System.Drawing.Size(195, 20);
-            this.tbx_profile_login.TabIndex = 48;
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(269, 146);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(68, 13);
-            this.label31.TabIndex = 47;
-            this.label31.Text = "Adres e-mail*";
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(280, 117);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(57, 13);
-            this.label33.TabIndex = 44;
-            this.label33.Text = "Nazwisko*";
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(307, 84);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(30, 13);
-            this.label34.TabIndex = 41;
-            this.label34.Text = "Imię*";
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(175, 51);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(162, 13);
-            this.label35.TabIndex = 39;
-            this.label35.Text = "Identyfikator użytkownika - login*";
             // 
             // tabPage_overview
             // 
@@ -3222,8 +3041,6 @@ namespace ProjektMagazyn
             this.tabPage_sale_details.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_sale_details)).EndInit();
             this.dotNetBarTabControl_main_view.ResumeLayout(false);
-            this.tabPage_my_profile.ResumeLayout(false);
-            this.tabPage_my_profile.PerformLayout();
             this.tabPage_overview.ResumeLayout(false);
             this.tabPage_overview.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_user_list)).EndInit();
@@ -3396,27 +3213,10 @@ namespace ProjektMagazyn
         private CheckedListBox clb_users_group_edit;
         private Button btn_group_edit_cancel;
         private Button btn_logout;
-        private TabPage tabPage_my_profile;
-        private TextBox tbx_profile_email;
-        private TextBox tbx_profile_surname;
-        private TextBox tbx_profile_name;
-        private TextBox tbx_profile_login;
-        private Label label31;
-        private Label label33;
-        private Label label34;
-        private Label label35;
-        private Label lbl_repeat_password;
-        private Label lbl_new_password;
-        private Label lbl_old_password;
-        private Button btn_change_password;
-        private TextBox tbx_profile_repeat_password;
-        private TextBox tbx_profile_new_password;
-        private TextBox tbx_profile_old_password;
         private Label lbl_users_group_edit;
         private Label lbl_roles_group_edit;
         private TabPage tabPage_manage_warehouse;
         private TabPage tabPage_manage_sales;
-        private CheckedListBox clb_profile_roles;
         private Button btn_register_sale;
         private DateTimePicker dtp_sale_date;
         private ComboBox cmbx_sale_product;

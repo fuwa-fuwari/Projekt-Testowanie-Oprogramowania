@@ -91,6 +91,12 @@
     <Compile Include="Logowanie.Designer.cs">
       <DependentUpon>Logowanie.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewPasswordPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewPasswordPrompt.Designer.cs">
+      <DependentUpon>NewPasswordPrompt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ControlPanel.cs">
@@ -104,6 +110,9 @@
     <Compile Include="Validation.cs" />
     <EmbeddedResource Include="Logowanie.resx">
       <DependentUpon>Logowanie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewPasswordPrompt.resx">
+      <DependentUpon>NewPasswordPrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
