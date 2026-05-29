@@ -89,7 +89,6 @@ namespace ProjektMagazyn
             this.tabPage_add_user = new System.Windows.Forms.TabPage();
             this.lbl_role = new System.Windows.Forms.Label();
             this.clb_add_user_role = new System.Windows.Forms.CheckedListBox();
-            this.btn_test = new System.Windows.Forms.Button();
             this.lbl_gender = new System.Windows.Forms.Label();
             this.cmbx_gender = new System.Windows.Forms.ComboBox();
             this.btn_cancel = new System.Windows.Forms.Button();
@@ -889,7 +888,6 @@ namespace ProjektMagazyn
             // 
             this.tabPage_add_user.Controls.Add(this.lbl_role);
             this.tabPage_add_user.Controls.Add(this.clb_add_user_role);
-            this.tabPage_add_user.Controls.Add(this.btn_test);
             this.tabPage_add_user.Controls.Add(this.lbl_gender);
             this.tabPage_add_user.Controls.Add(this.cmbx_gender);
             this.tabPage_add_user.Controls.Add(this.btn_cancel);
@@ -934,16 +932,6 @@ namespace ProjektMagazyn
             this.clb_add_user_role.Name = "clb_add_user_role";
             this.clb_add_user_role.Size = new System.Drawing.Size(212, 79);
             this.clb_add_user_role.TabIndex = 44;
-            // 
-            // btn_test
-            // 
-            this.btn_test.Location = new System.Drawing.Point(18, 448);
-            this.btn_test.Name = "btn_test";
-            this.btn_test.Size = new System.Drawing.Size(93, 23);
-            this.btn_test.TabIndex = 39;
-            this.btn_test.Text = "dane testowe";
-            this.btn_test.UseVisualStyleBackColor = true;
-            this.btn_test.Click += new System.EventHandler(this.btn_test_Click);
             // 
             // lbl_gender
             // 
@@ -3123,7 +3111,6 @@ namespace ProjektMagazyn
         private System.Windows.Forms.Button btn_cancel;
         private System.Windows.Forms.Label lbl_gender;
         private System.Windows.Forms.ComboBox cmbx_gender;
-        private Button btn_test;
         private TabPage tabPage_edit_user;
         private Label label4;
         private ComboBox cmbx_gender_edit;

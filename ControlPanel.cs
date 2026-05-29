@@ -693,22 +693,6 @@ namespace ProjektMagazyn
             }
         }
 
-        private void btn_test_Click(object sender, EventArgs e)
-        {
-            msktbx_user_login.Text = "langusta";
-            msktbx_user_name.Text = "Ola";
-            msktbx_user_surname.Text = "Nobel";
-            cmbx_gender.Text = "kobieta";
-            msktbx_pesel.Text = "00231900100";
-            msktbx_email.Text = "aa@aaaa.a";
-            msktbx_phone.Text = "222222222";
-            dtpckr_birthdate.Value = new DateTime(2000, 3, 19);
-            msktbx_city.Text = "Chrząszczowice";
-            msktbx_street.Text = "Łęczna";
-            msktbx_street_number.Text = "22";
-            msktbx_locale_number.Text = "22";
-        }
-
         private void btn_close_view_Click(object sender, EventArgs e)
         {
             dotNetBarTabControl_manage_users.SelectedIndex = 0;
