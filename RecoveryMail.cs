@@ -76,13 +76,14 @@ namespace ProjektMagazyn
                     client.EnableSsl = true;
 
                     string body =
-                        $"Twoje nowe hasło: {newPassword}\n\n" +
-                        $"Jeśli to nie Ty, zignoruj tę wiadomość.";
+                        $"Wygenerowano nowe hasło dla żądajacego użytkownika.\n\n" +
+                        $"Nowe hasło: {newPassword}\n\n" +
+                        $"Jeśli to nie Ty dokonywałeś odzyskania hasła, zignoruj tę wiadomość.";
 
                     var mail = new MailMessage
                     {
                         From = new MailAddress(auth.FromEmail),
-                        Subject = "Reset hasła",
+                        Subject = "Odzyskanie hasła",
                         Body = body,
                         IsBodyHtml = false
                     };

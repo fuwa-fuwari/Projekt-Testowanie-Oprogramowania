@@ -179,7 +179,7 @@ namespace ProjektMagazyn
                     secretsauceFilename
                 );
 
-                MessageBox.Show("Jeśli login istnieje w bazie nowe hasło zostało wysłane na przypisany adres email.");
+                MessageBox.Show("Jeśli login istnieje w bazie wiadomość z odzyskanym hasłem została wysłana.\n(Wiadomość można odebrać w skrzynce Mailtrap Inbox.)");
             }
             catch (Exception ex)
             {
