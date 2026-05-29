@@ -70,6 +70,7 @@ namespace ProjektMagazyn
         {
 
             ZablokujPolaEdycji();
+            database.RoleListClb(clb_add_user_role);
 
             if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
                 dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
@@ -110,6 +111,31 @@ namespace ProjektMagazyn
                 database.UserListClb(clb_users_group_edit);
                 WczytajUprawnienia();
                 WczytajUzytkownikowZUprawnieniami();
+                ZaladujListeUzytkownikow();
+
+                if (cmbx_select_user_role_edit.Items.Count == 0)
+                {
+                    cmbx_select_user_role_edit.Enabled = false;
+                    btn_save_role_changes.Enabled = false;
+                    MessageBox.Show("Brak zarejestrowanych użytkowników w systemie. Edycja uprawnień jest niemożliwa.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    cmbx_select_user_role_edit.Enabled = true;
+                    btn_save_role_changes.Enabled = true;
+                }
+
+                if (clb_users_group_edit.Items.Count == 0)
+                {
+                    clb_roles_group_edit.Enabled = false;
+                    btn_group_edit_save.Enabled = false;
+                    MessageBox.Show("Brak zarejestrowanych użytkowników w systemie. Masowa edycja uprawnień jest niemożliwa.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    clb_roles_group_edit.Enabled = true;
+                    btn_group_edit_save.Enabled = true;
+                }
             }
             else if (dotNetBarTabControl_main_view.SelectedTab == tabPage_manage_warehouse)
             {
@@ -239,7 +265,7 @@ namespace ProjektMagazyn
         private void btn_add_user_Click(object sender, EventArgs e)
         {
             Validation validation = new Validation();
-            errorProvider.Clear(); 
+            errorProvider.Clear();
 
             var login = msktbx_user_login.Text.Trim();
             var name = msktbx_user_name.Text.Trim();
@@ -257,11 +283,11 @@ namespace ProjektMagazyn
             int invalids = 0;
 
             List<Control> textboxes = new List<Control>
-            {
-                msktbx_user_login, msktbx_user_name, msktbx_user_surname, cmbx_gender,
-                msktbx_pesel, msktbx_email, msktbx_phone, dtpckr_birthdate,
-                msktbx_city, msktbx_street, msktbx_postal_code, msktbx_street_number, msktbx_locale_number
-            };
+    {
+        msktbx_user_login, msktbx_user_name, msktbx_user_surname, cmbx_gender,
+        msktbx_pesel, msktbx_email, msktbx_phone, dtpckr_birthdate,
+        msktbx_city, msktbx_street, msktbx_postal_code, msktbx_street_number, msktbx_locale_number
+    };
 
             foreach (var textbox in textboxes) textbox.BackColor = Color.White;
             clb_add_user_role.BackColor = Color.White;
@@ -319,17 +345,17 @@ namespace ProjektMagazyn
             if (!validation.valid_postal_code(postal_code))
             {
                 invalids++; msktbx_postal_code.BackColor = Color.Red;
-                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagania kodu pocztowego:\n Format XX-XXX, X – cyfra");   
+                errorProvider.SetError(msktbx_postal_code, "Wprowadzono błędny kod pocztowy\nWymagania kodu pocztowego:\n Format XX-XXX, X – cyfra");
             }
             if (!validation.valid_street_number(street_number))
             {
                 invalids++; msktbx_street_number.BackColor = Color.Red;
                 errorProvider.SetError(msktbx_street_number, "Brak wymaganych pól");
             }
-            
+
             if (invalids != 0)
             {
-                validation.incorrect_input();
+                MessageBox.Show("Wprowadzono nieprawidłowe dane!", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -360,7 +386,8 @@ namespace ProjektMagazyn
                 if (loginExists) { msktbx_user_login.BackColor = Color.Red; errorProvider.SetError(msktbx_user_login, "Ten login już istnieje w bazie"); }
                 if (peselExists) { msktbx_pesel.BackColor = Color.Red; errorProvider.SetError(msktbx_pesel, "Ten numer pesel już istnieje w bazie"); }
                 if (emailExists) { msktbx_email.BackColor = Color.Red; errorProvider.SetError(msktbx_email, "Ten adres email już istnieje w bazie"); }
-                validation.incorrect_input();
+
+                MessageBox.Show("Wprowadzono nieprawidłowe dane!", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -373,45 +400,66 @@ namespace ProjektMagazyn
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = @"
-                        INSERT INTO Uzytkownicy
-                        (Login, HasloHash, Imie, Nazwisko, Miejscowosc, KodPocztowy, Ulica, NumerPosesji, NumerLokalu, PESEL, DataUrodzenia, Plec, Email, Telefon)
-                        VALUES
-                        (@login, @haslo, @imie, @nazwisko, @miasto, @kod, @ulica, @nrPos, @nrLok, @pesel, @dataUr, @plec, @email, @telefon);
-                        SELECT SCOPE_IDENTITY();";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlTransaction transaction = conn.BeginTransaction())
                     {
-                        cmd.Parameters.AddWithValue("@login", login);
-                        cmd.Parameters.AddWithValue("@haslo", hashed_password);
-                        cmd.Parameters.AddWithValue("@imie", name);
-                        cmd.Parameters.AddWithValue("@nazwisko", surname);
-                        cmd.Parameters.AddWithValue("@miasto", city);
-                        cmd.Parameters.AddWithValue("@kod", postal_code);
-                        cmd.Parameters.AddWithValue("@ulica", street ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@nrPos", street_number);
-                        cmd.Parameters.AddWithValue("@nrLok", string.IsNullOrEmpty(locale_number) ? (object)DBNull.Value : locale_number);
-                        cmd.Parameters.AddWithValue("@pesel", pesel);
-                        cmd.Parameters.AddWithValue("@dataUr", birthdate);
-                        cmd.Parameters.AddWithValue("@plec", gender);
-                        cmd.Parameters.AddWithValue("@email", email);
-                        cmd.Parameters.AddWithValue("@telefon", phone);
-                        int newUserId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                        string insertPermQuery = "INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikID, UprawnienieID) VALUES (@uid, @pid)";
-                        using (SqlCommand role_cmd = new SqlCommand(insertPermQuery, conn))
+                        try
                         {
-                            role_cmd.Parameters.Add("@uid", SqlDbType.Int).Value = newUserId;
-                            role_cmd.Parameters.Add("@pid", SqlDbType.Int);
+                            string query = @"INSERT INTO Uzytkownicy (Login, HasloHash, Imie, Nazwisko, Miejscowosc, KodPocztowy, Ulica, NumerPosesji, NumerLokalu, PESEL, DataUrodzenia, Plec, Email, Telefon) 
+                                     VALUES (@login, @haslo, @imie, @nazwisko, @miasto, @kod, @ulica, @nrPos, @nrLok, @pesel, @dataUr, @plec, @email, @telefon); 
+                                     SELECT SCOPE_IDENTITY();";
 
-                            foreach (DataRowView item in clb_add_user_role.CheckedItems)
+                            int newUserId;
+                            using (SqlCommand cmd = new SqlCommand(query, conn, transaction))
                             {
-                                role_cmd.Parameters["@pid"].Value = (int)item["UprawnienieID"];
-                                role_cmd.ExecuteNonQuery();
+                                cmd.Parameters.AddWithValue("@login", login);
+                                cmd.Parameters.AddWithValue("@haslo", hashed_password);
+                                cmd.Parameters.AddWithValue("@imie", name);
+                                cmd.Parameters.AddWithValue("@nazwisko", surname);
+                                cmd.Parameters.AddWithValue("@miasto", city);
+                                cmd.Parameters.AddWithValue("@kod", postal_code);
+                                cmd.Parameters.AddWithValue("@ulica", street ?? (object)DBNull.Value);
+                                cmd.Parameters.AddWithValue("@nrPos", street_number);
+                                cmd.Parameters.AddWithValue("@nrLok", string.IsNullOrEmpty(locale_number) ? (object)DBNull.Value : locale_number);
+                                cmd.Parameters.AddWithValue("@pesel", pesel);
+                                cmd.Parameters.AddWithValue("@dataUr", birthdate);
+                                cmd.Parameters.AddWithValue("@plec", gender);
+                                cmd.Parameters.AddWithValue("@email", email);
+                                cmd.Parameters.AddWithValue("@telefon", phone);
+
+                                newUserId = Convert.ToInt32(cmd.ExecuteScalar());
                             }
+
+                            string insertPermQuery = "INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikID, UprawnienieID) VALUES (@uid, @pid)";
+                            using (SqlCommand role_cmd = new SqlCommand(insertPermQuery, conn, transaction))
+                            {
+                                role_cmd.Parameters.Add("@uid", SqlDbType.Int).Value = newUserId;
+                                role_cmd.Parameters.Add("@pid", SqlDbType.Int);
+
+                                foreach (DataRowView item in clb_add_user_role.CheckedItems)
+                                {
+                                    role_cmd.Parameters["@pid"].Value = (int)item["UprawnienieID"];
+                                    role_cmd.ExecuteNonQuery();
+                                }
+                            }
+
+                            string insertHistoryQuery = "INSERT INTO HistoriaHasel (UzytkownikID, HasloHash, DataZmiany) VALUES (@uid, @hash, GETDATE())";
+                            using (SqlCommand histCmd = new SqlCommand(insertHistoryQuery, conn, transaction))
+                            {
+                                histCmd.Parameters.AddWithValue("@uid", newUserId);
+                                histCmd.Parameters.AddWithValue("@hash", hashed_password);
+                                histCmd.ExecuteNonQuery();
+                            }
+
+                            transaction.Commit();
+                        }
+                        catch (Exception exTransaction)
+                        {
+                            transaction.Rollback();
+                            throw exTransaction;
                         }
                     }
                 }
+
                 MessageBox.Show("Dodano użytkownika do bazy");
                 OdswiezTabeleUzytkownikow();
                 WczytajUzytkownikowDoListy();
@@ -824,7 +872,7 @@ namespace ProjektMagazyn
             };
             foreach (var ctrl in controls) ctrl.Enabled = true;
 
-            MessageBox.Show("Pola zostały odblokowane. Możesz wprowadzić zmiany");
+            MessageBox.Show("Pola zostały odblokowane. Możesz wprowadzić zmiany.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btn_save_edit_Click(object sender, EventArgs e)
@@ -856,7 +904,7 @@ namespace ProjektMagazyn
 
             if (!hasChanges)
             {
-                MessageBox.Show("Nie wprowadzono żadnych zmian.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Nie wprowadzono żadnych zmian", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ZablokujPolaEdycji();
                 return;
             }
@@ -932,7 +980,7 @@ namespace ProjektMagazyn
 
             if (invalids != 0)
             {
-                validation.incorrect_input();
+                MessageBox.Show("Wprowadzono nieprawidłowe dane", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -974,7 +1022,7 @@ namespace ProjektMagazyn
                 if (peselExists) { msktbx_pesel_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_pesel_edit, "Ten numer pesel już istnieje w bazie"); }
                 if (emailExists) { msktbx_email_edit.BackColor = Color.Red; errorProvider.SetError(msktbx_email_edit, "Ten adres email już istnieje w bazie"); }
 
-                MessageBox.Show("Wprowadzono nieprawidłowe dane!", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Wprowadzono nieprawidłowe dane", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -1035,6 +1083,18 @@ namespace ProjektMagazyn
             if (dotNetBarTabControl_manage_users.SelectedTab == tabPage_edit_user)
             {
                 WczytajUzytkownikowDoListy();
+
+                if (cmbx_select_user_edit.Items.Count == 0)
+                {
+                    cmbx_select_user_edit.Enabled = false;
+                    btn_unlock_edit.Enabled = false;
+                    MessageBox.Show("Brak zarejestrowanych użytkowników w systemie. Edycja jest niemożliwa.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    cmbx_select_user_edit.Enabled = true;
+                    btn_unlock_edit.Enabled = true;
+                }
             }
             if (dotNetBarTabControl_manage_users.SelectedTab == tabPage_my_profile)
             {
@@ -1117,8 +1177,14 @@ namespace ProjektMagazyn
 
                     try
                     {
-                        using (SqlCommand deleteCmd = new SqlCommand(
-                            "DELETE FROM Uzytkownicy_Uprawnienia WHERE UzytkownikID = @UserID", conn, transaction))
+                        int adminRoleId = -1;
+                        using (SqlCommand cmdGetAdminId = new SqlCommand("SELECT UprawnienieId FROM Uprawnienia WHERE Nazwa = 'Administrator'", conn, transaction))
+                        {
+                            object result = cmdGetAdminId.ExecuteScalar();
+                            if (result != null) adminRoleId = (int)result;
+                        }
+
+                        using (SqlCommand deleteCmd = new SqlCommand("DELETE FROM Uzytkownicy_Uprawnienia WHERE UzytkownikID = @UserID", conn, transaction))
                         {
                             deleteCmd.Parameters.AddWithValue("@UserID", userId);
                             deleteCmd.ExecuteNonQuery();
@@ -1129,13 +1195,28 @@ namespace ProjektMagazyn
                             DataRowView drv = (DataRowView)item;
                             int uprawnienieId = Convert.ToInt32(drv["UprawnienieID"]);
 
-                            using (SqlCommand insertCmd = new SqlCommand(
-                                "INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikID, UprawnienieID) VALUES (@UserID, @UprawnienieID)",
-                                conn, transaction))
+                            using (SqlCommand insertCmd = new SqlCommand("INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikID, UprawnienieID) VALUES (@UserID, @UprawnienieID)", conn, transaction))
                             {
                                 insertCmd.Parameters.AddWithValue("@UserID", userId);
                                 insertCmd.Parameters.AddWithValue("@UprawnienieID", uprawnienieId);
                                 insertCmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        if (adminRoleId != -1)
+                        {
+                            int adminCount = 0;
+                            using (SqlCommand cmdCheckAdmin = new SqlCommand("SELECT COUNT(DISTINCT UzytkownikId) FROM Uzytkownicy_Uprawnienia WHERE UprawnienieId = @id", conn, transaction))
+                            {
+                                cmdCheckAdmin.Parameters.AddWithValue("@id", adminRoleId);
+                                adminCount = (int)cmdCheckAdmin.ExecuteScalar();
+                            }
+
+                            if (adminCount == 0)
+                            {
+                                transaction.Rollback();
+                                MessageBox.Show("Nie można odebrać uprawnień. W systemie musi pozostać co najmniej jedno aktywne konto z rolą Administratora.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
                             }
                         }
 
@@ -2640,27 +2721,62 @@ namespace ProjektMagazyn
                 MessageBox.Show("Hasło użytkownika nie może być puste", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            string errorKryteria = "Hasło nie spełnia wymaganych kryteriów:\n- długość od 8 do 15 znaków\n- co najmniej jedna wielka litera\n- co najmniej jedna mała litera\n- co najmniej jedna cyfra oraz znak specjalny\n- musi być inne niż 3 ostatnio nadane dla danego użytkownika";
 
             if (!validation.valid_password(newPassword))
             {
-                MessageBox.Show("Hasło nie spełnia wymaganych kryteriów:\n- długość od 8 do 15 znaków\n- co najmniej jedna wielka litera\n- co najmniej jedna mała litera\n- co najmniej jedna cyfra oraz znak specjalny", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(errorKryteria, "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string getHashQuery = "SELECT HasloHash FROM Uzytkownicy WHERE Login = @login";
+                string getHashQuery = "SELECT UzytkownikID, HasloHash FROM Uzytkownicy WHERE Login = @login";
                 string currentHash = "";
+                int targetUserId = -1;
+
                 using (SqlCommand cmdHash = new SqlCommand(getHashQuery, conn))
                 {
                     cmdHash.Parameters.AddWithValue("@login", login);
-                    currentHash = cmdHash.ExecuteScalar()?.ToString();
+                    using (SqlDataReader r = cmdHash.ExecuteReader())
+                    {
+                        if (r.Read())
+                        {
+                            targetUserId = r.GetInt32(0);
+                            currentHash = r.GetString(1);
+                        }
+                    }
                 }
 
                 if (SecurePasswordHasher.Verify(newPassword, currentHash))
                 {
                     MessageBox.Show("Nie wprowadzono żadnych zmian", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                bool isUsedRecently = false;
+                string historyQuery = "SELECT TOP 3 HasloHash FROM HistoriaHasel WHERE UzytkownikID = @uid ORDER BY DataZmiany DESC";
+                using (SqlCommand cmdHist = new SqlCommand(historyQuery, conn))
+                {
+                    cmdHist.Parameters.AddWithValue("@uid", targetUserId);
+                    using (SqlDataReader rHist = cmdHist.ExecuteReader())
+                    {
+                        while (rHist.Read())
+                        {
+                            string historicalHash = rHist.GetString(0);
+                            if (SecurePasswordHasher.Verify(newPassword, historicalHash))
+                            {
+                                isUsedRecently = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (isUsedRecently)
+                {
+                    MessageBox.Show(errorKryteria, "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -2676,8 +2792,16 @@ namespace ProjektMagazyn
                             cmd.Parameters.AddWithValue("@login", login);
                             cmd.ExecuteNonQuery();
                         }
-                        transaction.Commit();
 
+                        string insertHistQuery = "INSERT INTO HistoriaHasel (UzytkownikID, HasloHash, DataZmiany) VALUES (@uid, @hash, GETDATE())";
+                        using (SqlCommand cmdHist2 = new SqlCommand(insertHistQuery, conn, transaction))
+                        {
+                            cmdHist2.Parameters.AddWithValue("@uid", targetUserId);
+                            cmdHist2.Parameters.AddWithValue("@hash", newHash);
+                            cmdHist2.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
                         MessageBox.Show("Hasło zostało zmienione.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         tbx_admin_password_reset.Text = "";
                     }

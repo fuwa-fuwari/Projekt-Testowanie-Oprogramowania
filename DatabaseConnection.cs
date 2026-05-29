@@ -170,14 +170,17 @@ namespace ProjektMagazyn
         }
         public void SynchronizeRoles(List<int> userIds, List<int> roleIds)
         {
+            // --- WYJĄTEK E2: Brak zaznaczonych użytkowników (Bez kropki na końcu) ---
             if (!userIds.Any())
             {
-                MessageBox.Show("Wybierz użytkowników.");
+                MessageBox.Show("Wybierz użytkowników", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            // --- WYJĄTEK E1: Brak zaznaczonych uprawnień (Bez kropki na końcu) ---
             if (!roleIds.Any())
             {
-                MessageBox.Show("Wybierz uprawnienie do nadania.");
+                MessageBox.Show("Wybierz uprawnienia do nadania", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -201,8 +204,8 @@ namespace ProjektMagazyn
                         int adminBefore;
                         using (SqlCommand cmd = new SqlCommand(
                             @"SELECT COUNT(DISTINCT UzytkownikId)
-                            FROM Uzytkownicy_Uprawnienia
-                            WHERE UprawnienieId = @id",
+                    FROM Uzytkownicy_Uprawnienia
+                    WHERE UprawnienieId = @id",
                             conn, tran))
                         {
                             cmd.Parameters.AddWithValue("@id", adminRoleId);
@@ -215,8 +218,8 @@ namespace ProjektMagazyn
 
                             using (SqlCommand cmd = new SqlCommand(
                                 @"SELECT UprawnienieId 
-                                FROM Uzytkownicy_Uprawnienia 
-                                WHERE UzytkownikId = @userId",
+                        FROM Uzytkownicy_Uprawnienia 
+                        WHERE UzytkownikId = @userId",
                                 conn, tran))
                             {
                                 cmd.Parameters.AddWithValue("@userId", userId);
@@ -234,7 +237,7 @@ namespace ProjektMagazyn
                             {
                                 using (SqlCommand cmd = new SqlCommand(
                                     @"INSERT INTO Uzytkownicy_Uprawnienia (UzytkownikId, UprawnienieId)
-                                    VALUES (@u, @r)",
+                            VALUES (@u, @r)",
                                     conn, tran))
                                 {
                                     cmd.Parameters.AddWithValue("@u", userId);
@@ -250,7 +253,7 @@ namespace ProjektMagazyn
                             {
                                 using (SqlCommand cmd = new SqlCommand(
                                     @"DELETE FROM Uzytkownicy_Uprawnienia
-                                    WHERE UzytkownikId = @u AND UprawnienieId = @r",
+                            WHERE UzytkownikId = @u AND UprawnienieId = @r",
                                     conn, tran))
                                 {
                                     cmd.Parameters.AddWithValue("@u", userId);
@@ -264,8 +267,8 @@ namespace ProjektMagazyn
                         int adminAfter;
                         using (SqlCommand cmd = new SqlCommand(
                             @"SELECT COUNT(DISTINCT UzytkownikId)
-                            FROM Uzytkownicy_Uprawnienia
-                            WHERE UprawnienieId = @id",
+                    FROM Uzytkownicy_Uprawnienia
+                    WHERE UprawnienieId = @id",
                             conn, tran))
                         {
                             cmd.Parameters.AddWithValue("@id", adminRoleId);
@@ -275,24 +278,24 @@ namespace ProjektMagazyn
                         if (adminAfter == 0)
                         {
                             tran.Rollback();
-                            MessageBox.Show("Musi pozostać przynajmniej jeden administrator.");
+                            MessageBox.Show("Nie można wykonać operacji. W systemie musi pozostać co najmniej jedno aktywne konto z rolą Administratora.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
 
                         if (changes == 0)
                         {
                             tran.Rollback();
-                            MessageBox.Show("Brak zmian.");
+                            MessageBox.Show("Brak zmian", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
                         tran.Commit();
-                        MessageBox.Show("Zapisano zmiany.");
+                        MessageBox.Show("Zapisano zmiany", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
                         tran.Rollback();
-                        MessageBox.Show("Błąd: " + ex.Message);
+                        MessageBox.Show("Błąd: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
