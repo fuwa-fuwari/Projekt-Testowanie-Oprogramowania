@@ -47,7 +47,7 @@ namespace ProjektMagazyn
 
             if (!database.CheckLogin(login))
             {
-                MessageBox.Show("Podano błedne dane.");
+                MessageBox.Show("Błędne dane logowania.");
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace ProjektMagazyn
 
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Niepoprawne dane logowania.");
+                MessageBox.Show("Wprowadź dane logowania");
                 return;
             }
 
@@ -66,7 +66,8 @@ namespace ProjektMagazyn
 
             if (info.LockoutEnd != null && info.LockoutEnd > DateTime.Now)
             {
-                MessageBox.Show($"Login '{login}' jest chwilowo zablokowany.");
+                string LockoutHour = info.LockoutEnd.Value.ToString("HH:mm");
+                MessageBox.Show($"Login '{login}' jest chwilowo zablokowany.\nGodzina odblokowania {LockoutHour}");
                 return;
             }
 
@@ -75,9 +76,11 @@ namespace ProjektMagazyn
             if (userId == null || hash == null || !SecurePasswordHasher.Verify(password, hash))
             {
                 info.FailedAttempts++;
+                MessageBox.Show("Błędne dane logowania.");
 
                 if (info.FailedAttempts >= 3)
                 {
+                    MessageBox.Show("Konto chwilowo zablokowane.");
                     info.LockoutEnd = DateTime.Now.AddSeconds(60);
                     info.FailedAttempts = 0;
 
@@ -87,7 +90,7 @@ namespace ProjektMagazyn
                 }
                 else
                 {
-                    lbl_login_status.Text = $"Błędne dane ({info.FailedAttempts}/3)";
+                    lbl_login_status.Text = $"Błędne dane logowania ({info.FailedAttempts}/3)";
                 }
 
                 return;
@@ -146,7 +149,7 @@ namespace ProjektMagazyn
 
             if (!database.CheckLogin(login))
             {
-                MessageBox.Show("Podano błedne dane.");
+                MessageBox.Show("Podano błędne dane.");
                 return;
             }
 
@@ -167,7 +170,6 @@ namespace ProjektMagazyn
 
                 if (!success)
                 {
-                    MessageBox.Show("Nie znaleziono użytkownika");
                     return;
                 }
 
