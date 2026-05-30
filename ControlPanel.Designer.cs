@@ -295,6 +295,13 @@ namespace ProjektMagazyn
             this.tabPage_manage_sales = new System.Windows.Forms.TabPage();
             this.btn_logout = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tabPage_vat_dict = new System.Windows.Forms.TabPage();
+            this.dgv_vat_dict = new System.Windows.Forms.DataGridView();
+            this.btn_delete_vat = new System.Windows.Forms.Button();
+            this.tbx_new_vat_rate = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
+            this.btn_add_vat = new System.Windows.Forms.Button();
+            this.btn_cancel_add_vat = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_sale_basket)).BeginInit();
             this.tabControl_sales.SuspendLayout();
             this.tabPage_register_sale.SuspendLayout();
@@ -331,6 +338,8 @@ namespace ProjektMagazyn
             this.tabPage_Delivery_Details.SuspendLayout();
             this.tabPage_Vat_Change.SuspendLayout();
             this.tabPage_manage_sales.SuspendLayout();
+            this.tabPage_vat_dict.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_vat_dict)).BeginInit();
             this.SuspendLayout();
             // 
             // dgv_sale_basket
@@ -2123,6 +2132,7 @@ namespace ProjektMagazyn
             this.tabPage_items.Controls.Add(this.tabPage_Item_History);
             this.tabPage_items.Controls.Add(this.tabPage_Delivery_Details);
             this.tabPage_items.Controls.Add(this.tabPage_Vat_Change);
+            this.tabPage_items.Controls.Add(this.tabPage_vat_dict);
             this.tabPage_items.ItemSize = new System.Drawing.Size(44, 136);
             this.tabPage_items.Location = new System.Drawing.Point(0, 4);
             this.tabPage_items.Multiline = true;
@@ -2273,6 +2283,7 @@ namespace ProjektMagazyn
             this.dgv_warehouse_items.Size = new System.Drawing.Size(603, 189);
             this.dgv_warehouse_items.TabIndex = 41;
             this.dgv_warehouse_items.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_warehouse_items_CellDoubleClick);
+            this.dgv_warehouse_items.SelectionChanged += new System.EventHandler(this.dgv_warehouse_items_SelectionChanged);
             // 
             // btn_register_item_cancel
             // 
@@ -2306,12 +2317,6 @@ namespace ProjektMagazyn
             // 
             this.cmbx_item_vat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbx_item_vat.FormattingEnabled = true;
-            this.cmbx_item_vat.Items.AddRange(new object[] {
-            "23",
-            "8",
-            "5",
-            "0",
-            "zw"});
             this.cmbx_item_vat.Location = new System.Drawing.Point(172, 399);
             this.cmbx_item_vat.Name = "cmbx_item_vat";
             this.cmbx_item_vat.Size = new System.Drawing.Size(356, 21);
@@ -2954,11 +2959,6 @@ namespace ProjektMagazyn
             // 
             this.cmb_new_vat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_new_vat.FormattingEnabled = true;
-            this.cmb_new_vat.Items.AddRange(new object[] {
-            "0",
-            "5",
-            "8",
-            "23"});
             this.cmb_new_vat.Location = new System.Drawing.Point(6, 366);
             this.cmb_new_vat.Name = "cmb_new_vat";
             this.cmb_new_vat.Size = new System.Drawing.Size(121, 21);
@@ -2977,9 +2977,9 @@ namespace ProjektMagazyn
             this.lbl_vat_mode_title.AutoSize = true;
             this.lbl_vat_mode_title.Location = new System.Drawing.Point(3, 240);
             this.lbl_vat_mode_title.Name = "lbl_vat_mode_title";
-            this.lbl_vat_mode_title.Size = new System.Drawing.Size(41, 13);
+            this.lbl_vat_mode_title.Size = new System.Drawing.Size(37, 13);
             this.lbl_vat_mode_title.TabIndex = 0;
-            this.lbl_vat_mode_title.Text = "label63";
+            this.lbl_vat_mode_title.Text = "Towar";
             // 
             // tabPage_manage_sales
             // 
@@ -3006,6 +3006,78 @@ namespace ProjektMagazyn
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // tabPage_vat_dict
+            // 
+            this.tabPage_vat_dict.Controls.Add(this.btn_cancel_add_vat);
+            this.tabPage_vat_dict.Controls.Add(this.btn_add_vat);
+            this.tabPage_vat_dict.Controls.Add(this.label31);
+            this.tabPage_vat_dict.Controls.Add(this.tbx_new_vat_rate);
+            this.tabPage_vat_dict.Controls.Add(this.btn_delete_vat);
+            this.tabPage_vat_dict.Controls.Add(this.dgv_vat_dict);
+            this.tabPage_vat_dict.Location = new System.Drawing.Point(140, 4);
+            this.tabPage_vat_dict.Name = "tabPage_vat_dict";
+            this.tabPage_vat_dict.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_vat_dict.Size = new System.Drawing.Size(616, 529);
+            this.tabPage_vat_dict.TabIndex = 5;
+            this.tabPage_vat_dict.Text = "Stawki VAT";
+            this.tabPage_vat_dict.UseVisualStyleBackColor = true;
+            // 
+            // dgv_vat_dict
+            // 
+            this.dgv_vat_dict.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_vat_dict.Location = new System.Drawing.Point(6, 3);
+            this.dgv_vat_dict.Name = "dgv_vat_dict";
+            this.dgv_vat_dict.ReadOnly = true;
+            this.dgv_vat_dict.Size = new System.Drawing.Size(604, 281);
+            this.dgv_vat_dict.TabIndex = 0;
+            // 
+            // btn_delete_vat
+            // 
+            this.btn_delete_vat.Location = new System.Drawing.Point(491, 289);
+            this.btn_delete_vat.Name = "btn_delete_vat";
+            this.btn_delete_vat.Size = new System.Drawing.Size(119, 23);
+            this.btn_delete_vat.TabIndex = 1;
+            this.btn_delete_vat.Text = "Usuń";
+            this.btn_delete_vat.UseVisualStyleBackColor = true;
+            this.btn_delete_vat.Click += new System.EventHandler(this.btn_delete_vat_Click);
+            // 
+            // tbx_new_vat_rate
+            // 
+            this.tbx_new_vat_rate.Location = new System.Drawing.Point(125, 292);
+            this.tbx_new_vat_rate.Name = "tbx_new_vat_rate";
+            this.tbx_new_vat_rate.Size = new System.Drawing.Size(100, 20);
+            this.tbx_new_vat_rate.TabIndex = 2;
+            this.tbx_new_vat_rate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbx_new_vat_rate_KeyPress);
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(6, 295);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(113, 13);
+            this.label31.TabIndex = 3;
+            this.label31.Text = "Nowa stawka VAT (%)";
+            // 
+            // btn_add_vat
+            // 
+            this.btn_add_vat.Location = new System.Drawing.Point(231, 289);
+            this.btn_add_vat.Name = "btn_add_vat";
+            this.btn_add_vat.Size = new System.Drawing.Size(131, 23);
+            this.btn_add_vat.TabIndex = 4;
+            this.btn_add_vat.Text = "Dodaj";
+            this.btn_add_vat.UseVisualStyleBackColor = true;
+            this.btn_add_vat.Click += new System.EventHandler(this.btn_add_vat_Click);
+            // 
+            // btn_cancel_add_vat
+            // 
+            this.btn_cancel_add_vat.Location = new System.Drawing.Point(360, 289);
+            this.btn_cancel_add_vat.Name = "btn_cancel_add_vat";
+            this.btn_cancel_add_vat.Size = new System.Drawing.Size(133, 23);
+            this.btn_cancel_add_vat.TabIndex = 5;
+            this.btn_cancel_add_vat.Text = "Anuluj";
+            this.btn_cancel_add_vat.UseVisualStyleBackColor = true;
+            this.btn_cancel_add_vat.Click += new System.EventHandler(this.btn_cancel_add_vat_Click);
             // 
             // ControlPanel
             // 
@@ -3072,6 +3144,9 @@ namespace ProjektMagazyn
             this.tabPage_Vat_Change.ResumeLayout(false);
             this.tabPage_Vat_Change.PerformLayout();
             this.tabPage_manage_sales.ResumeLayout(false);
+            this.tabPage_vat_dict.ResumeLayout(false);
+            this.tabPage_vat_dict.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_vat_dict)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -3342,5 +3417,12 @@ namespace ProjektMagazyn
         private Button btn_admin_password_reset;
         private TextBox tbx_admin_password_reset;
         private Label lbl_edit_password;
+        private TabPage tabPage_vat_dict;
+        private Label label31;
+        private TextBox tbx_new_vat_rate;
+        private Button btn_delete_vat;
+        private DataGridView dgv_vat_dict;
+        private Button btn_cancel_add_vat;
+        private Button btn_add_vat;
     }
 }

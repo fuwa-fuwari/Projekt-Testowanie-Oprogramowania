@@ -522,7 +522,6 @@ namespace ProjektMagazyn
                         DataTable dt = new DataTable();
                         da.Fill(dt);
 
-                        // --- WYJĄTEK E3: Brak rodzajów towarów ---
                         if (dt.Rows.Count == 0)
                         {
                             MessageBox.Show("Brak rodzajów towarów.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -678,18 +677,34 @@ namespace ProjektMagazyn
                     {
                         try
                         {
+                            string deleteSalesQuery = "DELETE FROM PozycjeSprzedazy WHERE TowarID = @itemId";
+                            using (SqlCommand cmd = new SqlCommand(deleteSalesQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            string deleteDeliveryQuery = "DELETE FROM RejestracjaDostaw WHERE TowarID = @itemId";
+                            using (SqlCommand cmd = new SqlCommand(deleteDeliveryQuery, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@itemId", itemId);
+                                cmd.ExecuteNonQuery();
+                            }
+
                             string deleteVatQuery = "DELETE FROM StawkiVAT WHERE TowarID = @itemId";
                             using (SqlCommand cmd = new SqlCommand(deleteVatQuery, conn, transaction))
                             {
                                 cmd.Parameters.AddWithValue("@itemId", itemId);
                                 cmd.ExecuteNonQuery();
                             }
+
                             string deleteStockQuery = "DELETE FROM StanyMagazynowe WHERE TowarID = @itemId";
                             using (SqlCommand cmd = new SqlCommand(deleteStockQuery, conn, transaction))
                             {
                                 cmd.Parameters.AddWithValue("@itemId", itemId);
                                 cmd.ExecuteNonQuery();
                             }
+
                             string deleteItemQuery = "DELETE FROM Towary WHERE TowarID = @itemId";
                             using (SqlCommand cmd = new SqlCommand(deleteItemQuery, conn, transaction))
                             {
@@ -767,10 +782,9 @@ namespace ProjektMagazyn
                             DataTable dt = new DataTable();
                             da.Fill(dt);
 
-                            // --- Wyjątek E2: Brak towarów w bazie ---
                             if (dt.Rows.Count == 0)
                             {
-                                MessageBox.Show("Brak towarów spełniających podane kryteria.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                dgv.DataSource = null;
                                 return false;
                             }
                             else
@@ -1248,6 +1262,126 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd podczas pobierania szczegółów sprzedaży: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return itemsTable;
+        }
+
+        public void DisplayVatRates(DataGridView dgv)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT VatID, Wartosc AS [Stawka VAT (%)] FROM SlownikVAT ORDER BY Wartosc";
+                    using (SqlDataAdapter da = new SqlDataAdapter(query, conn))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        if (dt.Rows.Count == 0)
+                        {
+                            MessageBox.Show("Brak stawek VAT", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            dgv.DataSource = null;
+                        }
+                        else
+                        {
+                            dgv.DataSource = dt;
+                            if (dgv.Columns["VatID"] != null)
+                            {
+                                dgv.Columns["VatID"].Visible = false;
+                            }
+                            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd pobierania stawek VAT: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public bool CheckIfVatRateExists(int vatValue)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT COUNT(1) FROM SlownikVAT WHERE Wartosc = @val";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@val", vatValue);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch { return true; } 
+        }
+
+        public bool AddNewVatRate(int vatValue)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "INSERT INTO SlownikVAT (Wartosc) VALUES (@val)";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@val", vatValue);
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd dodawania stawki VAT: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool CheckIfVatRateInUse(int vatValue)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    // Sprawdzamy czy stawka figuruje w historii zmian VAT (tabela StawkiVAT)
+                    string query = "SELECT COUNT(1) FROM StawkiVAT WHERE WartoscVAT = @val";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@val", vatValue);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch { return true; }
+        }
+        public bool DeleteVatRate(int vatId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "DELETE FROM SlownikVAT WHERE VatID = @id";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", vatId);
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd usuwania stawki VAT: " + ex.Message, "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
     }
 }
