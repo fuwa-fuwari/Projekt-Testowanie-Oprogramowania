@@ -50,6 +50,32 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd logowania: " + ex.Message);
             }
         }
+        public bool UsesRecoveredPassword(int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = @"
+                    SELECT UzywaOdzyskanegoHasla
+                    FROM Uzytkownicy
+                    WHERE UzytkownikID = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", userId);
+
+                    object result = cmd.ExecuteScalar();
+
+                    if (result != null && result != DBNull.Value)
+                    {
+                        return Convert.ToInt32(result) == 1;
+                    }
+
+                    return false;
+                }
+            }
+        }
         public void UserPermissions(int userId, List<int>currentUserPermissions)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -360,7 +386,7 @@ namespace ProjektMagazyn
             {
                 conn.Open();
                 string updateQuery = @"UPDATE Uzytkownicy 
-                                   SET HasloHash = @hash 
+                                   SET HasloHash = @hash, UzywaOdzyskanegoHasla = 1 
                                    WHERE Login = @login";
 
                 using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
@@ -371,6 +397,22 @@ namespace ProjektMagazyn
                 }
 
                 return true;
+            }
+        }
+        public void AfterRecoveredPasswordChanged(int userId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                string updateQuery = @"UPDATE Uzytkownicy 
+                                   SET UzywaOdzyskanegoHasla = 0
+                                   WHERE UzytkownikId = @Id";
+
+                using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
+                {
+                    updateCmd.Parameters.AddWithValue("@Id", userId);
+                    updateCmd.ExecuteNonQuery();
+                }
             }
         }
         public DataTable GetItemTypes()

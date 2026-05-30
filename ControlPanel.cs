@@ -59,7 +59,6 @@ namespace ProjektMagazyn
             loggedUserId = userId;
             LoadUserPermissions(loggedUserId);
             EnablePermittedTabs();
-            this.DoubleBuffered = true;
             this.Load += ControlPanel_Load;
             OdswiezUprawnieniaIZakladki();
 
@@ -71,26 +70,31 @@ namespace ProjektMagazyn
             ZablokujPolaEdycji();
             database.RoleListClb(clb_add_user_role);
 
-            //if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
-            //    dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
+            if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
+                dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
 
-            //if (tabPage_items.TabPages.Contains(tabPage_Item_History))
-            //    tabPage_items.TabPages.Remove(tabPage_Item_History);
+            if (tabPage_items.TabPages.Contains(tabPage_Item_History))
+                tabPage_items.TabPages.Remove(tabPage_Item_History);
 
-            //if (tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
-            //    tabPage_items.TabPages.Remove(tabPage_Delivery_Details);
+            if (tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
+                tabPage_items.TabPages.Remove(tabPage_Delivery_Details);
 
-            //if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
-            //    tabPage_items.TabPages.Remove(tabPage_Vat_Change);
+            if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
+                tabPage_items.TabPages.Remove(tabPage_Vat_Change);
 
-            //if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
-            //    tabControl_sales.TabPages.Remove(tabPage_sale_details);
+            if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
+                tabControl_sales.TabPages.Remove(tabPage_sale_details);
         }
         private void ControlPanel_Load(object sender, EventArgs e)
         {
-            NewPasswordPrompt newPasswordPrompt = new NewPasswordPrompt();
-            newPasswordPrompt.StartPosition = FormStartPosition.CenterParent;
-            newPasswordPrompt.ShowDialog(this);
+            bool usesRecoveredPassword = database.UsesRecoveredPassword(loggedUserId);
+            if (usesRecoveredPassword) 
+            {
+                NewPasswordPrompt newPasswordPrompt = new NewPasswordPrompt(loggedUserId);
+                newPasswordPrompt.StartPosition = FormStartPosition.CenterParent;
+                newPasswordPrompt.ShowDialog(this);
+            }
+            
         }
         private void dotNetBarTabControl_main_view_SelectedIndexChanged(object sender, EventArgs e)
         {

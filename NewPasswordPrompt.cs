@@ -12,13 +12,17 @@ namespace ProjektMagazyn
 {
     public partial class NewPasswordPrompt : Form
     {
-        public NewPasswordPrompt()
+        private int userId;
+        public NewPasswordPrompt(int loggedUserId)
         {
             InitializeComponent();
+            userId = loggedUserId;
         }
-
+        DatabaseConnection databaseConnection = new DatabaseConnection();
         private void btn_set_newpass_Click(object sender, EventArgs e)
         {
+            databaseConnection.AfterRecoveredPasswordChanged(userId);
+
             this.Close();
         }
     }
