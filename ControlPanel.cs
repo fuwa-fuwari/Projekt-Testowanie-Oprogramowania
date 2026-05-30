@@ -24,7 +24,6 @@ namespace ProjektMagazyn
         private List<TabPage> masterMainTabs = new List<TabPage>();
         private List<TabPage> masterSalesTabs = new List<TabPage>();
         private int selectedUserId = -1;
-        private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
         private List<int> currentUserPermissions = new List<int>();
         private int currentViewUserId = -1;
         private bool isFiltered = false;
@@ -34,17 +33,16 @@ namespace ProjektMagazyn
         private int vatChangeMode = 0; // 1 = Pojedynczy towar, 2 = Rodzaj towaru
         private int selectedVatItemId = -1;
         private int replenishItemId = -1;
-
         private DataTable dtBasket;
-
-        DatabaseConnection database = new DatabaseConnection();
         private ErrorProvider errorProvider = new ErrorProvider();
-
-        // Zmienne do sprawdzania, czy wprowadzono zmiany (można usnąć, ale będą wysyłane zapytania do bazy nawet, jeśli nic się nie zmieniło)
+        // Zmienne do sprawdzania, czy wprowadzono zmiany
         private string origName, origSurname, origGender, origPesel, origEmail, origPhone;
         private DateTime origBirthdate;
         private string origCity, origPostalCode, origStreet, origStreetNumber, origLocaleNumber;
         private int loggedUserId;
+
+        DatabaseConnection database = new DatabaseConnection();
+
         public ControlPanel(int userId)
         {
             InitializeComponent();
@@ -213,28 +211,7 @@ namespace ProjektMagazyn
         {
             currentUserPermissions.Clear();
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-
-                string query = @"
-                        SELECT UprawnienieID 
-                        FROM Uzytkownicy_Uprawnienia 
-                        WHERE UzytkownikID = @id";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@id", userId);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            currentUserPermissions.Add(reader.GetInt32(0));
-                        }
-                    }
-                }
-            }
+            database.UserPermissions(userId, currentUserPermissions);
         }
         private void EnablePermittedTabs()
         {
@@ -356,7 +333,7 @@ namespace ProjektMagazyn
             }
 
             bool emailExists = false, peselExists = false, loginExists = false;
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
             {
                 conn.Open();
                 string checkQuery = "SELECT Email, PESEL, Login FROM Uzytkownicy WHERE Email = @email OR PESEL = @pesel OR Login = @login";
@@ -393,7 +370,7 @@ namespace ProjektMagazyn
                 string newPassword = recoveryMail.GeneratePassword();
                 string hashed_password = SecurePasswordHasher.Hash(newPassword);
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
                     using (SqlTransaction transaction = conn.BeginTransaction())
@@ -540,7 +517,7 @@ namespace ProjektMagazyn
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
                     using (SqlTransaction transaction = conn.BeginTransaction())
@@ -613,7 +590,7 @@ namespace ProjektMagazyn
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
 
@@ -715,7 +692,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     string query = "SELECT UzytkownikID, Login + ' - ' + Imie + ' ' + Nazwisko AS DisplayText FROM Uzytkownicy WHERE ISNULL(CzyZapomniany, 0) = 0";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
@@ -778,7 +755,7 @@ namespace ProjektMagazyn
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
                     string query = "SELECT * FROM Uzytkownicy WHERE UzytkownikID = @id";
@@ -967,7 +944,7 @@ namespace ProjektMagazyn
             bool emailExists = false, peselExists = false, loginExists = false;
             var login = msktbx_user_login_edit.Text.Trim();
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
             {
                 conn.Open();
                 string checkQuery = @"
@@ -1008,7 +985,7 @@ namespace ProjektMagazyn
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
                     string query = @"
@@ -1082,7 +1059,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
                     string query = "SELECT * FROM Uzytkownicy WHERE UzytkownikID = @id";
@@ -1146,7 +1123,7 @@ namespace ProjektMagazyn
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
                     SqlTransaction transaction = conn.BeginTransaction();
@@ -1410,7 +1387,7 @@ namespace ProjektMagazyn
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
             {
                 conn.Open();
                 using (SqlTransaction tran = conn.BeginTransaction())
@@ -1524,7 +1501,7 @@ namespace ProjektMagazyn
             }
 
             
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
             {
                 conn.Open();
                 string query = "SELECT sm.IloscDostepna, t.JednostkaMiary FROM StanyMagazynowe sm JOIN Towary t ON sm.TowarID = t.TowarID WHERE sm.TowarID = @id";
@@ -1595,7 +1572,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
                     string query = @"
@@ -2095,7 +2072,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     string query = "SELECT UzytkownikID, Login + ' - ' + Imie + ' ' + Nazwisko AS DisplayText FROM Uzytkownicy WHERE ISNULL(CzyZapomniany, 0) = 0";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
@@ -2117,7 +2094,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     string query = "SELECT UprawnienieID, Nazwa FROM Uprawnienia";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
@@ -2428,7 +2405,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     string query = @"
                 SELECT UprawnienieID
@@ -2471,7 +2448,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     string query = "SELECT UprawnienieID, Nazwa FROM Uprawnienia";
                     SqlDataAdapter da = new SqlDataAdapter(query, conn);
@@ -2547,7 +2524,7 @@ namespace ProjektMagazyn
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
                 {
                     conn.Open();
 
@@ -2707,7 +2684,7 @@ namespace ProjektMagazyn
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
             {
                 conn.Open();
                 string getHashQuery = "SELECT UzytkownikID, HasloHash FROM Uzytkownicy WHERE Login = @login";

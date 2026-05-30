@@ -7,12 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace ProjektMagazyn
 {
     public class DatabaseConnection
     {
         private string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MagazynDB;Integrated Security=True";
+        public string GetConnectionString
+        {
+            get { return connectionString; }
+        }
         public void VerifyLogin(string login, string password, out int? userId, out string hash)
         {
             userId = null;
@@ -45,7 +50,31 @@ namespace ProjektMagazyn
                 MessageBox.Show("Błąd logowania: " + ex.Message);
             }
         }
+        public void UserPermissions(int userId, List<int>currentUserPermissions)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
 
+                string query = @"
+                        SELECT UprawnienieID 
+                        FROM Uzytkownicy_Uprawnienia 
+                        WHERE UzytkownikID = @id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", userId);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            currentUserPermissions.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+            }
+        }
         public void DisplayTableUsers(DataGridView dvg_user_list, string query)
         {
             try
