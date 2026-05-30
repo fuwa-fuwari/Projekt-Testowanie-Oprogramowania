@@ -59,6 +59,7 @@ namespace ProjektMagazyn
             loggedUserId = userId;
             LoadUserPermissions(loggedUserId);
             EnablePermittedTabs();
+            this.DoubleBuffered = true;
             this.Load += ControlPanel_Load;
             OdswiezUprawnieniaIZakladki();
 
@@ -70,20 +71,20 @@ namespace ProjektMagazyn
             ZablokujPolaEdycji();
             database.RoleListClb(clb_add_user_role);
 
-            if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
-                dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
+            //if (dotNetBarTabControl_manage_users.TabPages.Contains(tabPage_view_user))
+            //    dotNetBarTabControl_manage_users.TabPages.Remove(tabPage_view_user);
 
-            if (tabPage_items.TabPages.Contains(tabPage_Item_History))
-                tabPage_items.TabPages.Remove(tabPage_Item_History);
+            //if (tabPage_items.TabPages.Contains(tabPage_Item_History))
+            //    tabPage_items.TabPages.Remove(tabPage_Item_History);
 
-            if (tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
-                tabPage_items.TabPages.Remove(tabPage_Delivery_Details);
+            //if (tabPage_items.TabPages.Contains(tabPage_Delivery_Details))
+            //    tabPage_items.TabPages.Remove(tabPage_Delivery_Details);
 
-            if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
-                tabPage_items.TabPages.Remove(tabPage_Vat_Change);
+            //if (tabPage_items.TabPages.Contains(tabPage_Vat_Change))
+            //    tabPage_items.TabPages.Remove(tabPage_Vat_Change);
 
-            if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
-                tabControl_sales.TabPages.Remove(tabPage_sale_details);
+            //if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
+            //    tabControl_sales.TabPages.Remove(tabPage_sale_details);
         }
         private void ControlPanel_Load(object sender, EventArgs e)
         {
@@ -1250,78 +1251,6 @@ namespace ProjektMagazyn
             if (clb_roles.DataSource == null)
                 ZaladujListeUprawnien();
         }
-        //remove?
-
-        //private void btn_change_password_Click(object sender, EventArgs e)
-        //{
-        //    string oldPass = tbx_profile_old_password.Text;
-        //    string newPass = tbx_profile_new_password.Text;
-        //    string repeat = tbx_profile_repeat_password.Text;
-
-        //    Validation validation = new Validation();
-
-        //    if (string.IsNullOrWhiteSpace(oldPass) ||
-        //        string.IsNullOrWhiteSpace(newPass) ||
-        //        string.IsNullOrWhiteSpace(repeat))
-        //    {
-        //        MessageBox.Show("Wszystkie pola hasła muszą być wypełnione.");
-        //        return;
-        //    }
-
-        //    if (newPass != repeat)
-        //    {
-        //        MessageBox.Show("Nowe hasła nie są takie same.");
-        //        return;
-        //    }
-        //    if (!validation.valid_password(newPass))
-        //    {
-        //        MessageBox.Show(@"Hasło nie spełnia wymaganych kryteriów:
-        //        - długość od 8 do 15 znaków
-        //        - co najmniej jedna wielka litera
-        //        - co najmniej jedna mała litera
-        //        - co najmniej jedna cyfra oraz znak specjalny");
-        //        return;
-        //    }
-
-        //    using (SqlConnection conn = new SqlConnection(connectionString))
-        //    {
-        //        conn.Open();
-
-        //        string getHashQuery = "SELECT HasloHash FROM Uzytkownicy WHERE UzytkownikID = @id";
-
-        //        string currentHash = "";
-
-        //        using (SqlCommand cmd = new SqlCommand(getHashQuery, conn))
-        //        {
-        //            cmd.Parameters.AddWithValue("@id", loggedUserId);
-        //            currentHash = cmd.ExecuteScalar()?.ToString();
-        //        }
-
-        //        if (!SecurePasswordHasher.Verify(oldPass, currentHash))
-        //        {
-        //            MessageBox.Show("Stare hasło jest niepoprawne.");
-        //            return;
-        //        }
-
-        //        string newHash = SecurePasswordHasher.Hash(newPass);
-
-        //        string updateQuery = "UPDATE Uzytkownicy SET HasloHash = @pass WHERE UzytkownikID = @id";
-
-        //        using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-        //        {
-        //            cmd.Parameters.AddWithValue("@pass", newHash);
-        //            cmd.Parameters.AddWithValue("@id", loggedUserId);
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //    }
-
-        //    MessageBox.Show("Hasło zostało zmienione.");
-
-        //    tbx_profile_old_password.Clear();
-        //    tbx_profile_new_password.Clear();
-        //    tbx_profile_repeat_password.Clear();
-        //}
-
         private void btn_filter_perms_Click(object sender, EventArgs e)
         {
             if (!isFiltered)
@@ -2768,67 +2697,11 @@ namespace ProjektMagazyn
                 }
             }
         }
-
         private void chk_sales_history_dates_CheckedChanged(object sender, EventArgs e)
         {
             dtp_sales_history_from.Enabled = chk_sales_history_dates.Checked;
             dtp_sales_history_to.Enabled = chk_sales_history_dates.Checked;
         }
-        
-        //remove?
-
-        //private void LoadProfileRoles(int userId)
-        //{
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            string query = @"
-        //            SELECT UprawnienieID, Nazwa
-        //            FROM Uprawnienia";
-
-        //            using (SqlCommand cmd = new SqlCommand(query, conn))
-        //            {
-        //                using (SqlDataReader reader = cmd.ExecuteReader())
-        //                {
-        //                    clb_profile_roles.Items.Clear();
-
-        //                    while (reader.Read())
-        //                    {
-        //                        var uprawnienieID = reader.GetInt32(0);
-        //                        var nazwa = reader.GetString(1);
-
-        //                        clb_profile_roles.Items.Add(new { UprawnienieID = uprawnienieID, Nazwa = nazwa });
-        //                    }
-        //                }
-        //            }
-
-        //            clb_profile_roles.DisplayMember = "Nazwa";
-
-        //            clb_profile_roles.Enabled = false;
-
-        //            foreach (var permissionId in currentUserPermissions)
-        //            {
-        //                for (int i = 0; i < clb_profile_roles.Items.Count; i++)
-        //                {
-        //                    var item = (dynamic)clb_profile_roles.Items[i];
-        //                    if (item.UprawnienieID == permissionId)
-        //                    {
-        //                        clb_profile_roles.SetItemChecked(i, true);
-        //                        break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Błąd ładowania ról: " + ex.Message);
-        //    }
-        //}
-
         private void SetWarehousePermissions()
         {
             bool isManager = currentUserPermissions.Contains(2);
