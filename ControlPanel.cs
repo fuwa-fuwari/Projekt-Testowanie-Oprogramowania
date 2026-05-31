@@ -86,6 +86,8 @@ namespace ProjektMagazyn
 
             if (tabControl_sales.TabPages.Contains(tabPage_sale_details))
                 tabControl_sales.TabPages.Remove(tabPage_sale_details);
+
+            LoadItemTypes();
         }
         private void ControlPanel_Load(object sender, EventArgs e)
         {
@@ -1296,30 +1298,42 @@ namespace ProjektMagazyn
         private void btn_register_sale_Click(object sender, EventArgs e)
         {
             errorProvider.Clear();
-            int invalids = 0;
-            StringBuilder errorMessages = new StringBuilder();
 
             string clientName = tbx_sale_client_name.Text.Trim();
             string clientAddress = tbx_sale_client_address.Text.Trim();
             DateTime saleDate = dtp_sale_date.Value.Date;
 
+            bool isHeaderEmpty = string.IsNullOrEmpty(clientName) || string.IsNullOrEmpty(clientAddress);
+            bool isBasketEmpty = (dtBasket == null || dtBasket.Rows.Count == 0);
+
+            if (isHeaderEmpty && isBasketEmpty)
+            {
+                if (string.IsNullOrEmpty(clientName)) { errorProvider.SetError(tbx_sale_client_name, "Brak wymaganych pól"); tbx_sale_client_name.BackColor = Color.Red; }
+                if (string.IsNullOrEmpty(clientAddress)) { errorProvider.SetError(tbx_sale_client_address, "Brak wymaganych pól"); tbx_sale_client_address.BackColor = Color.Red; }
+
+                MessageBox.Show("Koszyk jest pusty. Dodaj przynajmniej jeden towar przed zapisaniem sprzedaży", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!isHeaderEmpty && isBasketEmpty)
+            {
+                MessageBox.Show("Koszyk jest pusty. Dodaj przynajmniej jeden towar przed zapisaniem sprzedaży", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (isHeaderEmpty && !isBasketEmpty)
+            {
+                if (string.IsNullOrEmpty(clientName)) { errorProvider.SetError(tbx_sale_client_name, "Brak wymaganych pól"); tbx_sale_client_name.BackColor = Color.Red; }
+                if (string.IsNullOrEmpty(clientAddress)) { errorProvider.SetError(tbx_sale_client_address, "Brak wymaganych pól"); tbx_sale_client_address.BackColor = Color.Red; }
+
+                MessageBox.Show("Popraw podświetlone pola formularza danych klienta.", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (saleDate < DateTime.Today)
             {
                 errorProvider.SetError(dtp_sale_date, "Data sprzedaży nie może być datą wsteczną");
                 dtp_sale_date.BackColor = Color.Red;
-                invalids++;
-            }
-            if (string.IsNullOrEmpty(clientName)) { errorProvider.SetError(tbx_sale_client_name, "Brak wymaganych pól"); tbx_sale_client_name.BackColor = Color.Red; invalids++; }
-            if (string.IsNullOrEmpty(clientAddress)) { errorProvider.SetError(tbx_sale_client_address, "Brak wymaganych pól"); tbx_sale_client_address.BackColor = Color.Red; invalids++; }
-
-            if (dtBasket.Rows.Count == 0)
-            {
-                MessageBox.Show("Koszyk jest pusty! Dodaj przynajmniej jeden towar przed zapisaniem sprzedaży.", "Brak pozycji", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (invalids > 0)
-            {
                 MessageBox.Show("Popraw podświetlone pola formularza danych klienta.", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -1393,13 +1407,12 @@ namespace ProjektMagazyn
             DateTime saleDate = dtp_sale_date.Value.Date;
             if (saleDate < DateTime.Today)
             {
-                MessageBox.Show("Data sprzedaży nie może być datą wsteczną. Popraw datę przed dodaniem towarów do koszyka.", "Błędna data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 dtp_sale_date.BackColor = Color.Red;
-                errorProvider.SetError(dtp_sale_date, "Data sprzedaży nie może być datą wsteczną.");
+                MessageBox.Show("Data sprzedaży nie może być datą wsteczną. Popraw datę przed dodaniem towarów do koszyka", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            
+
             if (string.IsNullOrWhiteSpace(tbx_sale_client_name.Text) || string.IsNullOrWhiteSpace(tbx_sale_client_address.Text))
             {
                 MessageBox.Show("Najpierw uzupełnij nazwę i adres klienta, zanim zaczniesz dodawać towary do koszyka.", "Brak danych klienta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1410,18 +1423,18 @@ namespace ProjektMagazyn
 
             if (cmbx_sale_product.SelectedIndex == -1)
             {
-                errorProvider.SetError(cmbx_sale_product, "Wybierz towar z listy.");
+                errorProvider.SetError(cmbx_sale_product, "Wybierz towar z listy");
                 cmbx_sale_product.BackColor = Color.Red;
-                MessageBox.Show("Wybierz towar z rozwijanej listy przed dodaniem go do koszyka.", "Brak wybranego towaru", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Wybierz towar z listy rozwijanej przed dodaniem go do koszyka", "Błąd walidacji", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             string quantityStr = tbx_sale_quantity.Text.Trim();
             if (!Regex.IsMatch(quantityStr, @"^\d+(\.\d+)?$") || quantityStr == "0")
             {
-                errorProvider.SetError(tbx_sale_quantity, "Wprowadź poprawną ilość.");
+                errorProvider.SetError(tbx_sale_quantity, "Wprowadz poprawną ilość");
                 tbx_sale_quantity.BackColor = Color.Red;
-                MessageBox.Show("Ilość nie może być zerowa, ujemna ani zawierać błędnych znaków.", "Błąd formatu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Ilosc nie może być zerowa, ujemna ani zawierac blednych znaków", "Błąd formatu", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -1469,9 +1482,8 @@ namespace ProjektMagazyn
 
                             if ((requestedQty + alreadyInBasket) > stockQty)
                             {
-                                errorProvider.SetError(tbx_sale_quantity, "Przekroczenie stanu magazynowego.");
                                 tbx_sale_quantity.BackColor = Color.Red;
-                                MessageBox.Show($"Błąd: Niewystarczająca ilość towaru w magazynie (Dostępna: {stockQty}, w koszyku: {alreadyInBasket})", "Przekroczenie stanu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show($"Błąd: Niewystarczająca ilość towaru w magazynie (Dostępna: {stockQty}).", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
                         }
@@ -1555,6 +1567,22 @@ namespace ProjektMagazyn
                     cmbx_sale_product.ValueMember = "TowarID";
                     cmbx_sale_product.DataSource = dtComboBoxSource;
                     cmbx_sale_product.SelectedIndex = -1;
+                    if (dtComboBoxSource.Rows.Count == 0)
+                    {
+                        cmbx_sale_product.Enabled = false;
+                        tbx_sale_quantity.Enabled = false;
+                        btn_add_to_basket.Enabled = false;
+                        btn_remove_from_basket.Enabled = false;
+
+                        MessageBox.Show("Brak dostępnych towarów w magazynie. Rejestracja sprzedaży jest niemożliwa.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        cmbx_sale_product.Enabled = true;
+                        tbx_sale_quantity.Enabled = true;
+                        btn_add_to_basket.Enabled = true;
+                        btn_remove_from_basket.Enabled = (dtBasket != null && dtBasket.Rows.Count > 0);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1575,16 +1603,15 @@ namespace ProjektMagazyn
             {
                 if (dtp_sales_history_from.Value.Date > dtp_sales_history_to.Value.Date)
                 {
-                    MessageBox.Show("Data 'Od' nie może być późniejsza niż data 'Do'.",
-                                    "Błąd zakresu dat", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Data 'Od' nie może być późniejsza niż data 'Do'.", "Błąd zakresu dat", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     dtp_sales_history_from.BackColor = Color.Red;
                     dtp_sales_history_to.BackColor = Color.Red;
-                    return; 
+                    return;
                 }
-
                 from = dtp_sales_history_from.Value.Date;
                 to = dtp_sales_history_to.Value.Date;
             }
+
             database.SearchSalesHistory(
                 dgv_sales_history,
                 from,
@@ -1593,6 +1620,52 @@ namespace ProjektMagazyn
                 tbx_history_seller.Text.Trim(),
                 tbx_history_item.Text.Trim()
             );
+
+            // --- UC 2, E1 i E2: Logika kontroli interfejsu (pusta baza vs brak wyników filtru) ---
+            bool isDatabaseEmpty = false;
+            using (SqlConnection conn = new SqlConnection(database.GetConnectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Sprzedaz", conn))
+                {
+                    isDatabaseEmpty = (int)cmd.ExecuteScalar() == 0;
+                }
+            }
+
+            if (isDatabaseEmpty)
+            {
+                tbx_history_buyer.Enabled = false;
+                tbx_history_seller.Enabled = false;
+                tbx_history_item.Enabled = false;
+                chk_sales_history_dates.Enabled = false;
+                dtp_sales_history_from.Enabled = false;
+                dtp_sales_history_to.Enabled = false;
+                btn_search_sales.Enabled = false;
+
+                MessageBox.Show("Brak zarejestrowanych sprzedaży w systemie.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (dgv_sales_history.DataSource == null || dgv_sales_history.Rows.Count == 0)
+            {
+                tbx_history_buyer.Enabled = true;
+                tbx_history_seller.Enabled = true;
+                tbx_history_item.Enabled = true;
+                chk_sales_history_dates.Enabled = true;
+                dtp_sales_history_from.Enabled = chk_sales_history_dates.Checked;
+                dtp_sales_history_to.Enabled = chk_sales_history_dates.Checked;
+                btn_search_sales.Enabled = true;
+
+                MessageBox.Show("Brak wyników spełniających zadane kryteria.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                tbx_history_buyer.Enabled = true;
+                tbx_history_seller.Enabled = true;
+                tbx_history_item.Enabled = true;
+                chk_sales_history_dates.Enabled = true;
+                dtp_sales_history_from.Enabled = chk_sales_history_dates.Checked;
+                dtp_sales_history_to.Enabled = chk_sales_history_dates.Checked;
+                btn_search_sales.Enabled = true;
+            }
         }
 
         private void dgv_sales_history_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -1649,14 +1722,14 @@ namespace ProjektMagazyn
                 errorProvider.Clear();
                 int replenishInvalids = 0;
 
-                string quantityStr = tbx_item_quantity.Text.Trim();
-                string priceStr = tbx_item_price.Text.Trim();
-                string supplierStr = tbx_item_supplier.Text.Trim();
-                string unitStr = cmbx_item_unit.Text;
+                string repQuantityStr = tbx_item_quantity.Text.Trim();
+                string repPriceStr = tbx_item_price.Text.Trim();
+                string repSupplierStr = tbx_item_supplier.Text.Trim();
+                string repUnitStr = cmbx_item_unit.Text;
 
-                if (string.IsNullOrEmpty(quantityStr)) { errorProvider.SetError(tbx_item_quantity, "Brak wymaganych pól."); tbx_item_quantity.BackColor = Color.Red; replenishInvalids++; }
-                if (string.IsNullOrEmpty(priceStr)) { errorProvider.SetError(tbx_item_price, "Brak wymaganych pól."); tbx_item_price.BackColor = Color.Red; replenishInvalids++; }
-                if (string.IsNullOrEmpty(supplierStr)) { errorProvider.SetError(tbx_item_supplier, "Brak wymaganych pól."); tbx_item_supplier.BackColor = Color.Red; replenishInvalids++; }
+                if (string.IsNullOrEmpty(repQuantityStr)) { errorProvider.SetError(tbx_item_quantity, "Brak wymaganych pól."); tbx_item_quantity.BackColor = Color.Red; replenishInvalids++; }
+                if (string.IsNullOrEmpty(repPriceStr)) { errorProvider.SetError(tbx_item_price, "Brak wymaganych pól."); tbx_item_price.BackColor = Color.Red; replenishInvalids++; }
+                if (string.IsNullOrEmpty(repSupplierStr)) { errorProvider.SetError(tbx_item_supplier, "Brak wymaganych pól."); tbx_item_supplier.BackColor = Color.Red; replenishInvalids++; }
 
                 if (replenishInvalids > 0)
                 {
@@ -1664,9 +1737,9 @@ namespace ProjektMagazyn
                     return;
                 }
 
-                bool qtyFormatOk = Regex.IsMatch(quantityStr, @"^\d+(,\d+)?$");
+                bool qtyFormatOk = Regex.IsMatch(repQuantityStr, @"^\d+(,\d+)?$");
                 decimal newTotalQty = 0m;
-                if (qtyFormatOk) decimal.TryParse(quantityStr, NumberStyles.Any, new CultureInfo("pl-PL"), out newTotalQty);
+                if (qtyFormatOk) decimal.TryParse(repQuantityStr, NumberStyles.Any, new CultureInfo("pl-PL"), out newTotalQty);
 
                 if (!qtyFormatOk)
                 {
@@ -1676,7 +1749,7 @@ namespace ProjektMagazyn
                     return;
                 }
 
-                if (unitStr == "Sztuki" && newTotalQty % 1 != 0)
+                if (repUnitStr == "Sztuki" && newTotalQty % 1 != 0)
                 {
                     errorProvider.SetError(tbx_item_quantity, "Dla jednostki miary 'Sztuki' niedozwolone jest wprowadzanie wartości ułamkowych.");
                     tbx_item_quantity.BackColor = Color.Red;
@@ -1693,9 +1766,9 @@ namespace ProjektMagazyn
                     return;
                 }
 
-                bool priceFormatOk = Regex.IsMatch(priceStr, @"^\d+(,\d{1,2})?$");
+                bool priceFormatOk = Regex.IsMatch(repPriceStr, @"^\d+(,\d{1,2})?$");
                 decimal repNetPrice = 0m;
-                if (priceFormatOk) decimal.TryParse(priceStr, NumberStyles.Any, new CultureInfo("pl-PL"), out repNetPrice);
+                if (priceFormatOk) decimal.TryParse(repPriceStr, NumberStyles.Any, new CultureInfo("pl-PL"), out repNetPrice);
 
                 if (!priceFormatOk || repNetPrice < 0)
                 {
@@ -1705,13 +1778,13 @@ namespace ProjektMagazyn
                     return;
                 }
 
-                decimal addedQty = newTotalQty - currentStock;
+                decimal addedQty = newTotalQty - currentStock; 
 
                 decimal repVatRate = 0m;
                 string repVatText = cmbx_item_vat.Text.Replace("%", "").Trim();
                 if (repVatText != "zw" && !string.IsNullOrEmpty(repVatText)) repVatRate = decimal.Parse(repVatText);
 
-                if (database.ReplenishExistingItem(replenishItemId, addedQty, repNetPrice, repVatRate, supplierStr, DateTime.Today, loggedUserId))
+                if (database.ReplenishExistingItem(replenishItemId, addedQty, repNetPrice, repVatRate, repSupplierStr, DateTime.Today, loggedUserId))
                 {
                     MessageBox.Show("Stan towaru został zaktualizowany pomyślnie.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     btn_register_item_cancel_Click(null, null);
@@ -1719,9 +1792,9 @@ namespace ProjektMagazyn
                     WczytajTowaryDoSprzedazy();
                 }
 
-                return; 
+                return;
             }
-            int invalids = 0;
+                int invalids = 0;
 
             StringBuilder errorMessages = new StringBuilder();
             bool showGenericError = false;
@@ -1868,11 +1941,12 @@ namespace ProjektMagazyn
         private void btn_register_item_cancel_Click(object sender, EventArgs e)
         {
             errorProvider.Clear();
+
+            dgv_warehouse_items.ClearSelection();
+
             if (replenishItemId != -1)
             {
                 replenishItemId = -1;
-                dgv_warehouse_items_SelectionChanged(null, null);
-                return;
             }
 
             var inputsToUnlock = new List<Control> { tbx_item_name, cmbx_item_type, cmbx_item_unit, tbx_item_quantity, tbx_item_price, cmbx_item_vat, tbx_item_description, tbx_item_supplier, dtp_item_deliveryDate };
@@ -1985,13 +2059,16 @@ namespace ProjektMagazyn
 
         private void btn_delete_item_Click(object sender, EventArgs e)
         {
-            if (dgv_warehouse_items.CurrentRow == null || dgv_warehouse_items.CurrentRow.Index < 0)
-            {
+
+            if(dgv_warehouse_items.SelectedCells.Count == 0)
+            { 
                 MessageBox.Show("Wybierz towar z listy do usunięcia.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            int itemId = Convert.ToInt32(dgv_warehouse_items.CurrentRow.Cells["TowarID"].Value);
+            int rowIndex = dgv_warehouse_items.SelectedCells[0].RowIndex;
+            int itemId = Convert.ToInt32(dgv_warehouse_items.Rows[rowIndex].Cells["TowarID"].Value);
+
             var result = MessageBox.Show("Czy na pewno chcesz usunąć wybrany towar?", "Potwierdzenie usunięcia", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.No)
@@ -2171,9 +2248,15 @@ namespace ProjektMagazyn
 
         private void dgv_warehouse_items_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgv_warehouse_items.CurrentRow != null && dgv_warehouse_items.CurrentRow.Index >= 0)
+            if (dgv_warehouse_items.SelectedCells.Count > 0)
             {
-                int itemId = Convert.ToInt32(dgv_warehouse_items.CurrentRow.Cells["TowarID"].Value);
+                int rowIndex = dgv_warehouse_items.SelectedCells[0].RowIndex;
+
+                btn_delete_item.Enabled = true;
+                btn_replenish_item.Enabled = true;
+                btn_change_item_vat.Enabled = true;
+
+                int itemId = Convert.ToInt32(dgv_warehouse_items.Rows[rowIndex].Cells["TowarID"].Value);
                 var details = database.GetItemFullDetailsForReplenish(itemId);
 
                 if (details.Count > 0)
@@ -2186,8 +2269,7 @@ namespace ProjektMagazyn
                     tbx_item_supplier.Text = details.ContainsKey("Dostawca") ? details["Dostawca"] : "";
                     if (details.ContainsKey("VAT")) cmbx_item_vat.Text = details["VAT"];
 
-                    tbx_item_quantity.Text = dgv_warehouse_items.CurrentRow.Cells["Wielkość stanu magazynowego"].Value.ToString();
-
+                    tbx_item_quantity.Text = dgv_warehouse_items.Rows[rowIndex].Cells["Wielkość stanu magazynowego"].Value.ToString();
                     dtp_item_deliveryDate.Value = DateTime.Today;
 
                     var allInputs = new List<Control> { tbx_item_name, cmbx_item_type, cmbx_item_unit, tbx_item_quantity, tbx_item_price, cmbx_item_vat, tbx_item_description, tbx_item_supplier, dtp_item_deliveryDate };
@@ -2197,6 +2279,12 @@ namespace ProjektMagazyn
                         input.BackColor = SystemColors.Control;
                     }
                 }
+            }
+            else
+            {
+                btn_delete_item.Enabled = false;
+                btn_replenish_item.Enabled = false;
+                btn_change_item_vat.Enabled = false;
             }
         }
         private void chk_history_use_dates_CheckedChanged(object sender, EventArgs e)
@@ -2347,18 +2435,20 @@ namespace ProjektMagazyn
                 return;
             }
 
-            if (dgv_warehouse_items.CurrentRow == null || dgv_warehouse_items.CurrentRow.Index < 0)
+            if (dgv_warehouse_items.SelectedCells.Count == 0)
             {
                 MessageBox.Show("Wybierz towar z listy.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            int rowIndex = dgv_warehouse_items.SelectedCells[0].RowIndex;
+
             vatChangeMode = 1;
-            selectedVatItemId = Convert.ToInt32(dgv_warehouse_items.CurrentRow.Cells["TowarID"].Value);
+            selectedVatItemId = Convert.ToInt32(dgv_warehouse_items.Rows[rowIndex].Cells["TowarID"].Value);
 
             lbl_vat_mode_title.Text = "Zmiana stawki VAT dla towaru";
             tbx_vat_item_name.Visible = true;
-            tbx_vat_item_name.Text = dgv_warehouse_items.CurrentRow.Cells["Nazwa towaru"].Value.ToString();
+            tbx_vat_item_name.Text = dgv_warehouse_items.Rows[rowIndex].Cells["Nazwa towaru"].Value.ToString();
             cmb_vat_category.Visible = false;
 
             cmb_vat_category.BackColor = SystemColors.Window;
@@ -2396,14 +2486,16 @@ namespace ProjektMagazyn
 
             LoadItemTypesToComboBox(cmb_vat_category);
             dtp_vat_date.Value = DateTime.Today.AddDays(1);
-            if (cmb_vat_category.Items.Count == 0)
+
+            DataTable dtCat = cmb_vat_category.DataSource as DataTable;
+            if (dtCat == null || dtCat.Rows.Count == 0)
             {
-                btn_vat_save.Enabled = false; 
+                btn_vat_save.Enabled = false;
                 MessageBox.Show("Brak rodzajów towarów.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                btn_vat_save.Enabled = true; 
+                btn_vat_save.Enabled = true;
             }
 
             ShowVatChangeTab();
@@ -2557,10 +2649,11 @@ namespace ProjektMagazyn
 
         private void btn_replenish_item_Click(object sender, EventArgs e)
         {
-            if (dgv_warehouse_items.CurrentRow == null || dgv_warehouse_items.CurrentRow.Index < 0) return;
+            if (dgv_warehouse_items.SelectedCells.Count == 0) return;
 
             errorProvider.Clear();
-            replenishItemId = Convert.ToInt32(dgv_warehouse_items.CurrentRow.Cells["TowarID"].Value);
+            int rowIndex = dgv_warehouse_items.SelectedCells[0].RowIndex;
+            replenishItemId = Convert.ToInt32(dgv_warehouse_items.Rows[rowIndex].Cells["TowarID"].Value);
 
             tbx_item_quantity.Enabled = true;
             tbx_item_quantity.BackColor = Color.White;
@@ -2860,15 +2953,16 @@ namespace ProjektMagazyn
                 btn_replenish_item.Enabled = false;
                 btn_change_item_vat.Enabled = false;
                 btn_change_category_vat.Enabled = false;
+
                 MessageBox.Show("Brak towarów w systemie.", "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                btn_delete_item.Enabled = true;
-                btn_replenish_item.Enabled = true;
-                btn_change_item_vat.Enabled = true;
                 btn_change_category_vat.Enabled = true;
             }
+
+            dgv_warehouse_items.ClearSelection();
+            btn_register_item_cancel_Click(null, null);
         }
         private void ShowVatChangeTab()
         {
